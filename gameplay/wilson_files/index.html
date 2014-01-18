@@ -1,0 +1,55 @@
+<html>
+  <head>
+    <title>Phase 0</title>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="assets/javascripts/phase0.js"></script>
+    <style type="text/css"></style>
+    <script src="/libs/bootstrap/js/bootstrap.min.js"></script>
+    <script src="/libs/cookies.js"></script>
+    <link href="/libs/bootstrap/css/bootstrap.css" rel="stylesheet" type="text/css">
+    <link href="/libs/bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
+    <link href="assets/stylesheets/phase0.css" rel="stylesheet" type="text/css">
+  </head>
+  <body>
+    <div>
+      <h2>Impersonate</h2>
+      <form method="post" class="block" name="impersonate-form">
+        <select id="game-select" class="block" name="game-select"></select>
+        <select id="user-select" class="block" name="user-select"></select>
+        <input type="text" class="block" id="password"></input>
+        <button type="button" id="join-btn" class="btn btn-success block">Join</button>
+      </form>
+      <div id="requests">
+        <h2>Actions</h2>
+        <select id="actions-select" name="actions-select"></select>
+        <label id="description-lbl"></label>
+        <label id="method-lbl"></label>
+        <form id="request-form"></form>
+        <textarea id="json-template" class="hide"></textarea>
+        <button type="button" id="request-btn" class="btn btn-success hide">Go</button>
+        <textarea id="json-response" class="hide"></textarea>
+      </div>
+      <div>
+        <script id="boolean-template" type="text/template">
+          <label class="block" for="{{arg-name}}">{{description}}</label>
+          <input type="checkbox" class="block param" id="{{arg-name}}"></input>
+        </script>
+        <script id="string-template" type="text/template">
+          <label class="block" for="{{arg-name}}">{{description}}</label>
+          <input type="text" class="block param" id="{{arg-name}}"></input>
+        </script>
+        <script id="enumeration-template" type="text/template">
+          <label class="block" for="{{arg-name}}">{{description}}</label>
+          <select class="block param" name="{{arg-name}}" id="{{arg-name}}"></select>
+        </script>
+        <script id="integer-template" type="text/template">
+          <label class="block" for="{{arg-name}}">{{description}}</label>
+          <input type="text" class="block param" id="{{arg-name}}"></input>
+        </script>
+        <script id="option-template" type="text/template">
+          <option id="{{arg-name}}">{{arg-name}}</option>
+        </script>
+      </div>
+    </body>
+  </div>
+</html>

@@ -1,0 +1,8 @@
+
+.block {
+  display: block;
+}
+
+#json-template {
+  overflow: auto;
+}
