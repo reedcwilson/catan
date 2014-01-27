@@ -2,4 +2,6 @@ BYU CS340 SETTLERS OF CATAN
 
 This is a web game that allows four players to play the Settlers of Catan game.
 
-The game server is not part of this repo because it is very large. I think that we should just individually manage this. Dr. Snell said that it should be locked in anyway.
+The game server is not part of this repo because it is very large. I think that
+we should just individually manage this. Dr. Snell said that it should be
+locked in anyway.
