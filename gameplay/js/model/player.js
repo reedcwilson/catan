@@ -1,3 +1,4 @@
+
 var catan = catan || {};
 catan.models = catan.models || {};
 
