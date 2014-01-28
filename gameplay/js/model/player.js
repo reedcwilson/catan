@@ -1,6 +1,7 @@
 var catan = catan || {};
+catan.models = catan.models || {};
 
-catan.Player = (function() {
+catan.models.Player = (function() {
   /**
     The Player class contains the information about the player, including
     the number of cities, color, id, etc..
@@ -9,7 +10,7 @@ catan.Player = (function() {
     @class Player
     @constructor
     */
-  // function Player(){
+  function Player(){};
 
   /**
     Checks to see if the player has the Resource
@@ -22,6 +23,7 @@ catan.Player = (function() {
     @return {boolean} Whether or not the Player has the resource
     */
   var hasResource = function(resourceList) { };
+  function hasResource () {};
 
   /**
     Returns the number of points a player has
@@ -209,3 +211,4 @@ catan.Player = (function() {
       getColor:getColor
     }
 })();
+
