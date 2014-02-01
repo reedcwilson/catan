@@ -1,3 +1,4 @@
+//STUDENT-EDITABLE-BEGIN
 /**
     This is the namespace the rolling interface
     @module catan.roll

@@ -1,3 +1,4 @@
+//STUDENT-EDITABLE-BEGIN
 /**
     This is the namespace for domestic trading
     @module catan.trade

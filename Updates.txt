@@ -1,0 +1,10 @@
+
+
+01-31-14
+Updated all the files to have a '//DO NOT EDIT THIS' comment at the top of the file
+Updated the server to cap the number of log lines and chat messages it stores on a per game basis
+Added this file.
+Removed the "lastRobber" attribute from the model JSON to bring it into conformity with the official rules.
+Added the attribute "version" to the model. It specifies how many commands have been run on it. It's used to track newness.
+Added the option to append ?version=x to the end of the /game/model to get the model iff the model is newer. Grab x from the model.version attribute.
+

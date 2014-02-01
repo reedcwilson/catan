@@ -1,3 +1,4 @@
+//STUDENT-EDITABLE-BEGIN
 var catan = catan || {};
 catan.points = catan.points || {};
 catan.points.Controller = catan.points.Controller || {};
