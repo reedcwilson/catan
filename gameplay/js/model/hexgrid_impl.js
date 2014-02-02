@@ -19,6 +19,20 @@ catan.models.Map = (function mapNameSpace(){
 		{
 			this.hexGrid = hexgrid.HexGrid.getRegular(radius, CatanHex);
 		}
+		Map.prototype.loadMap = function(mapJSON)
+		{
+
+		}
+		
+		Map.prototype.loadPorts = function(portJSON)
+		{
+
+		}
+
+		Map.prototype.loadNumbers = function(numbersJSON)
+		{
+
+		}
 		return Map;
 		
     }());
@@ -120,16 +134,74 @@ catan.models.Map = (function mapNameSpace(){
 	
 	@class CatanVertex
 	*/
+	//TODO Add Resource Holding, Value Holding, Port info, has robber info
     var CatanHex = (function CatanHex_Class(){
     
         core.forceClassInherit(CatanHex, hexgrid.BasicHex);
+		core.defineProperty(CatanHex, "landType");
+		core.defineProperty(CatanHex, "isLand");
+		core.defineProperty(CatanHex, "rollNumber");
         
         function CatanHex(location){          
             hexgrid.BasicHex.call(this,location,CatanEdge,CatanVertex);
         } 
-        
+
+		CatanHex.prototype.getLandType = new function(){
+			return this.landType;
+		}
+
+		CatanHex.prototype.getIsLand = new function(){
+			return this.isLand;
+		}
+
+		CatanHex.prototype.getRollNumber = new function(){
+			return this.getRollNumber;
+		}
+
+        CatanHex.prototype.setLandType = new function(resourceType){
+			this.landType = resourceType;
+        }
+
+        CatanHex.prototype.setIsLand = new function(bool){
+        	this.isLand = bool;
+        }
+
+        CatanHex.prototype.setRollNumber = new function(number){
+			this.rollNumber = number;
+        }
         return CatanHex;
+
+        
     }());
+
+	var CatanPort = (function CatanPort_Class(){
+		core.forceClassInherit(CatanPort, CatanHex);
+		core.defineProperty(CatanHex, "tradeRatio");
+		core.defineProperty(CatanHex, "inputResource");
+		core.defineProperty(CatanHex, "validVertex1");
+		core.defineProperty(CatanHex, "validVertex2");
+
+		function CatanPort(ratio, resource, direction1, direction2) {
+			this.tradeRatio = ratio;
+			this.inputResource = resource;
+		}
+
+		CatanPort.prototype.getTradeRatio = new function(){
+			return this.getTradeRatio;
+		}
+
+		CatanPort.prototype.getInputResource = new function(){
+			return this.inputResource;
+		}
+
+		CatanPort.prototype.getValidVertex1 = new function(){
+			return this.validVertex1;
+		}
+
+		CatanPort.prototype.getValidVertex2 = new function(){
+			return this.ValidVertex2;
+		}
+	}());
     
 	return Map;
 

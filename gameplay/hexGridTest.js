@@ -1,9 +1,23 @@
-test("Hello World", function(){
-	console.log('meow');
-	ok(1 == "1", "Basic Failure");
+jQuery(function () {
+	var jqXHR = jQuery.getJSON('server-REST.json');
+	jqXHR.done(doTests);
+	jqXHR.fail(function(jqXHR, textStatus) {
+		console.log("error " + textStatus);
+		console.log("incoming Text " + jqXHR.responseText);
+	});
 });
 
-test("Hex Grid", function(){
+function doTests(data)
+{	
+	test("Basic Test", function(){
+		testBasicInit();
+	});
+	ConnectAsSam();
+	
+}
+
+function testBasicInit()
+{
 	var map = new catan.models.Map(2);
 	var hexes = map.hexGrid.getHexes();
 	for(var hex in hexes)
@@ -46,10 +60,56 @@ test("Hex Grid", function(){
 			}
 		}
 	}
-});
+}
 
-test("Change", function(){
-	console.log('meow');
-	ok(true,"");
-});
+function ConnectAsSam()
+{
+	var jqXHR = ajaxConnect("POST", "/user/login", 'username=Sam&password=sam');
+	jqXHR.done(function (data) {
+		var string = 'color=red&id=0';
+		var newjqXHR = ajaxConnect("POST", "/games/join", string);
+		newjqXHR.done(function (data){
+			loadMap();
+		});
+	});
+}
 
+function ajaxConnect(sendType, sendUrl, sendData, successFunc)
+{
+	var options = {
+		type: sendType,
+		url: sendUrl
+	};
+
+	// Making the sendData parameter optional
+	if (sendData !== undefined)
+	{
+		options.data = sendData;
+	}
+
+	var jqXHR = jQuery.ajax(options);
+
+	// Making the successFunc parameter optional
+	if (successFunc !== undefined)
+	{
+		jqXHR.done(successFunc);
+	}
+
+	jqXHR.fail(function(error) {
+		jQuery('#responseBody').html(error.responseText);
+	});
+
+	// returning the jqXHR promise in case we want to add any other promise callbacks
+	return jqXHR;
+}
+
+function loadMap()
+{
+	var jqXHR = ajaxConnect("GET", "/game/model");
+	jqXHR.done(function (data) {
+		test("Loaded Map", function() {
+			var map = new catan.models.Map(data.map.radius);
+			ok(true,"Loaded the map!");
+		});
+	});
+}
