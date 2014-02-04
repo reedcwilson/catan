@@ -1,5 +1,5 @@
 jQuery(function () {
-	var jqXHR = jQuery.getJSON('server-REST.json');
+	var jqXHR = jQuery.getJSON('../server-REST.json');
 	jqXHR.done(doTests);
 	jqXHR.fail(function(jqXHR, textStatus) {
 		console.log("error " + textStatus);
@@ -34,7 +34,7 @@ function testBasicInit()
 			ok(!vertex.isOccupied(), "Vertex: " + vertexnum + " was not occupied");
 			ok(!vertex.getWorth() != 0, "Vertex: " + vertexnum + " has no worth");
 		}
-		hex.edges[0].setOwner(0);
+		hex.edges[0].setOwnerID(0);
 		for(var edgenum in hex.edges)
 		{
 			var edge = hex.edges[edgenum]
@@ -45,7 +45,7 @@ function testBasicInit()
 				ok(!edge.isOccupied(), "Edge: " + edgenum + " was not occupied"); 
 			}
 		}
-		hex.vertexes[0].setOwner(0);
+		hex.vertexes[0].setOwnerID(0);
 		hex.vertexes[0].setWorth(1);
 		for (var vertexnum in hex.vertexes)
 		{
@@ -99,7 +99,6 @@ function ajaxConnect(sendType, sendUrl, sendData, successFunc)
 		jQuery('#responseBody').html(error.responseText);
 	});
 
-	// returning the jqXHR promise in case we want to add any other promise callbacks
 	return jqXHR;
 }
 
@@ -109,6 +108,23 @@ function loadMap()
 	jqXHR.done(function (data) {
 		test("Loaded Map", function() {
 			var map = new catan.models.Map(data.map.radius);
+			//data.map.numbers
+			//data.map.robber
+			for(var x in data.map.hexGrid.hexes) {
+				for(var y in data.map.hexGrid.hexes[x]) {
+					//console.log(JSON.stringify(data.map, null, 2));
+					hexJSON = data.map.hexGrid.hexes[x][y];
+					hexPiece = map.hexGrid.getHex(new catan.models.hexgrid.HexLocation(hexJSON.location.x, hexJSON.location.y));
+					hexPiece.setInfo(hexJSON);
+				}
+			}
+			//console.log(JSON.stringify(data.map.ports, null, 2));
+			for(var position in data.map.ports){
+				portJSON = data.map.ports[0];
+				var hex = map.hexGrid.getHex(new catan.models.hexgrid.HexLocation(portJSON.location.x, portJSON.location.y));
+				hex.setPortInfo(portJSON);
+			}
+			console.log(map);
 			ok(true,"Loaded the map!");
 		});
 	});

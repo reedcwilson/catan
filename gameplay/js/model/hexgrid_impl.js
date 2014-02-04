@@ -19,20 +19,6 @@ catan.models.Map = (function mapNameSpace(){
 		{
 			this.hexGrid = hexgrid.HexGrid.getRegular(radius, CatanHex);
 		}
-		Map.prototype.loadMap = function(mapJSON)
-		{
-
-		}
-		
-		Map.prototype.loadPorts = function(portJSON)
-		{
-
-		}
-
-		Map.prototype.loadNumbers = function(numbersJSON)
-		{
-
-		}
 		return Map;
 		
     }());
@@ -52,22 +38,23 @@ catan.models.Map = (function mapNameSpace(){
 	*/
     var CatanEdge = (function CatanEdge_Class(){
         core.forceClassInherit(CatanEdge, hexgrid.BaseContainer);
-        core.defineProperty(CatanEdge, "ownerID");
+        core.defineProperty(CatanEdge.prototype, "ownerID");
         function CatanEdge()
         {
 			this.ownerID = -1;
         }
+        
+		/**
+			Returns whether the edge is Occupied
 
+			@method isOccupied
+			@return {bool} If it is occupied or not
+		*/
 		CatanEdge.prototype.isOccupied = function()
 		{
 			return this.ownerID != -1
 		}
-
-		CatanEdge.prototype.setOwner = function(id)
-		{
-			this.ownerID = id;
-		}
-
+		
         return CatanEdge;
     }());
     
@@ -87,8 +74,8 @@ catan.models.Map = (function mapNameSpace(){
     var CatanVertex = (function CatanVertex_Class(){
     
         core.forceClassInherit(CatanVertex, hexgrid.BaseContainer);
-        core.defineProperty(CatanVertex, "worth");
-        core.defineProperty(CatanVertex, "ownerID");
+        core.defineProperty(CatanVertex.prototype, "worth");
+        core.defineProperty(CatanVertex.prototype, "ownerID");
         
         function CatanVertex()
         {
@@ -96,25 +83,17 @@ catan.models.Map = (function mapNameSpace(){
 			this.ownerID = -1;
         }
 
+		/**
+			Returns whether the vertex is Occupied
+
+			@method isOccupied
+			@return {bool} If it is occupied or not
+		*/
 		CatanVertex.prototype.isOccupied = function()
 		{
 			return this.ownerID != -1
 		}
 
-		CatanVertex.prototype.setOwner = function(id)
-		{
-			this.ownerID = id;
-		}
-		
-		CatanVertex.prototype.getWorth = function()
-		{
-			return this.worth;
-		}
-
-		CatanVertex.prototype.setWorth = function(newWorth)
-		{
-			this.worth = newWorth;
-		}
         return CatanVertex;
     }()); 
     
@@ -134,75 +113,115 @@ catan.models.Map = (function mapNameSpace(){
 	
 	@class CatanVertex
 	*/
-	//TODO Add Resource Holding, Value Holding, Port info, has robber info
     var CatanHex = (function CatanHex_Class(){
     
         core.forceClassInherit(CatanHex, hexgrid.BasicHex);
-		core.defineProperty(CatanHex, "landType");
-		core.defineProperty(CatanHex, "isLand");
-		core.defineProperty(CatanHex, "rollNumber");
+		core.defineProperty(CatanHex.prototype, "landType");
+		core.defineProperty(CatanHex.prototype, "isLand");
+		core.defineProperty(CatanHex.prototype, "rollNumber");
+		core.defineProperty(CatanHex.prototype, "hasRobber");
+
+		//if it is not a Port everything else is undefined
+		core.defineProperty(CatanHex.prototype, "isPort");
+		core.defineProperty(CatanHex.prototype, "tradeRatio");
+		core.defineProperty(CatanHex.prototype, "inputResource");
+		core.defineProperty(CatanHex.prototype, "validVertex1");
+		core.defineProperty(CatanHex.prototype, "validVertex2");
         
         function CatanHex(location){          
             hexgrid.BasicHex.call(this,location,CatanEdge,CatanVertex);
         } 
 
-		CatanHex.prototype.getLandType = new function(){
-			return this.landType;
+		/**
+			Sets the info on the hex using a hexJSON
+
+			@method setInfo
+			@param {JSON} hexJSON - The hexJSON to load the info from.
+		*/
+		CatanHex.prototype.setInfo = function(hexJSON){
+			this.setIsLand(hexJSON.isLand);
+			if(hexJSON.isLand){
+				this.setLandType(hexJSON.landtype);
+				this.setIsPort(false);
+			}
+			this.setVertexInfo(hexJSON.vertexes);
+			this.setEdgeInfo(hexJSON.edges);
 		}
 
-		CatanHex.prototype.getIsLand = new function(){
-			return this.isLand;
+		/**
+			Takes in the information about the vertexes and sets all of the.  Called by CatanHex.setInfo.
+
+			@method setVertexInfo
+			@param {JSON} vertexJSON - The information about the edges stored in a JSON.
+		*/
+		CatanHex.prototype.setVertexInfo = function(vertexJSON) {
+			for(var position in vertexJSON) {
+				var vertex = this.vertexes[position];
+				var vertexinfo = vertexJSON[position];
+				vertex.setWorth(vertexinfo.value.worth);
+				vertex.setOwnerID(vertexinfo.value.ownerID);
+			}
 		}
 
-		CatanHex.prototype.getRollNumber = new function(){
-			return this.getRollNumber;
+		/**
+			Takes in the information about the edges and sets all of them. Called by CatanHex.setInfo.
+
+			@method setEdgeInfo
+			@param {JSON} edgeJSON - The information about the edges stored in a JSON.
+		*/
+		CatanHex.prototype.setEdgeInfo = function(edgeJSON) {
+			for(var position in edgeJSON) {
+				var edge = this.edges[position];
+				var edgeinfo = edgeJSON[position];
+				edge.setOwnerID(edgeinfo.value.ownerID);
+			}
 		}
 
-        CatanHex.prototype.setLandType = new function(resourceType){
-			this.landType = resourceType;
-        }
+		/**
+			Sets the information about the port using the port info
 
-        CatanHex.prototype.setIsLand = new function(bool){
-        	this.isLand = bool;
-        }
+			@method setPortInfo
+			@param {JSON} portJSON - The JSON containing the info about the port
+		*/
+		CatanHex.prototype.setPortInfo = function(portJSON){
+			this.setIsPort(true);
+			this.setTradeRatio(portJSON.ratio);
+			this.setInputResource(portJSON.inputResource);
+			var validVertex1 = this.getVertex(portJSON.validVertex1.direction);
+			//console.log(this.getVertex(portJSON.validVertex1.direction));
+			this.setValidVertex1(validVertex1);
+			//console.log(validVertex1);
+			var validVertex2 = this.getVertex(portJSON.validVertex2.direction);
+			this.setValidVertex2(validVertex2);
+		}
 
-        CatanHex.prototype.setRollNumber = new function(number){
-			this.rollNumber = number;
-        }
+		/**
+			Determines if you can place a road on the edge.
+		
+			@method canPlaceRoad
+			@param {string} edgeDirection - The direction of the edge you want to check ["NW","N","NE","SE","S","SW"]
+			@return {bool} Whether you can place a road.
+		*/
+		CatanHex.prototype.canPlaceRoad = new function(edgeDirection){
+			//var edge = this.getEdge(edgeDirection);
+			//return !edge.isOccupied();
+		}
+
+		/**
+			Determines if you can place a city or a settlemtn on the vertex.
+			@method canPlaceCity
+			@param {string} vertexDirection - The direction of the vertex you want to check if you can place a road. ['W','NW','NE','E','SE','SW']
+			@return {bool} Whether you can place a city.
+		*/
+		CatanHex.prototype.canPlaceCity = new function(vertexDirection){
+			//vertex = this.getVertex(vertexDirection);
+			//return !vertex.isOccupied();
+		}
+		
         return CatanHex;
 
         
     }());
-
-	var CatanPort = (function CatanPort_Class(){
-		core.forceClassInherit(CatanPort, CatanHex);
-		core.defineProperty(CatanHex, "tradeRatio");
-		core.defineProperty(CatanHex, "inputResource");
-		core.defineProperty(CatanHex, "validVertex1");
-		core.defineProperty(CatanHex, "validVertex2");
-
-		function CatanPort(ratio, resource, direction1, direction2) {
-			this.tradeRatio = ratio;
-			this.inputResource = resource;
-		}
-
-		CatanPort.prototype.getTradeRatio = new function(){
-			return this.getTradeRatio;
-		}
-
-		CatanPort.prototype.getInputResource = new function(){
-			return this.inputResource;
-		}
-
-		CatanPort.prototype.getValidVertex1 = new function(){
-			return this.validVertex1;
-		}
-
-		CatanPort.prototype.getValidVertex2 = new function(){
-			return this.ValidVertex2;
-		}
-	}());
-    
 	return Map;
 
 }());
