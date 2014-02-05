@@ -86,8 +86,8 @@ catan.models.Player = (function playerNameSpace() {
     	@method addDevCard
     	@param {DevCard} DevCard The DevCard to be added to the player's list of dev cards
     	*/
-  		Player.prototype.addDevCard = function (DevCard) {
-
+  		Player.prototype.addDevCard = function (devCard) {
+			this.newDevCards[devCard] += 1;
   		}
 
  	 	/**
@@ -101,8 +101,54 @@ catan.models.Player = (function playerNameSpace() {
     		@method playDevCard
     		@param {DevCard} DevCard The DevCard to be played from the player's hand
     	*/
-  		Player.prototype.playDevCard = function (DevCard) {
+  		Player.prototype.playDevCard = function (devCard) {
+			this.oldDevCards[devCard] -= 1;
+  		}
 
+		/**
+			Query if player needs to discard
+			@method needsToDiscard
+			@return {bool} whether he needs to discard
+		*/
+  		Player.prototype.needsToDiscard = function(){
+			return this.getNumOfCards() > 7;
+  		}
+
+		/**
+			Query if player can play a certain devcard
+			@method canPlayDevCard
+			@param {string} devCard - the Dev card to play. "yearOfPlenty"
+			@return {bool} whether he can play a dev card
+		*/
+  		Player.prototype.canPlayDevCard = function(devCard){
+			return this.oldDevCards[devCard] > 0;
+  		}
+
+		/**
+			Query if player can offer a certain trade
+			@method canOfferTrade
+			@param {TradeOffer} tradeOffer - the tradeOffer to look at
+			@return {bool} whether he can offer a trade
+		*/
+  		Player.prototype.canOfferTrade = function(tradeOffer){
+  			var offer = tradeOffer.getOffer();
+			return this.hasResources(offer);
+  		}
+
+		/**
+			Query if player can accept a trade
+			@method canAcceptTrade
+			@param {TradeOffer} tradeOffer - the tradeOffer to look at
+			@return {bool} whether he needs to discard
+		*/
+  		Player.prototype.canAcceptTrade = function(tradeOffer){
+  			var offer = tradeOffer.getOffer();
+			for(var resource in offer) {			
+				if(offer[resource] < 0 && this.resources[resource] < (-1)*offer[resource]) {
+					return false;	
+				}
+			}
+			return true;
   		}
 
 		/**
@@ -125,3 +171,41 @@ catan.models.Player = (function playerNameSpace() {
 	return Player;
 }());
 
+
+/**
+	This module contains the tradeOffer
+
+	@module catan.models
+	@namespace models
+*/
+
+catan.models.TradeOffer = (function TradeOfferSpace() {
+
+		core.defineProperty(TradeOffer.prototype, "sender");
+		core.defineProperty(TradeOffer.prototype, "reciever");
+		core.defineProperty(TradeOffer.prototype, "offer");
+  		/**
+    		The tradeOffer class contains the information about trading
+
+    		@class tradeOffer
+   	 		@constructor
+    	*/
+		function TradeOffer(){
+		}
+
+		/**
+			Loads all of the information into a tradeOffer object from the JSON
+			@method setInfo
+			@param {JSON} tradeOfferJSON - The JSON containing the information to load
+		*/
+		TradeOffer.prototype.setInfo = function(tradeOfferJSON){
+			if(tradeOfferJSON != undefined)
+			{
+				this.setSender(tradeOfferJSON.sender);
+				this.setReceiver(tradeOfferJSON.receiver);
+				this.setOffer(tradeOfferJSON.offer);
+			}
+		}
+
+	return TradeOffer;
+}());
