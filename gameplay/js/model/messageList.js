@@ -1,7 +1,12 @@
-
-
 catan = catan || {};
 catan.models = catan.models || {};
+
+/**
+	This module contains the MessageList
+
+	@module	catan.models
+	@namespace models
+*/
 
 catan.models.MessageList = (function() {
 

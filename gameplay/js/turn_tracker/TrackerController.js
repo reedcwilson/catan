@@ -1,3 +1,4 @@
+//STUDENT-EDITABLE-BEGIN
 /**
 The namespace for the turn tracker
 

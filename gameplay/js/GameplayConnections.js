@@ -1,3 +1,4 @@
+//STUDENT-EDITABLE-BEGIN
 catan.client = (function Client_NameSpace(){
 
 	var ViewIniter = (function ViewIniter_Object(){
@@ -246,7 +247,6 @@ catan.client = (function Client_NameSpace(){
 			$(document).ready(function () {
 				returnValue.domLoaded();
 			});
-
 			return returnValue;
 		}
 
