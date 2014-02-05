@@ -106,7 +106,8 @@ catan.models.Map = (function mapNameSpace(){
      
     The hexgrid will be passed an instance of this class to use as a model, and will pull the constructor from that instance. 
     (The core.forceInherit sets the constructor, in case you are curious how that works)
-      
+		
+  /**    
     @constructor
     @param {hexgrid.HexLocation} location - the location of this hex. It's used to generate locations for the vertexes and edges.
     @extends hexgrid.BasicHex

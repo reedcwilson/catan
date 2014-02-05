@@ -124,6 +124,19 @@ function loadMap()
 				var hex = map.hexGrid.getHex(new catan.models.hexgrid.HexLocation(portJSON.location.x, portJSON.location.y));
 				hex.setPortInfo(portJSON);
 			}
+			console.log(JSON.stringify(data, null, 2));
+			var player = new catan.models.Player();
+			player.setInfo(data.players[0]);
+			var resourceList = new Array();
+			resourceList["brick"] = 0;
+			resourceList["ore"] = 0;
+			resourceList["sheep"] = 1;
+			resourceList["wheat"] = 1;
+			resourceList["wood"] = 0;
+			ok(player.hasResources(resourceList, "Has resources!"));
+			resourceList["wood"] = 5;
+			ok(!player.hasResources(resourceList, "Doesn't have resources!"));
+			console.log(player);
 			console.log(map);
 			ok(true,"Loaded the map!");
 		});
