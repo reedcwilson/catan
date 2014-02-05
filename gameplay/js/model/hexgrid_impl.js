@@ -5,7 +5,7 @@ catan.models = catan.models || {};
 /**
 	This module contains the map
 	
-	@module		catan.models
+	@module	catan.models
 	@namespace models
 */
 
@@ -13,23 +13,122 @@ catan.models.Map = (function mapNameSpace(){
     
     var hexgrid = catan.models.hexgrid;
     
-    var Map = (function Map_Class(){
-       
-		function Map(radius)
-		{
-			this.hexGrid = hexgrid.HexGrid.getRegular(radius, CatanHex);
-		}
-		return Map;
-		
-    }());
+    /**
+     * This represents the catan map
+     *
+     * @class Map
+     * @constructor
+     * @param {basicHex} hex the hex to be used as a template
+     * @param {hexLocation[]} numbers the map's numbers
+     * @param {port[]} ports the map's ports
+     * @param {number} radius the radius of the map
+     * @param {hexLocation} robber the location of the robber
+     */
+    var Map = (function Map_Class(baseHex, numbers, ports, radius, robber){
+	
+      this.hexgrid = hexgrid.HexGrid.getRegular(radius, baseHex)
+      this.setNumbers(numbers);
+      this.setPorts(ports);
+      this.setRadius(radius);
+      this.setRobber(robber);
+
+      this.prototype.setInfo = function(json) {
+      };
+
+      // I am going to assume that the 'canPlace' methods for the map will only
+      // need to worry about the map aspect of placing these objects and not
+      // about resources
+
+      /**
+       * Test to see if a road can be placed
+       *
+       * <pre>
+       *    PRE: it is the player's turn
+       *    PRE: a valid edge is given
+       *    POST: validity of placement is enforced
+       * </pre>
+       *
+       * @method canPlaceRoad
+       * @param {edge} edge the edge in question
+       * @return {boolean} returns true if road can be placed
+       */
+      this.prototype.canPlaceRoad = function(edge, id) {
+        // return !edge.isOccupied && 
+        return false;
+      };
+
+      /**
+       * Test to see if a settlement can be placed
+       *
+       * <pre>
+       *    PRE: it is the player's turn
+       *    PRE: a valid location is given
+       *    POST: validity of placement is enforced
+       * </pre>
+       *
+       * @method canPlaceSettlement
+       * @param {hexLocation} location the location in question
+       * @param {number} playerId the id of the player wishing to place
+       * @return {boolean} returns true if settlement can be placed
+       */
+      this.prototype.canPlaceSettlement = function(loc, id) {
+        return false;
+      };
+
+      /**
+       * Test to see if a city can be placed
+       *
+       * <pre>
+       *    PRE: it is the player's turn
+       *    PRE: a valid location is given
+       *    POST: validity of placement is enforced
+       * </pre>
+       *
+       * @method canPlaceCity
+       * @param {hexLocation} location the location in question
+       * @param {number} playerId the id of the player wishing to place
+       * @return {boolean} returns true if city can be placed
+       */
+      this.prototype.canPlaceCity = function(loc, id) {
+        return false;
+      };
+
+    });
 
     /**
-	This class represents an edge. It inherits from BaseContainer.
-    The data in this class (that you get from the JSON model) is independent of the hexgrid, except for the location.
+     * @property hexGrid
+     * @type hexGrid
+     */
+    core.defineProperty(Map.prototype, "hexGrid");
+    /**
+     * @property numbers
+     * @type hexLocation[]
+     */
+    core.defineProperty(Map.prototype, "numbers");
+    /**
+     * @property ports
+     * @type ports[]
+     */
+    core.defineProperty(Map.prototype, "ports");
+    /**
+     * @property radius
+     * @type number
+     */
+    core.defineProperty(Map.prototype, "radius");
+    /**
+     * @property robber
+     * @type hexLocation
+     */
+    core.defineProperty(Map.prototype, "robber");
+    
+
+    /**
+	This class represent an edge. It's a container.
+    The data on this class (that you get from the JSON model) is independent of the hexgrid, except for the location.
     Therefore, we leave it up to you to decide how to implement it.
-    It must however implement one function that the hexgrid looks for: 'isOccupied' - look at its documentation.
-    From the JSON, this object will have two properties: location, and ownerID.
-    Besides the 'isOccupied' method, you may add any other methods that you need.
+    It must however implement one function that the hexgrid looks for 'isOccupied' - look at its documentation.
+    From the JSON, the object will have 2 pieces of data: location, and ownerID.
+    Besides the 'isOccupied' method, any other methods you add will be for your personal use (probably one or two)
     
     @constructor
     @extends hexgrid.BaseContainer

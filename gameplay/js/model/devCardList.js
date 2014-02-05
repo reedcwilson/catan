@@ -26,7 +26,7 @@ catan.models.DevCardList = (function() {
     </pre>
 
     @method contains
-    @param{card} a valid Development Card
+    @param{card} card a valid Development Card
     @return {boolean} if the list contains the card
    */
   DevCardList.prototype.contains = function(card) { };
@@ -40,7 +40,7 @@ catan.models.DevCardList = (function() {
     </pre>
 
     @method getValueAtIndex
-    @param{number} a number less than size and greater than zero
+    @param{number} index a number less than size and greater than zero
     @return {DevCard} the card at the given index
    */
   DevCardList.prototype.getValueAtIndex = function(index) { };
@@ -54,7 +54,7 @@ catan.models.DevCardList = (function() {
     </pre>
 
     @method addCard
-    @param{DevCard} a valid Development Card
+    @param{DevCard} card a valid Development Card
     @return void
    */
   DevCardList.prototype.addCard = function(card) { };
@@ -68,7 +68,7 @@ catan.models.DevCardList = (function() {
     </pre>
 
     @method removeCard
-    @param{DevCard} a valid Development Card
+    @param{DevCard} card a valid Development Card
     @return void
    */
   DevCardList.prototype.removeCard = function(card) { };
