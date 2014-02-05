@@ -105,6 +105,21 @@ catan.models.Player = (function playerNameSpace() {
 
   		}
 
+		/**
+			Determines how many resource cards the player has in his hand.
+
+			@method getNumOfCards
+			@return {int} The number of cards in his hand.
+		*/
+  		Player.prototype.getNumOfCards = function () {
+			var numOfCards = 0;
+			for (var item in this.resources)
+			{
+				numOfCards += this.resources[item];
+			}
+			return numOfCards;
+  		}
+
 		return Player;
 	}());
 	return Player;

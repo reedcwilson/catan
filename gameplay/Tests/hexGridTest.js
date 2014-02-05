@@ -136,6 +136,7 @@ function loadMap()
 			ok(player.hasResources(resourceList, "Has resources!"));
 			resourceList["wood"] = 5;
 			ok(!player.hasResources(resourceList, "Doesn't have resources!"));
+			ok(player.getNumOfCards() == 3, "Has 3 Resource Cards");
 			console.log(player);
 			console.log(map);
 			ok(true,"Loaded the map!");
