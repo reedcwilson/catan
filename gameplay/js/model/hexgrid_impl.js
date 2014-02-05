@@ -19,6 +19,14 @@ catan.models.Map = (function mapNameSpace(){
 		{
 			this.hexGrid = hexgrid.HexGrid.getRegular(radius, CatanHex);
 		}
+
+		Map.prototype.setInfo = function(mapJSON){
+			//hexes.setInfo
+			//ports.setInfo
+			//robber.setInfo
+			//numbers.setInfo
+			
+		}
 		return Map;
 		
     }());
@@ -188,11 +196,11 @@ catan.models.Map = (function mapNameSpace(){
 			this.setIsPort(true);
 			this.setTradeRatio(portJSON.ratio);
 			this.setInputResource(portJSON.inputResource);
-			var validVertex1 = this.getVertex(portJSON.validVertex1.direction);
-			//console.log(this.getVertex(portJSON.validVertex1.direction));
+			var vertexDirection = catan.models.hexgrid.VertexDirection[portJSON.validVertex1.direction]
+			var validVertex1 = this.getVertex(vertexDirection);
 			this.setValidVertex1(validVertex1);
-			//console.log(validVertex1);
-			var validVertex2 = this.getVertex(portJSON.validVertex2.direction);
+			vertexDirection = catan.models.hexgrid.VertexDirection[portJSON.validVertex2.direction]
+			var validVertex2 = this.getVertex(vertexDirection);
 			this.setValidVertex2(validVertex2);
 		}
 
