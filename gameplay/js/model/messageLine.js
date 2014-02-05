@@ -5,7 +5,7 @@ catan.models = catan.models || {};
 	This module contains the MessageLine
 
 	@module catan.models
-	@namepsace models
+	@namespace models
 */
 
 catan.models.MessageLine = (function() {
