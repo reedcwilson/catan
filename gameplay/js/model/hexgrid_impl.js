@@ -18,82 +18,150 @@ catan.models.Map = (function mapNameSpace(){
      *
      * @class Map
      * @constructor
-     * @param {basicHex} hex the hex to be used as a template
-     * @param {hexLocation[]} numbers the map's numbers
-     * @param {port[]} ports the map's ports
      * @param {number} radius the radius of the map
-     * @param {hexLocation} robber the location of the robber
      */
-    var Map = (function Map_Class(baseHex, numbers, ports, radius, robber){
-	
-      this.hexgrid = hexgrid.HexGrid.getRegular(radius, baseHex)
-      this.setNumbers(numbers);
+    var Map = (function Map_Class(radius){
+      this.hexgrid = hexgrid.HexGrid.getRegular(radius, CatanHex);
+    });
+
+    /**
+     * Initializes all data for the map
+     *
+     * <pre>
+     *    PRE: json input is valid
+     *    POST: state of the map represents the model on the server
+     * </pre>
+     *
+     * @method setInfo
+     * @param {JSON} json the model
+     */
+    Map.prototype.setInfo = function(json) {
+
+      this.setRadius(json.radius);
+
+      // load hexes
+      for(var x in json.hexGrid.hexes) {
+        for(var y in json.hexGrid.hexes[x]) {
+          var hexJson = json.hexGrid.hexes[x][y];
+
+          var hexPiece = this.hexgrid.getHex(
+              new catan.models.hexgrid.HexLocation(
+                hexJson.location.x, hexJson.location.y));
+
+          hexPiece.setInfo(hexJson);
+        }
+        // TODO: initialize offsets -- whatever that means
+      }
+
+      // load ports
+      var ports = [];
+      for(var pos in json.ports){
+        portJson = json.ports[pos];
+
+        var hex = this.hexgrid.getHex(
+            new catan.models.hexgrid.HexLocation(
+              portJson.location.x, portJson.location.y));
+
+        hex.setPortInfo(portJson);
+        ports[pos] = hex;
+      }
       this.setPorts(ports);
-      this.setRadius(radius);
+
+      // load robber
+      var robberJson = json.robber;
+      var robber = new catan.models.hexgrid.HexLocation(
+          robberJson.x, robberJson.y);
+      var robberHex = this.hexgrid.getHex(robber);
+      if (robberHex) {
+        robberHex.setHasRobber(true);
+      }
       this.setRobber(robber);
 
-      this.prototype.setInfo = function(json) {
-      };
+      // load numbers
+      var numbers = [];
+      var i = 0;
+      for (var num in json.numbers) {
+        for (var pos in json.numbers[num]) {
+          var numJson = json.numbers[num][pos];
+          var loc = new catan.models.hexgrid.HexLocation(numJson.x, numJson.y);
+          var hexPiece = this.hexgrid.getHex(loc);
 
-      // I am going to assume that the 'canPlace' methods for the map will only
-      // need to worry about the map aspect of placing these objects and not
-      // about resources
 
-      /**
-       * Test to see if a road can be placed
-       *
-       * <pre>
-       *    PRE: it is the player's turn
-       *    PRE: a valid edge is given
-       *    POST: validity of placement is enforced
-       * </pre>
-       *
-       * @method canPlaceRoad
-       * @param {edge} edge the edge in question
-       * @return {boolean} returns true if road can be placed
-       */
-      this.prototype.canPlaceRoad = function(edge, id) {
-        // return !edge.isOccupied && 
-        return false;
-      };
+          if (hexPiece) {
+            hexPiece.setRollNumber(num);
+          }
+          numbers[num] = json.numbers[num]; 
+        }
+      }
+      this.setNumbers(numbers);
+    };
 
-      /**
-       * Test to see if a settlement can be placed
-       *
-       * <pre>
-       *    PRE: it is the player's turn
-       *    PRE: a valid location is given
-       *    POST: validity of placement is enforced
-       * </pre>
-       *
-       * @method canPlaceSettlement
-       * @param {hexLocation} location the location in question
-       * @param {number} playerId the id of the player wishing to place
-       * @return {boolean} returns true if settlement can be placed
-       */
-      this.prototype.canPlaceSettlement = function(loc, id) {
-        return false;
-      };
+    // I am going to assume that the 'canPlace' methods for the map will only
+    // need to worry about the map aspect of placing these objects and not
+    // about resources
 
-      /**
-       * Test to see if a city can be placed
-       *
-       * <pre>
-       *    PRE: it is the player's turn
-       *    PRE: a valid location is given
-       *    POST: validity of placement is enforced
-       * </pre>
-       *
-       * @method canPlaceCity
-       * @param {hexLocation} location the location in question
-       * @param {number} playerId the id of the player wishing to place
-       * @return {boolean} returns true if city can be placed
-       */
-      this.prototype.canPlaceCity = function(loc, id) {
-        return false;
-      };
+    /**
+     * Test to see if a road can be placed
+     *
+     * <pre>
+     *    PRE: it is the player's turn
+     *    PRE: a valid edge is given
+     *    POST: validity of placement is enforced
+     * </pre>
+     *
+     * @method canPlaceRoad
+     * @param {edge} edge the edge in question
+     * @return {boolean} returns true if road can be placed
+     */
+    Map.prototype.canPlaceRoad = function(edge, id) {
+      // check the four edges connected to current edge
+      // var group = edge.getEquivalenceGroup();
+      // for (var item in group) {
+        // var edges = this.hexgrid.getEdges(
+            // new catan.models.hexgrid.HexLocation(item.x, item.y));
 
-    });
+        // if (edges[e].isOccupied == true) {
+          return false;
+        // }
+      // }
+      // return true;
+    };
+
+    /**
+     * Test to see if a settlement can be placed
+     *
+     * <pre>
+     *    PRE: it is the player's turn
+     *    PRE: a valid location is given
+     *    POST: validity of placement is enforced
+     * </pre>
+     *
+     * @method canPlaceSettlement
+     * @param {hexLocation} location the location in question
+     * @param {number} playerId the id of the player wishing to place
+     * @return {boolean} returns true if settlement can be placed
+     */
+    Map.prototype.canPlaceSettlement = function(loc, id) {
+      return false;
+    };
+
+    /**
+     * Test to see if a city can be placed
+     *
+     * <pre>
+     *    PRE: it is the player's turn
+     *    PRE: a valid location is given
+     *    POST: validity of placement is enforced
+     * </pre>
+     *
+     * @method canPlaceCity
+     * @param {hexLocation} location the location in question
+     * @param {number} playerId the id of the player wishing to place
+     * @return {boolean} returns true if city can be placed
+     */
+    Map.prototype.canPlaceCity = function(loc, id) {
+      return false;
+    };
 
     /**
      * @property hexGrid
@@ -171,7 +239,6 @@ catan.models.Map = (function mapNameSpace(){
 	@class CatanVertex
 	*/
     var CatanVertex = (function CatanVertex_Class(){
-    
         core.forceClassInherit(CatanVertex, hexgrid.BaseContainer);
         core.defineProperty(CatanVertex.prototype, "worth");
         core.defineProperty(CatanVertex.prototype, "ownerID");
