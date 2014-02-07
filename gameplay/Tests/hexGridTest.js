@@ -1,6 +1,6 @@
 test("Test Basic Init", function() {
 	var map = new catan.models.Map(2);
-	var hexes = map.hexGrid.getHexes();
+	var hexes = map.hexgrid.getHexes();
 	for(var hex in hexes)
 	{
 		hex = hexes[hex];
@@ -48,7 +48,7 @@ test("Test Map", function() {
 	for(var x in model.map.hexGrid.hexes) {
 		for(var y in model.map.hexGrid.hexes[x]) {
 			hexJSON = model.map.hexGrid.hexes[x][y];
-			hexPiece = map.hexGrid.getHex(new catan.models.hexgrid.HexLocation(hexJSON.location.x, hexJSON.location.y));
+			hexPiece = map.hexgrid.getHex(new catan.models.hexgrid.HexLocation(hexJSON.location.x, hexJSON.location.y));
 			hexPiece.setInfo(hexJSON);
 			ok(hexPiece.getLandType() == hexJSON.landtype, "The land types are the same!");
 			ok(hexPiece.getIsLand() == hexJSON.isLand, "The isLand is the same");
@@ -57,7 +57,7 @@ test("Test Map", function() {
 	//Load Port Info
 	for(var position in model.map.ports){
 		portJSON = model.map.ports[position];
-		var hex = map.hexGrid.getHex(new catan.models.hexgrid.HexLocation(portJSON.location.x, portJSON.location.y));
+		var hex = map.hexgrid.getHex(new catan.models.hexgrid.HexLocation(portJSON.location.x, portJSON.location.y));
 		hex.setPortInfo(portJSON);
 		ok(hex.getIsPort(), "This Hex is a port");
 		ok(hex.getTradeRatio() == portJSON.ratio, "The ratio's are the same");
