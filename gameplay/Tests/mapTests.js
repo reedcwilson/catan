@@ -84,10 +84,10 @@ test( "Can Place Road", function() {
   // var loc = new catan.models.hexgrid.HexLocation(0,0);
 
   // canPlace = map.canPlaceRoad(
-    // new catan.models.hexgrid.EdgeLocation(loc, direction));
+    // new catan.models.Map.CatanEdge(loc, direction));
   // ok(canPlace == true, "you really can place a road there");
 
-  // set NE (0, 0) edge as occupied and test again
+  // // set NE (0, 0) edge as occupied and test again
   // map.hexgrid.getHex(
     // new catan.models.hexgrid.HexLocation(0,0)).edges[2].setOwnerID(1);
 
@@ -115,6 +115,10 @@ test( "Can Place City", function() {
 
   ok(true, "you really can place a city there");
 });
+
+asyncTest(" name", function() {
+  ok(stuf);
+};
 
 function getModel(callback) {
   $.get('/game/model', function(data, status, jqxhr) {

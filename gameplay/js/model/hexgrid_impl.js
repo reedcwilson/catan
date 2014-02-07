@@ -19,9 +19,9 @@ catan.models.Map = (function mapNameSpace(){
      * @constructor
      * @param {number} radius the radius of the map
      */
-    var Map = (function Map_Class(radius){
+    var Map = function (radius){
       this.hexgrid = hexgrid.HexGrid.getRegular(radius, CatanHex);
-    });
+    };
 
     /**
      * Initializes all data for the map
@@ -113,17 +113,10 @@ catan.models.Map = (function mapNameSpace(){
      * @return {boolean} returns true if road can be placed
      */
     Map.prototype.canPlaceRoad = function(edge, id) {
-      // check the four edges connected to current edge
-      // var group = edge.getEquivalenceGroup();
-      // for (var item in group) {
-        // var edges = this.hexgrid.getEdges(
-            // new catan.models.hexgrid.HexLocation(item.x, item.y));
-
-        // if (edges[e].isOccupied == true) {
-          return false;
-        // }
-      // }
-      // return true;
+      // TODO: get vertices to make sure that there is an associated road or at
+      // least a settlement
+      edge.isOccupied();
+      return false;
     };
 
     /**
@@ -141,6 +134,8 @@ catan.models.Map = (function mapNameSpace(){
      * @return {boolean} returns true if settlement can be placed
      */
     Map.prototype.canPlaceSettlement = function(loc, id) {
+      // TODO: use VertexLocation.getEquivalenceGroup to get all three hexes so you
+      // can make sure everything is two edges away
       return false;
     };
 
@@ -159,6 +154,8 @@ catan.models.Map = (function mapNameSpace(){
      * @return {boolean} returns true if city can be placed
      */
     Map.prototype.canPlaceCity = function(loc, id) {
+      // TODO: use VertexLocation.getEquivalenceGroup to get all three hexes so you
+      // can make sure everything is two edges away
       return false;
     };
 
