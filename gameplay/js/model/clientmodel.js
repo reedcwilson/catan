@@ -1,3 +1,4 @@
+//STUDENT-EDITABLE-BEGIN
 /**
 	This module contains the top-level client model class
 	
@@ -8,17 +9,30 @@
 var catan = catan || {};
 catan.models = catan.models || {};
 
-catan.models.ClientModel  = (function clientModelNameSpace()
-{
+catan.models.ClientModel  = (function clientModelNameSpace(){
     /** 
 	This the top-level client model class that contains the local player, map contents, etc.
 	
 	@class ClientModel
 	@constructor
-	@param {integer} clientID The id of the client player, extracted from the cookie
+	@param {integer} playerID The id of the local player, extracted from the cookie
     */
 	var ClientModel = (function ClientModelClass()
-	{   
+	{ 
+		core.defineProperty(ClientModel.prototype, "bank");
+		core.defineProperty(ClientModel.prototype, "chat");
+		core.defineProperty(ClientModel.prototype, "deck");
+		core.defineProperty(ClientModel.prototype, "biggestArmy");
+		core.defineProperty(ClientModel.prototype, "log");
+		core.defineProperty(ClientModel.prototype, "longestRoad");
+		core.defineProperty(ClientModel.prototype, "map");
+		core.defineProperty(ClientModel.prototype, "players");
+		core.defineProperty(ClientModel.prototype, "playerID");
+		core.defineProperty(ClientModel.prototype, "proxy");
+		core.defineProperty(ClientModel.prototype, "tradeOffer");
+		core.defineProperty(ClientModel.prototype, "turnTracker");
+		core.defineProperty(ClientModel.prototype, "winner");
+		
 		function ClientModel(playerID)
 		{
 			this.setPlayerID(playerID);
@@ -37,25 +51,54 @@ catan.models.ClientModel  = (function clientModelNameSpace()
 		ClientModel.prototype.initFromServer = function(success)
 		{
             // TODO: 1) fetch the game state from the server, 2) update the client model, 3) call the "success" function.
-			$.get('/games/model', function(model)
-			{	
-				this.update(model);
-			}			
-            success(model);
-		}		
+			
+			this.getProxy().getModel(this.init, success);            
+		}
 		
+		 /**
+         * This is called to initialize the ClientModel member variables.
+         * 
+         * @method init
+         * @param {JSON} model - The JSON model of the game.
+         * */
+		ClientModel.prototype.init = function (model) 
+		{  
+			this.setChat(new catan.models.MessageList());			
+			this.setLog(new catan.models.MessageList());
+			this.setMap(new catan.models.Map());
+			this.setTradeOffer(new catan.models.TradeOffer());
+			this.setTurnTracker(new catan.models.TurnTracker());
+						
+			var tempPlayers = [];			
+			for(var i = 0; i < model.players.length; i++)
+				tempPlayers[model.players[i].playerID] = new catan.models.Player();
+			this.setPlayers(tempPlayers);
+			
+			this.update(model);
+		};
+		
+		/**
+         * This is called to update all the model classes held by the ClientModel based on the new JSON model from the server.
+         * 
+         * @method update
+         * @param {JSON} model - The JSON model of the game.
+         * */
 		ClientModel.prototype.update = function (model) 
 		{               
 			this.setBank(model.bank);
 			this.setBiggestArmy(model.biggestArmy);
-			this.setChat(model.chat);
-			this.setLog(model.log);
+			this.getChat().setInfo(model.chat);
+			this.setDeck(model.deck);
+			this.getLog().setInfo(model.log);
 			this.setLongestRoad(model.longestRoad);
-			this.setMap(model.map);
-			this.setPlayers(model.players);
-			this.setTradeOffer(model.tradeOffer);
-			this.setTurnTracker(model.turnTracker);
+			this.getMap().setInfo(model.map);
+			this.getTradeOffer().setInfo(model.tradeOffer);
+			this.getTurnTracker().setInfo(model.turnTracker);
 			this.setWinner(model.winner);
+			
+			var players = this.getPlayers();
+			for(var i = 0; i < players.length; i++)
+				players[model.players[i].playerID].setInfo(model.players[i]);
 		};	
 
 		//Queries
@@ -77,71 +120,35 @@ catan.models.ClientModel  = (function clientModelNameSpace()
 		
 		ClientModel.prototype.needsToDiscard = function () 
 		{               
-			return this.getPlayer(this.getPlayerID).needsToDiscard();
+			return this.getPlayers[this.getPlayerID].needsToDiscard();
 		};
 		
 		ClientModel.prototype.hasResources = function (resourceList) 
 		{               
-			return this.getPlayer(this.getPlayerID).hasResources(resourceList);
+			return this.getPlayers[this.getPlayerID].hasResources(resourceList);
 		};
 		
 		ClientModel.prototype.canPlayDevCard = function (devCard) 
 		{               
-			return this.getPlayer(this.getPlayerID).canPlayDevCard(devCard);
+			return this.getPlayers[this.getPlayerID].canPlayDevCard(devCard);
 		};
 		
 		ClientModel.prototype.getResources = function () 
 		{               
-			return this.getPlayer(this.getPlayerID).getResources();
+			return this.getPlayers[this.getPlayerID].getResources();
 		};
 		
 		ClientModel.prototype.canOfferTrade = function () 
 		{               
-			
+			return this.getPlayers[this.getPlayerID].canOfferTrade(this.getTradeOffer());
 		};
 		
 		ClientModel.prototype.canAcceptTrade = function () 
 		{               
-			
+			return this.getPlayers[this.getPlayerID].canAcceptTrade(this.getTradeOffer());
 		};
 		
-		// Proxy Calls
-		
-		ClientModel.prototype.login = function (username, password) 
-		{               
-			var commandObject = new LoginUser(username, password);
-			this.getProxy().send(commandObject);
-		};
-		
-		ClientModel.prototype.register = function (username, password) 
-		{               
-			var commandObject = new RegisterUser(username, password);
-			this.getProxy().send(commandObject);
-		};
-		
-		ClientModel.prototype.changeLogLevel = function (data) 
-		{               
-			var commandObject = new ChangeLogLevel(data);
-			this.getProxy().send(commandObject);
-		};
-		
-		ClientModel.prototype.joinGame = function (data) 
-		{               
-			var commandObject = new JoinGame(data);
-			this.getProxy().send(commandObject);
-		};
-		
-		ClientModel.prototype.gameCommands = function (data) 
-		{               
-			var commandObject = new GameCommands(data);
-			this.getProxy().send(commandObject, this.update);
-		};
-		
-		ClientModel.prototype.addAI = function (data) 
-		{               
-			var commandObject = new AddAI(data);
-			this.getProxy().send(commandObject);
-		};
+		// Proxy Calls	
 		
 		ClientModel.prototype.playMonopoly = function (data) 
 		{               
@@ -163,7 +170,7 @@ catan.models.ClientModel  = (function clientModelNameSpace()
 		
 		ClientModel.prototype.rollNumber = function (data) 
 		{               
-			var commandObject = new RollNumber(data);
+			var commandObject = new RollNumber(type, url, data);
 			this.getProxy().send(commandObject, this.update);
 		};
 		
@@ -189,12 +196,6 @@ catan.models.ClientModel  = (function clientModelNameSpace()
 		{               
 			var commandObject = new PlayYearOfPlenty(data);
 			this.getProxy().send(commandObject, this.update);
-		};
-		
-		ClientModel.prototype.createGame = function (data) 
-		{               
-			var commandObject = new CreateGame(data);
-			this.getProxy().send(commandObject);
 		};
 		
 		ClientModel.prototype.robPlayer = function (data) 
@@ -249,143 +250,6 @@ catan.models.ClientModel  = (function clientModelNameSpace()
 		{               
 			var commandObject = new BuildRoad(data);
 			this.getProxy().send(commandObject, this.update);
-		};
-		
-		//Getters and Setters
-		
-		ClientModel.prototype.setBank = function (bank_in) 
-		{               
-			this.bank = new catan.models.ResourceList(bank_in);
-		};
-		
-		ClientModel.prototype.getBank = function() 
-		{               
-			return this.bank;
-		};
-		
-		ClientModel.prototype.setDeck = function (deck_in) 
-		{               
-			this.deck = new catan.models.DevCardList(deck_in);
-		};
-		
-		ClientModel.prototype.getDeck = function() 
-		{               
-			return this.deck;
-		};
-		
-		ClientModel.prototype.setBiggestArmy = function (biggestArmy_in) 
-		{               
-			this.biggestArmy = biggestArmy_in;
-		};
-		
-		ClientModel.prototype.getBiggestArmy = function() 
-		{               
-			return this.biggestArmy;
-		};
-
-		ClientModel.prototype.setChat = function (chat_in) 
-		{               
-			this.chat = new catan.models.MessageList(chat_in);
-		};
-		
-		ClientModel.prototype.getChat = function() 
-		{               
-			return this.chat;
-		};
-		
-		ClientModel.prototype.setLog = function (log_in) 
-		{               
-			this.log = new catan.models.MessageList(log_in);
-		};
-		
-		ClientModel.prototype.getLog = function() 
-		{               
-			return this.log;
-		};
-		
-		ClientModel.prototype.setLongestRoad = function (longestRoad_in) 
-		{               
-			this.longestRoad = longestRoad_in;
-		};
-		
-		ClientModel.prototype.getLongestRoad = function() 
-		{               
-			return this.longestRoad;
-		};
-		
-		ClientModel.prototype.setMap = function (map_in) 
-		{               
-			this.map = new catan.models.Map(map_in);
-		};
-		
-		ClientModel.prototype.getMap = function() 
-		{               
-			return this.map;
-		};
-		
-		ClientModel.prototype.setPlayers = function (players_in) 
-		{               
-			var tempPlayers = [];
-			
-			for(var i = 0; i < players_in.length; i++)
-				tempPlayers[]i = new catan.models.Player(players_in[i]);
-				
-			this.players = tempPlayers;
-		};
-		
-		ClientModel.prototype.getPlayer = function(index) 
-		{               
-			return this.players[index];
-		};
-		
-		ClientModel.prototype.setPlayerID = function (playerID_in) 
-		{               
-			this.playerID = playerID_in;
-		};
-		
-		ClientModel.prototype.getPlayerID = function() 
-		{               
-			return this.playerID;
-		};
-		
-		ClientModel.prototype.setProxy = function (proxy_in) 
-		{               
-			this.proxy = proxy_in;
-		};
-		
-		ClientModel.prototype.getProxy = function() 
-		{               
-			return this.proxy;
-		};
-		
-		ClientModel.prototype.setTradeOffer = function (tradeOffer_in) 
-		{               
-			this.tradeOffer = new catan.models.TradeOffer(tradeOffer_in);
-		};
-		
-		ClientModel.prototype.getTradeOffer = function() 
-		{               
-			return this.tradeOffer;
-		};
-		
-		ClientModel.prototype.setTurnTracker = function (turnTracker_in) 
-		{               
-			this.turnTracker = new catan.models.TurnTracker(turnTracker_in);
-		};
-		
-		ClientModel.prototype.getTurnTracker = function() 
-		{               
-			return this.turnTracker;
-		};
-		
-		ClientModel.prototype.setWinner = function (winner_in) 
-		{               
-			this.winner = winner_in;
-		};
-		
-		ClientModel.prototype.getWinner = function() 
-		{               
-			return this.winner;
 		};
         
 		return ClientModel;
