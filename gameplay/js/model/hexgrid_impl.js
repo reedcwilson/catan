@@ -2,6 +2,11 @@
 var catan = catan || {};
 catan.models = catan.models || {};
 
+var vdLookup = ["W","NW","NE","E","SE","SW"]
+var VertexDirection = core.numberEnumeration(vdLookup);
+var edLookup = ["NW","N","NE","SE","S","SW"]
+var EdgeDirection = core.numberEnumeration(edLookup);
+
 /**
 	This module contains the map
 	
@@ -338,6 +343,7 @@ catan.models.Map = (function mapNameSpace(){
 				var vertexinfo = vertexJSON[position];
 				vertex.setWorth(vertexinfo.value.worth);
 				vertex.setOwnerID(vertexinfo.value.ownerID);
+				vertex.setLocation(new catan.models.hexgrid.VertexLocation(this.getLocation(), edLookup[position]));
 			}
 		}
 
@@ -355,6 +361,7 @@ catan.models.Map = (function mapNameSpace(){
 				var edge = this.edges[position];
 				var edgeinfo = edgeJSON[position];
 				edge.setOwnerID(edgeinfo.value.ownerID);
+				edge.setLocation(new catan.models.hexgrid.EdgeLocation(this.getLocation(), edLookup[position]));
 			}
 		}
 
