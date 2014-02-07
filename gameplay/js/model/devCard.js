@@ -18,7 +18,7 @@ catan.models.DevCard = (function devCardNamespace() {
     @class DevCard
     @constructor
 
-    @param {cardType} the type of development card
+    @param {cardType} type the type of development card
     */
   function DevCard(type) { };
 

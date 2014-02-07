@@ -26,8 +26,8 @@ catan.models.MessageLine = (function() {
 
     @class MessageLine
     @constructor
-    @param {String} the message
-    @param {String} the source of the message
+    @param {String} message the message
+    @param {String} source the source of the message
     */
   function MessageLine(message, source) { };
 
