@@ -1,3 +1,4 @@
+//STUDENT-EDITABLE-BEGIN
 /**
     This is the namespace for discarding cards
     @module catan.discard

@@ -4,13 +4,17 @@ catan.models = catan.models || {};
 
 
 catan.models.Proxy = (function() {
+
 	/**
 		Interface to make calls to the server.
 
 		@class Proxy
 		@constructor
 	*/
-	function Proxy(){};
+	function Proxy(){
+      
+
+	};
 
 	/**
 		Login a player 
@@ -22,7 +26,21 @@ catan.models.Proxy = (function() {
 		@method login
 	*/
 	
-	 Proxy.prototype.login = function() {};
+	 Proxy.prototype.login = function(LoginUser) {
+
+
+      jQuery.post("/user/login", {username: LoginUser.username, password: LoginUser.password}, function(data){
+
+      	console.log("User Logged in" + JSON.stringify(data,null,"\t"));
+      	return data;
+
+      }).fail(function(data){
+      	console.log("User failed to login" + JSON.stringify(data,null,"\t"));
+      	return data;
+      })
+
+
+	 };
 
 	 /**
 		Register a player 
@@ -32,7 +50,21 @@ catan.models.Proxy = (function() {
 		</pre>
 		@method register
 	*/
-	 Proxy.prototype.register = function() {};
+	 Proxy.prototype.register = function(RegisterUser) {
+	 
+
+	 	 jQuery.post("/user/register", {username: RegisterUser.username, password: RegisterUser.password}, function(data){
+
+      	console.log("User Registered" + JSON.stringify(data,null,"\t"));
+      	return data;
+
+      }).fail(function(data){
+      	console.log("User failed to Register" + JSON.stringify(data,null,"\t"));
+      	return data;
+      })
+
+
+	 };
 	 	 /**
 		Get a list of all the available games
 		<pre>
@@ -42,7 +74,18 @@ catan.models.Proxy = (function() {
 		@method listGames
 		@return (JSON) all the games
 	*/
-	 Proxy.prototype.listGames = function() {};
+	 Proxy.prototype.listGames = function() {
+
+	 	jQuery.get("/games/list", function(data){
+
+      	console.log("Game List: " + JSON.stringify(data,null,"\t"));
+      	return data;
+
+      }).fail(function(data){
+      	console.log("Could not get Game List: " + JSON.stringify(data,null,"\t"));
+      	return data;
+      })
+	 };
 
 	  	 /**
 		Get a list of all the available games
@@ -52,7 +95,18 @@ catan.models.Proxy = (function() {
 		</pre>
 		@method createGame
 	*/
-	 Proxy.prototype.createGame = function() {};
+	 Proxy.prototype.createGame = function(CreateGame) {
+
+	 	jQuery.post("/games/create", {randomTiles: CreateGame.randomTiles, randomNumbers: CreateGame.randomNumbers,randomPorts: CreateGame.randomPorts, name: CreateGame.name}, function(data){
+
+      	console.log("Game Created: " + JSON.stringify(data,null,"\t"));
+      	return data;
+
+      }).fail(function(data){
+      	console.log("Failed to create game" + JSON.stringify(data,null,"\t"));
+      	return data;
+      })
+	 };
 
 	   	 /**
 		Join an availale game
@@ -63,7 +117,22 @@ catan.models.Proxy = (function() {
 		</pre>
 		@method joinGame
 	*/
-	 Proxy.prototype.joinGame = function(id, color) {};
+	 Proxy.prototype.joinGame = function(JoinGame) {
+	 	
+
+
+	 	 jQuery.post("/games/join", {color: JoinGame.color, id: JoinGame.id}, function(data){
+
+      	console.log("You Joined the game" + JSON.stringify(data,null,"\t"));
+      	return data;
+
+      }).fail(function(data){
+      	console.log("Failed to join the game" + JSON.stringify(data,null,"\t"));
+      	return data;
+      })
+
+
+	 };
 
 
 	   	 /**
@@ -75,7 +144,18 @@ catan.models.Proxy = (function() {
 		@method getGameModel
 		@return (JSON) the model of the game
 	*/
-	 Proxy.prototype.getGameModel = function() {};
+	 Proxy.prototype.getGameModel = function() {
+
+	 		jQuery.get("/game/model", function(data){
+
+      	console.log("Game Model: " + JSON.stringify(data,null,"\t"));
+      	return data;
+
+      }).fail(function(data){
+      	console.log("Could not get Game Model: " + JSON.stringify(data,null,"\t"));
+      	return data;
+      })
+	 };
 
 	   	 /**
 		Resets the current game 
@@ -85,7 +165,19 @@ catan.models.Proxy = (function() {
 		</pre>
 		@method resetGame
 	*/
-	 Proxy.prototype.resetGame = function() {};
+	 Proxy.prototype.resetGame = function() {
+
+	 		jQuery.post("/game/reset", function(data){
+
+      	console.log("Game Reset " + JSON.stringify(data,null,"\t"));
+      	return data;
+
+      }).fail(function(data){
+      	console.log("Failed to reset game " + JSON.stringify(data,null,"\t"));
+      	return data;
+      })
+
+	 };
 
 	   	 /**
 		Gets a set of commands for the current game 
@@ -96,7 +188,19 @@ moves have been taken
 		</pre>
 		@method getCommands
 	*/
-	 Proxy.prototype.getCommands = function() {};
+	 Proxy.prototype.getCommands = function() {
+
+
+	 		jQuery.get("/game/commands", function(data){
+
+      	console.log("Got game commands: " + JSON.stringify(data,null,"\t"));
+      	return data;
+
+      }).fail(function(data){
+      	console.log("Could not get game commands: " + JSON.stringify(data,null,"\t"));
+      	return data;
+      })
+	 };
 	  	 /**
 		Posts a list of commands to the server. A command is any valid JSON for any valid /moves/*
 method. 
@@ -107,7 +211,18 @@ method. 
 		</pre>
 		@method sendCommand
 	*/
-	 Proxy.prototype.sendCommand = function() {};
+	 Proxy.prototype.sendCommand = function(SendCommand) {
+
+	 		jQuery.post("/game/commands", SendCommand,  function(data){
+
+      	console.log("Game commands updated: " + JSON.stringify(data,null,"\t"));
+      	return data;
+
+      }).fail(function(data){
+      	console.log("Could not update game commands: " + JSON.stringify(data,null,"\t"));
+      	return data;
+      })
+	 };
 	 	 /**
 		Adds an AI player to the game
 		<pre>
@@ -119,7 +234,18 @@ method. 
 		@method addAI
 		@param name of the AI player
 	*/
-	 Proxy.prototype.addAI = function(name) {};
+	 Proxy.prototype.addAI = function(AddAI) {
+	jQuery.post("/game/addAI", {name:AddAI.AiType},  function(data){
+
+      	console.log("Added AI: " + JSON.stringify(data,null,"\t"));
+      	return data;
+
+      }).fail(function(data){
+      	console.log("Could not add AI: " + JSON.stringify(data,null,"\t"));
+      	return data;
+      })
+
+	 };
 	 	 /**
 		Lists all the AI players of the current game
 		<pre>
@@ -128,7 +254,18 @@ method. 
 		</pre>
 		@method listAI
 	*/
-	 Proxy.prototype.listAI = function(name) {};
+	 Proxy.prototype.listAI = function() {
+	jQuery.get("/game/listAI", function(data){
+
+      	console.log("AI List: " + JSON.stringify(data,null,"\t"));
+      	return data;
+
+      }).fail(function(data){
+      	console.log("Could not get AI List: " + JSON.stringify(data,null,"\t"));
+      	return data;
+      })
+
+	 };
 	 	 /**
 		Changes the log level of the program
 		<pre>
@@ -138,7 +275,20 @@ method. 
 		</pre>
 		@method changeLogLevel
 	*/
-     Proxy.prototype.changeLogLevel = function() {};
+     Proxy.prototype.changeLogLevel = function(ChangeLogLevel) {
+
+
+     	jQuery.post("/util/changeLogLevel", {logLevel:ChangeLogLevel.logLevel},  function(data){
+
+      	console.log("Changed Log level: " + JSON.stringify(data,null,"\t"));
+      	return data;
+
+      }).fail(function(data){
+      	console.log("Could not change log level: " + JSON.stringify(data,null,"\t"));
+      	return data;
+      })
+
+     };
      /**
 		Sends a chat message
 		<pre>
@@ -149,7 +299,18 @@ method. 
 		@method sendChat
 		@return Return's the 'Client Model' JSON (identical to game/model)
 	*/
-      Proxy.prototype.sendChat = function() {};
+      Proxy.prototype.sendChat = function(SendChat) {
+
+      	jQuery.post("/moves/sendChat", SendChat,  function(data){
+
+      	console.log("Chat Sent: " + JSON.stringify(data,null,"\t"));
+      	return data;
+
+      }).fail(function(data){
+      	console.log("Could not send chat: " + JSON.stringify(data,null,"\t"));
+      	return data;
+      })
+      };
       /**
 		Used to roll a number at the beginning of your turn
 		<pre>
@@ -159,7 +320,20 @@ method. 
 		</pre>
 		@method rollNumber
 	*/
-       Proxy.prototype.rollNumber = function() {};
+       Proxy.prototype.rollNumber = function(RollNumber) {
+
+      
+       	jQuery.post("/moves/rollNumber", RollNumber,  function(data){
+
+      	console.log("Roll Number: " + JSON.stringify(data,null,"\t"));
+      	return data;
+
+      }).fail(function(data){
+      	console.log("Could not roll number: " + JSON.stringify(data,null,"\t"));
+      	return data;
+      })
+
+       };
          /**
 		Used to finish a players turn
 		<pre>
@@ -170,7 +344,17 @@ method. 
 		@method finishTurn
 		@return Return's the 'Client Model' JSON (identical to game/model)
 	*/
-        Proxy.prototype.finishTurn = function() {};
+        Proxy.prototype.finishTurn = function(FinishTurn) {
+        	 	jQuery.post("/moves/finishTurn", FinishTurn,  function(data){
+
+      	console.log("Finish Turn: " + JSON.stringify(data,null,"\t"));
+      	return data;
+
+      }).fail(function(data){
+      	console.log("Could not finish turn: " + JSON.stringify(data,null,"\t"));
+      	return data;
+      })
+        };
           /**
 		Buys a development card for yourself.
 		<pre>
@@ -181,7 +365,18 @@ method. 
 		</pre>
 		@method buyDevCard
 	*/
-         Proxy.prototype.buyDevCard = function() {};
+         Proxy.prototype.buyDevCard = function(BuyDevCard) {
+
+          	jQuery.post("/moves/buyDevCard", BuyDevCard,  function(data){
+
+      	console.log("Bought Dev Card: " + JSON.stringify(data,null,"\t"));
+      	return data;
+
+      }).fail(function(data){
+      	console.log("Could not buy Dev card: " + JSON.stringify(data,null,"\t"));
+      	return data;
+      })
+         };
               /**
 		Plays a 'Year of Plenty' card from your hand to gain the two specified resources
 		<pre>
@@ -192,7 +387,17 @@ method. 
 		</pre>
 		@method playYearPlenty
 	*/
-          Proxy.prototype.playYearPlenty = function() {};
+          Proxy.prototype.playYearPlenty = function(PlayYearOfPlenty) {
+          	 	jQuery.post("/moves/Year_of_Plenty", PlayYearOfPlenty,  function(data){
+
+      	console.log("Played year of plenty: " + JSON.stringify(data,null,"\t"));
+      	return data;
+
+      }).fail(function(data){
+      	console.log("Could not play year of plenty: " + JSON.stringify(data,null,"\t"));
+      	return data;
+      })
+          };
                   /**
 	Plays a 'Road Building' card from your hand to build at the two spots specified
 		<pre>
@@ -203,7 +408,17 @@ method. 
 		</pre>
 		@method playRoadBuilding
 	*/
-           Proxy.prototype.playRoadBuilding = function() {};
+           Proxy.prototype.playRoadBuilding = function(PlayRoadBuilding) {
+            	jQuery.post("/moves/Road_Building", PlayRoadBuilding,  function(data){
+
+      	console.log("Played road building: " + JSON.stringify(data,null,"\t"));
+      	return data;
+
+      }).fail(function(data){
+      	console.log("Could not play road building: " + JSON.stringify(data,null,"\t"));
+      	return data;
+      })
+           };
                   /**
 	Plays a 'Soldier' from your hand, selecting the new robber position and player to rob
 		<pre>
@@ -214,7 +429,18 @@ method. 
 		</pre>
 		@method playSoldier
 	*/
-	 Proxy.prototype.playSoldier = function() {};
+	 Proxy.prototype.playSoldier = function(PlaySoldier) {
+
+	  	jQuery.post("/moves/Soldier", PlaySoldier,  function(data){
+
+      	console.log("Soldier Played: " + JSON.stringify(data,null,"\t"));
+      	return data;
+
+      }).fail(function(data){
+      	console.log("Could not play soldier: " + JSON.stringify(data,null,"\t"));
+      	return data;
+      })
+	 };
 	  /**
 	Plays a 'Monopoly' card from you hand to monopolize the requested resource.
 		<pre>
@@ -225,7 +451,18 @@ method. 
 		</pre>
 		@method playMonopoly
 	*/
-            Proxy.prototype.playMonopoly = function() {};
+            Proxy.prototype.playMonopoly = function(PlayMonopoly) {
+             	jQuery.post("/moves/Monopoly", PlayMonopoly,  function(data){
+
+      	console.log("Monopoly played: " + JSON.stringify(data,null,"\t"));
+      	return data;
+
+      }).fail(function(data){
+      	console.log("Could not play monopoly: " + JSON.stringify(data,null,"\t"));
+      	return data;
+      })
+
+            };
              /**
 	Plays a 'Monument' card from your hand to give you a point
 		<pre>
@@ -236,7 +473,19 @@ method. 
 		</pre>
 		@method playMonument
 	*/
-             Proxy.prototype.playMonument = function() {};
+             Proxy.prototype.playMonument = function(PlayMonument) {
+
+              	jQuery.post("/moves/Monument", PlayMonument,  function(data){
+
+      	console.log("Played Monument: " + JSON.stringify(data,null,"\t"));
+      	return data;
+
+      }).fail(function(data){
+      	console.log("Could not play Monument: " + JSON.stringify(data,null,"\t"));
+      	return data;
+      })
+
+             };
                   /**
 	Builds a road for the specified player at the specified spot. Set true to free if it's during the setup
 		<pre>
@@ -247,7 +496,18 @@ method. 
 		</pre>
 		@method buildRoad
 	*/
-              Proxy.prototype.buildRoad = function() {};
+              Proxy.prototype.buildRoad = function(BuildRoad) {
+
+               	jQuery.post("/moves/buildRoad", BuildRoad,  function(data){
+
+      	console.log("Road Built: " + JSON.stringify(data,null,"\t"));
+      	return data;
+
+      }).fail(function(data){
+      	console.log("Could not build road: " + JSON.stringify(data,null,"\t"));
+      	return data;
+      })
+              };
                   /**
 	Builds a settlement for the specified player at the specified spot. Set true to free if it's during the setup
 		<pre>
@@ -258,7 +518,17 @@ method. 
 		</pre>
 		@method buildSettlement
 	*/
-               Proxy.prototype.buildSettlement = function() {};
+               Proxy.prototype.buildSettlement = function(BuildSettlement) {
+             	jQuery.post("/moves/buildSettlement", BuildSettlement,  function(data){
+
+      	console.log("Settlement built: " + JSON.stringify(data,null,"\t"));
+      	return data;
+
+      }).fail(function(data){
+      	console.log("Could not build settlement: " + JSON.stringify(data,null,"\t"));
+      	return data;
+      })
+               };
                       /**
 	Builds a city for the specified player at the specified spot. Set true to free if it's during the setup.
 		<pre>
@@ -269,7 +539,18 @@ method. 
 		</pre>
 		@method buildCity
 	*/
-                Proxy.prototype.buildCity = function() {};
+                Proxy.prototype.buildCity = function(BuildCity) {
+
+           	jQuery.post("/moves/buildCity", BuildCity,  function(data){
+
+      	console.log("City BUilt: " + JSON.stringify(data,null,"\t"));
+      	return data;
+
+      }).fail(function(data){
+      	console.log("Could not build city: " + JSON.stringify(data,null,"\t"));
+      	return data;
+      })
+                };
                             /**
 		Offers a trade to another player
 		<pre>
@@ -279,7 +560,18 @@ method. 
 		</pre>
 		@method offerTrade
 	*/
-                 Proxy.prototype.offerTrade = function() {};
+                 Proxy.prototype.offerTrade = function(OfferTrade) {
+
+          	jQuery.post("/moves/offerTrade", OfferTrade,  function(data){
+
+      	console.log("Trade Offered: " + JSON.stringify(data,null,"\t"));
+      	return data;
+
+      }).fail(function(data){
+      	console.log("Could not offer trade " + JSON.stringify(data,null,"\t"));
+      	return data;
+      })
+                 };
                            /**
 		Accept or reject a trade offered to you
 		<pre>
@@ -289,7 +581,18 @@ method. 
 		</pre>
 		@method acceptTrade
 	*/
-                  Proxy.prototype.acceptTrade = function() {};
+                  Proxy.prototype.acceptTrade = function(AcceptTrade) {
+
+          	jQuery.post("/moves/acceptTrade", AcceptTrade,  function(data){
+
+      	console.log("Trade Accepted: " + JSON.stringify(data,null,"\t"));
+      	return data;
+
+      }).fail(function(data){
+      	console.log("could not accept trade: " + JSON.stringify(data,null,"\t"));
+      	return data;
+      })
+                  };
                                /**
 		Discards selected cards because of a 7 rolled
 		<pre>
@@ -299,7 +602,17 @@ method. 
 		</pre>
 		@method discardCards
 	*/
-                   Proxy.prototype.discardCards = function() {};
+                   Proxy.prototype.discardCards = function(DiscardCards) {
+              	jQuery.post("/moves/discardCards", DiscardCards,  function(data){
+
+      	console.log("Cards discarded " + JSON.stringify(data,null,"\t"));
+      	return data;
+
+      }).fail(function(data){
+      	console.log("Could not discardCards: " + JSON.stringify(data,null,"\t"));
+      	return data;
+      })
+                   };
 
 
      return Proxy;

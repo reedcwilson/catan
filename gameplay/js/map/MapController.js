@@ -1,3 +1,4 @@
+//STUDENT-EDITABLE-BEGIN
 /**
 	This this contains interfaces used by the map and robber views
 	@module catan.map

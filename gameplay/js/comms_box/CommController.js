@@ -1,3 +1,4 @@
+//STUDENT-EDITABLE-BEGIN
 /**
     This is the namespace for the communication classes (log and chat)
     @module catan.comm

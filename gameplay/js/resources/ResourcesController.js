@@ -1,3 +1,4 @@
+//STUDENT-EDITABLE-BEGIN
 var catan = catan || {};
 catan.resources = catan.resources || {};
 

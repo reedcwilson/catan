@@ -1,3 +1,4 @@
+// STUDENT-EDITABLE-BEGIN
 /**
     This is the namespace to hold the base classes
     @module catan.misc

@@ -52,7 +52,7 @@ catan.models.ClientModel  = (function clientModelNameSpace(){
 		{
             // TODO: 1) fetch the game state from the server, 2) update the client model, 3) call the "success" function.
 			
-			this.getProxy().getModel(this.init, success);            
+			this.getProxy().getModel(this.init, success);
 		}
 		
 		 /**
@@ -74,7 +74,7 @@ catan.models.ClientModel  = (function clientModelNameSpace(){
 				tempPlayers[model.players[i].playerID] = new catan.models.Player();
 			this.setPlayers(tempPlayers);
 			
-			this.update(model);
+			this.update(model);			
 		};
 		
 		/**
@@ -150,107 +150,10 @@ catan.models.ClientModel  = (function clientModelNameSpace(){
 		
 		// Proxy Calls	
 		
-		ClientModel.prototype.playMonopoly = function (data) 
-		{               
-			var commandObject = new PlayMonopoly(data);
-			this.getProxy().send(commandObject, this.update);
-		};
-		
-		ClientModel.prototype.finishTurn = function (data) 
-		{               
-			var commandObject = new FinishTurn(data);
-			this.getProxy().send(commandObject, this.update);
-		};
-		
-		ClientModel.prototype.sendChat = function (data) 
-		{               
-			var commandObject = new SendChat(data);
-			this.getProxy().send(commandObject, this.update);
-		};
-		
-		ClientModel.prototype.rollNumber = function (data) 
-		{               
-			var commandObject = new RollNumber(type, url, data);
-			this.getProxy().send(commandObject, this.update);
-		};
-		
-		ClientModel.prototype.playMonument = function (data) 
-		{               
-			var commandObject = new PlayMonument(data);
-			this.getProxy().send(commandObject, this.update);
-		};
-		
-		ClientModel.prototype.buyDevCard = function (data) 
-		{               
-			var commandObject = new BuyDevCard(data);
-			this.getProxy().send(commandObject, this.update);
-		};
-		
-		ClientModel.prototype.acceptTrade = function (data) 
-		{               
-			var commandObject = new AcceptTrade(data);
-			this.getProxy().send(commandObject, this.update);
-		};
-		
-		ClientModel.prototype.playYearOfPlenty = function (data) 
-		{               
-			var commandObject = new PlayYearOfPlenty(data);
-			this.getProxy().send(commandObject, this.update);
-		};
-		
-		ClientModel.prototype.robPlayer = function (data) 
-		{               
-			var commandObject = new RobPlayer(data);
-			this.getProxy().send(commandObject, this.update);
-		};
-		
-		ClientModel.prototype.maritimeTrade = function (data) 
-		{               
-			var commandObject = new MaritimeTrade(data);
-			this.getProxy().send(commandObject, this.update);
-		};
-		
-		ClientModel.prototype.playSoldier = function (data) 
-		{               
-			var commandObject = new playSoldier(data);
-			this.getProxy().send(commandObject, this.update);
-		};
-		
-		ClientModel.prototype.buildSettlement = function (data) 
-		{               
-			var commandObject = new buildSettlement(data);
-			this.getProxy().send(commandObject, this.update);
-		};
-		
-		ClientModel.prototype.playRoadBuilding = function (data) 
-		{               
-			var commandObject = new playRoadBuilding(data);
-			this.getProxy().send(commandObject, this.update);
-		};
-		
-		ClientModel.prototype.discardCards = function (data) 
-		{               
-			var commandObject = new DiscardCards(data);
-			this.getProxy().send(commandObject, this.update);
-		};
-		
-		ClientModel.prototype.buildCity = function (data) 
-		{               
-			var commandObject = new BuildCity(data);
-			this.getProxy().send(commandObject, this.update);
-		};
-		
-		ClientModel.prototype.offerTrade = function (data) 
-		{               
-			var commandObject = new OfferTrade(data);
-			this.getProxy().send(commandObject, this.update);
-		};
-		
-		ClientModel.prototype.buildRoad = function (data) 
-		{               
-			var commandObject = new BuildRoad(data);
-			this.getProxy().send(commandObject, this.update);
-		};
+		ClientModel.prototype.sendMove = function (data) 
+		{    
+			this.getProxy().send(new CommandObject(data), this.update);
+		};	
         
 		return ClientModel;
 	}());	
