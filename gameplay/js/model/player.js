@@ -45,6 +45,10 @@ catan.models.Player = (function playerNameSpace() {
 
 		/**
 			Loads all of the information into a player object from the JSON
+			<pre>
+				PRE: playerJSON is a properlly formatted JSON with only the player info
+				POST: All JSON attributes are stored in corresponding properties.
+			</pre>
 			@method setInfo
 			@param {JSON} playerJSON - The JSON containing the information to load
 		*/
@@ -101,12 +105,19 @@ catan.models.Player = (function playerNameSpace() {
     		@method playDevCard
     		@param {DevCard} DevCard The DevCard to be played from the player's hand
     	*/
+    	//TODO: Finish
   		Player.prototype.playDevCard = function (devCard) {
 			this.oldDevCards[devCard] -= 1;
+			//devCard.play();
   		}
 
 		/**
 			Query if player needs to discard
+
+			<pre>
+				PRE: The player is defined
+				POST: None
+			</pre>
 			@method needsToDiscard
 			@return {bool} whether he needs to discard
 		*/
@@ -116,6 +127,12 @@ catan.models.Player = (function playerNameSpace() {
 
 		/**
 			Query if player can play a certain devcard
+
+			<pre>
+				PRE: The devCards Lists are defined
+				PRE: devCard is a proper devCard string
+				POST: None
+			</pre>
 			@method canPlayDevCard
 			@param {string} devCard - the Dev card to play. "yearOfPlenty"
 			@return {bool} whether he can play a dev card
@@ -126,6 +143,12 @@ catan.models.Player = (function playerNameSpace() {
 
 		/**
 			Query if player can offer a certain trade
+
+			<pre>
+				PRE: tradeOffer is a valid tradeOffer class
+				PRE: resources are defiend
+				POST: None
+			</pre>
 			@method canOfferTrade
 			@param {TradeOffer} tradeOffer - the tradeOffer to look at
 			@return {bool} whether he can offer a trade
@@ -137,6 +160,12 @@ catan.models.Player = (function playerNameSpace() {
 
 		/**
 			Query if player can accept a trade
+
+			<pre>
+				PRE: tradeOffer is a valid tradeOffer class
+				PRE: resources are defiend
+				POST: None
+			</pre>
 			@method canAcceptTrade
 			@param {TradeOffer} tradeOffer - the tradeOffer to look at
 			@return {bool} whether he needs to discard
@@ -154,6 +183,10 @@ catan.models.Player = (function playerNameSpace() {
 		/**
 			Determines how many resource cards the player has in his hand.
 
+			<pre>
+				PRE: resources are defiend
+				POST: None
+			</pre>
 			@method getNumOfCards
 			@return {int} The number of cards in his hand.
 		*/
@@ -195,6 +228,12 @@ catan.models.TradeOffer = (function TradeOfferSpace() {
 
 		/**
 			Loads all of the information into a tradeOffer object from the JSON
+			<pre>
+				PRE: tradeOfferJSON is a valid JSON format with the correct info
+				POST: this.sender = JSON.sender
+				POST: this.reciever = JSON.reciever
+				POST: this.offer = JSON.offer
+			</pre>
 			@method setInfo
 			@param {JSON} tradeOfferJSON - The JSON containing the information to load
 		*/

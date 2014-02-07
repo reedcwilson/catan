@@ -54,7 +54,10 @@ catan.models.Map = (function mapNameSpace(){
         
 		/**
 			Returns whether the edge is Occupied
-
+			<pre>
+				PRE: ownerID exsists
+				POST: None
+			</pre>
 			@method isOccupied
 			@return {bool} If it is occupied or not
 		*/
@@ -93,7 +96,10 @@ catan.models.Map = (function mapNameSpace(){
 
 		/**
 			Returns whether the vertex is Occupied
-
+			<pre>
+				PRE: ownerID exsists
+				POST: None
+			</pre>
 			@method isOccupied
 			@return {bool} If it is occupied or not
 		*/
@@ -143,7 +149,10 @@ catan.models.Map = (function mapNameSpace(){
 
 		/**
 			Sets the info on the hex using a hexJSON
-
+			<pre>
+				PRE: hexJSON is properlly formatted and contains all of the info about the hex.
+				POST: The information is all stored inside this hex object.
+			</pre>
 			@method setInfo
 			@param {JSON} hexJSON - The hexJSON to load the info from.
 		*/
@@ -159,7 +168,10 @@ catan.models.Map = (function mapNameSpace(){
 
 		/**
 			Takes in the information about the vertexes and sets all of the.  Called by CatanHex.setInfo.
-
+			<pre>
+				PRE: vertexJSON is properlly formatted and contains all of the vertexes for the hex
+				POST: All of the vertexes info is stored with the hex
+			</pre>
 			@method setVertexInfo
 			@param {JSON} vertexJSON - The information about the edges stored in a JSON.
 		*/
@@ -174,7 +186,10 @@ catan.models.Map = (function mapNameSpace(){
 
 		/**
 			Takes in the information about the edges and sets all of them. Called by CatanHex.setInfo.
-
+			<pre>
+				PRE: edgeJSON is properlly formatted and contains all of the edges for the hex
+				POST: All of the edges have the proper info from the JSON
+			</pre>
 			@method setEdgeInfo
 			@param {JSON} edgeJSON - The information about the edges stored in a JSON.
 		*/
@@ -188,7 +203,10 @@ catan.models.Map = (function mapNameSpace(){
 
 		/**
 			Sets the information about the port using the port info
-
+			<pre>
+				PRE: portJSON is properlly formatted and contains only the port info.
+				POST: All values are taken from the portJSON and stored locally
+			</pre>
 			@method setPortInfo
 			@param {JSON} portJSON - The JSON containing the info about the port
 		*/
@@ -204,29 +222,6 @@ catan.models.Map = (function mapNameSpace(){
 			this.setValidVertex2(validVertex2);
 		}
 
-		/**
-			Determines if you can place a road on the edge.
-		
-			@method canPlaceRoad
-			@param {string} edgeDirection - The direction of the edge you want to check ["NW","N","NE","SE","S","SW"]
-			@return {bool} Whether you can place a road.
-		*/
-		CatanHex.prototype.canPlaceRoad = new function(edgeDirection){
-			//var edge = this.getEdge(edgeDirection);
-			//return !edge.isOccupied();
-		}
-
-		/**
-			Determines if you can place a city or a settlemtn on the vertex.
-			@method canPlaceCity
-			@param {string} vertexDirection - The direction of the vertex you want to check if you can place a road. ['W','NW','NE','E','SE','SW']
-			@return {bool} Whether you can place a city.
-		*/
-		CatanHex.prototype.canPlaceCity = new function(vertexDirection){
-			//vertex = this.getVertex(vertexDirection);
-			//return !vertex.isOccupied();
-		}
-		
         return CatanHex;
 
         
