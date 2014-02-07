@@ -50,6 +50,10 @@ catan.models.Player = (function playerNameSpace() {
 
 		/**
 			Loads all of the information into a player object from the JSON
+			<pre>
+				PRE: playerJSON is a properlly formatted JSON with only the player info
+				POST: All JSON attributes are stored in corresponding properties.
+			</pre>
 			@method setInfo
 			@param {JSON} playerJSON - The JSON containing the information to load
 		*/
@@ -91,28 +95,86 @@ catan.models.Player = (function playerNameSpace() {
     	@method addDevCard
     	@param {DevCard} DevCard The DevCard to be added to the player's list of dev cards
     	*/
-  		Player.prototype.addDevCard = function (DevCard) {
-
+  		Player.prototype.addDevCard = function (devCard) {
+			this.newDevCards[devCard] += 1;
   		}
 
- 	 	/**
-    		Play's the DevCard from the player's hand.
+		/**
+			Query if player needs to discard
 
-    		<pre>
-    			PRE: The player has the said DevCard
-    			POST: The DevCard moves to the played pile
-    			POST: The dev card action took place
-    		</pre>
-    		@method playDevCard
-    		@param {DevCard} DevCard The DevCard to be played from the player's hand
-    	*/
-  		Player.prototype.playDevCard = function (DevCard) {
+			<pre>
+				PRE: The player is defined
+				POST: None
+			</pre>
+			@method needsToDiscard
+			@return {bool} whether he needs to discard
+		*/
+  		Player.prototype.needsToDiscard = function(){
+			return this.getNumOfCards() > 7;
+  		}
 
+		/**
+			Query if player can play a certain devcard
+
+			<pre>
+				PRE: The devCards Lists are defined
+				PRE: devCard is a proper devCard string
+				POST: None
+			</pre>
+			@method canPlayDevCard
+			@param {string} devCard - the Dev card to play. "yearOfPlenty"
+			@return {bool} whether he can play a dev card
+		*/
+  		Player.prototype.canPlayDevCard = function(devCard){
+			return this.oldDevCards[devCard] > 0;
+  		}
+
+		/**
+			Query if player can offer a certain trade
+
+			<pre>
+				PRE: tradeOffer is a valid tradeOffer class
+				PRE: resources are defiend
+				POST: None
+			</pre>
+			@method canOfferTrade
+			@param {TradeOffer} tradeOffer - the tradeOffer to look at
+			@return {bool} whether he can offer a trade
+		*/
+  		Player.prototype.canOfferTrade = function(tradeOffer){
+  			var offer = tradeOffer.getOffer();
+			return this.hasResources(offer);
+  		}
+
+		/**
+			Query if player can accept a trade
+
+			<pre>
+				PRE: tradeOffer is a valid tradeOffer class
+				PRE: resources are defiend
+				POST: None
+			</pre>
+			@method canAcceptTrade
+			@param {TradeOffer} tradeOffer - the tradeOffer to look at
+			@return {bool} whether he needs to discard
+		*/
+  		Player.prototype.canAcceptTrade = function(tradeOffer){
+  			var offer = tradeOffer.getOffer();
+			for(var resource in offer) {			
+				if(offer[resource] < 0 && this.resources[resource] < (-1)*offer[resource]) {
+					return false;	
+				}
+			}
+			return true;
   		}
 
 		/**
 			Determines how many resource cards the player has in his hand.
 
+			<pre>
+				PRE: resources are defiend
+				POST: None
+			</pre>
 			@method getNumOfCards
 			@return {int} The number of cards in his hand.
 		*/
@@ -130,3 +192,47 @@ catan.models.Player = (function playerNameSpace() {
 	return Player;
 }());
 
+
+/**
+	This module contains the tradeOffer
+
+	@module catan.models
+	@namespace models
+*/
+
+catan.models.TradeOffer = (function TradeOfferSpace() {
+
+		core.defineProperty(TradeOffer.prototype, "sender");
+		core.defineProperty(TradeOffer.prototype, "reciever");
+		core.defineProperty(TradeOffer.prototype, "offer");
+  		/**
+    		The tradeOffer class contains the information about trading
+
+    		@class tradeOffer
+   	 		@constructor
+    	*/
+		function TradeOffer(){
+		}
+
+		/**
+			Loads all of the information into a tradeOffer object from the JSON
+			<pre>
+				PRE: tradeOfferJSON is a valid JSON format with the correct info
+				POST: this.sender = JSON.sender
+				POST: this.reciever = JSON.reciever
+				POST: this.offer = JSON.offer
+			</pre>
+			@method setInfo
+			@param {JSON} tradeOfferJSON - The JSON containing the information to load
+		*/
+		TradeOffer.prototype.setInfo = function(tradeOfferJSON){
+			if(tradeOfferJSON != undefined)
+			{
+				this.setSender(tradeOfferJSON.sender);
+				this.setReceiver(tradeOfferJSON.receiver);
+				this.setOffer(tradeOfferJSON.offer);
+			}
+		}
+
+	return TradeOffer;
+}());

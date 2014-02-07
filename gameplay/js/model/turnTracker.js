@@ -1,29 +1,37 @@
-
 catan = catan || {};
 catan.models = catan.models || {};
 
-catan.models.TurnTracker = (function() {
+/**
+	This module contains the turn tracker
+	
+	@module		catan.models
+	@namespace models
+	@constructor
+	@class TurnTracker
+*/
 
-  /**
-    The TurnTracker class keeps track of whose turn it is
+catan.models.TurnTracker = (function TurnTrackerClass() {
 
-    @class TurnTracker
-    @constructor
+    core.defineProperty(TurnTracker.prototype, "currentTurn");
+    core.defineProperty(TurnTracker.prototype, "status");
+
+    function TurnTracker() {
+    }
+
+    /**
+        Sets the info on the turn using a turnJSON retrieved from the JSON
+		<pre>
+			PRE: turnJSON is properlly formatted and contains only the turnTracker info
+			POST: this.currentTuen = turnJSON.currentTUrn
+			POST: this.status = turnJSON.status
+		</pre>
+        @method setInfo
+        @param {JSON} turnJSON - The turnJSON to load the info from.
     */
-  function TurnTracker() { };
+    TurnTracker.prototype.setInfo = function(turnJSON) {
+        this.setStatus(turnJSON.status);
+        this.setCurrentTurn(turnJSON.currentTurn);
+    }
 
-  /**
-    Checks the list to see if a card is in the list
-
-    <pre>
-      PRE: there is a current game
-      POST: currentTurn is one more (or back to zero)
-      POST: status is updated to the new turn's status
-    </pre>
-
-    @method nextTurn
-    @return {number}
-   */
-  TurnTracker.prototype.nextTurn = function() { };
-
+	return TurnTracker;
 });

@@ -1,25 +1,6 @@
-jQuery(function () {
-	var jqXHR = jQuery.getJSON('../server-REST.json');
-	jqXHR.done(doTests);
-	jqXHR.fail(function(jqXHR, textStatus) {
-		console.log("error " + textStatus);
-		console.log("incoming Text " + jqXHR.responseText);
-	});
-});
-
-function doTests(data)
-{	
-	test("Basic Test", function(){
-		testBasicInit();
-	});
-	ConnectAsSam();
-	
-}
-
-function testBasicInit()
-{
+test("Test Basic Init", function() {
 	var map = new catan.models.Map(2);
-	var hexes = map.hexGrid.getHexes();
+	var hexes = map.hexgrid.getHexes();
 	for(var hex in hexes)
 	{
 		hex = hexes[hex];
@@ -60,86 +41,27 @@ function testBasicInit()
 			}
 		}
 	}
-}
+});
 
-function ConnectAsSam()
-{
-	var jqXHR = ajaxConnect("POST", "/user/login", 'username=Sam&password=sam');
-	jqXHR.done(function (data) {
-		var string = 'color=red&id=0';
-		var newjqXHR = ajaxConnect("POST", "/games/join", string);
-		newjqXHR.done(function (data){
-			loadMap();
-		});
-	});
-}
-
-function ajaxConnect(sendType, sendUrl, sendData, successFunc)
-{
-	var options = {
-		type: sendType,
-		url: sendUrl
-	};
-
-	// Making the sendData parameter optional
-	if (sendData !== undefined)
-	{
-		options.data = sendData;
+test("Test Map", function() {
+	var map = new catan.models.Map(model.map.radius);
+	for(var x in model.map.hexGrid.hexes) {
+		for(var y in model.map.hexGrid.hexes[x]) {
+			hexJSON = model.map.hexGrid.hexes[x][y];
+			hexPiece = map.hexgrid.getHex(new catan.models.hexgrid.HexLocation(hexJSON.location.x, hexJSON.location.y));
+			hexPiece.setInfo(hexJSON);
+			ok(hexPiece.getLandType() == hexJSON.landtype, "The land types are the same!");
+			ok(hexPiece.getIsLand() == hexJSON.isLand, "The isLand is the same");
+		}
 	}
-
-	var jqXHR = jQuery.ajax(options);
-
-	// Making the successFunc parameter optional
-	if (successFunc !== undefined)
-	{
-		jqXHR.done(successFunc);
+	//Load Port Info
+	for(var position in model.map.ports){
+		portJSON = model.map.ports[position];
+		var hex = map.hexgrid.getHex(new catan.models.hexgrid.HexLocation(portJSON.location.x, portJSON.location.y));
+		hex.setPortInfo(portJSON);
+		ok(hex.getIsPort(), "This Hex is a port");
+		ok(hex.getTradeRatio() == portJSON.ratio, "The ratio's are the same");
+		ok(hex.getInputResource() == portJSON.inputResource, "The resources are the same");
 	}
-
-	jqXHR.fail(function(error) {
-		jQuery('#responseBody').html(error.responseText);
-	});
-
-	return jqXHR;
-}
-
-function loadMap()
-{
-	var jqXHR = ajaxConnect("GET", "/game/model");
-	jqXHR.done(function (data) {
-		test("Loaded Map", function() {
-			var map = new catan.models.Map(data.map.radius);
-			//data.map.numbers
-			//data.map.robber
-			for(var x in data.map.hexGrid.hexes) {
-				for(var y in data.map.hexGrid.hexes[x]) {
-					//console.log(JSON.stringify(data.map, null, 2));
-					hexJSON = data.map.hexGrid.hexes[x][y];
-					hexPiece = map.hexGrid.getHex(new catan.models.hexgrid.HexLocation(hexJSON.location.x, hexJSON.location.y));
-					hexPiece.setInfo(hexJSON);
-				}
-			}
-			//console.log(JSON.stringify(data.map.ports, null, 2));
-			for(var position in data.map.ports){
-				portJSON = data.map.ports[0];
-				var hex = map.hexGrid.getHex(new catan.models.hexgrid.HexLocation(portJSON.location.x, portJSON.location.y));
-				hex.setPortInfo(portJSON);
-			}
-			// console.log(JSON.stringify(data, null, 2));
-			var player = new catan.models.Player();
-			player.setInfo(data.players[0]);
-			var resourceList = new Array();
-			resourceList["brick"] = 0;
-			resourceList["ore"] = 0;
-			resourceList["sheep"] = 1;
-			resourceList["wheat"] = 1;
-			resourceList["wood"] = 0;
-			ok(player.hasResources(resourceList, "Has resources!"));
-			resourceList["wood"] = 5;
-			ok(!player.hasResources(resourceList, "Doesn't have resources!"));
-			ok(player.getNumOfCards() == 3, "Has 3 Resource Cards");
-			// console.log(player);
-			// console.log(map);
-			ok(true,"Loaded the map!");
-		});
-	});
-}
+	console.log(map);
+});
