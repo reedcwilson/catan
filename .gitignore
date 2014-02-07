@@ -30,3 +30,6 @@ Desktop.ini
 
 # Vim
 *.swp
+
+# ignore special files with double underscore __
+__*

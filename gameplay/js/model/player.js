@@ -1,3 +1,8 @@
+/**
+	This contains interface for player
+	@module catan.models
+	@namespace models
+*/
 
 var catan = catan || {};
 catan.models = catan.models || {};

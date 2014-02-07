@@ -124,7 +124,7 @@ function loadMap()
 				var hex = map.hexGrid.getHex(new catan.models.hexgrid.HexLocation(portJSON.location.x, portJSON.location.y));
 				hex.setPortInfo(portJSON);
 			}
-			console.log(JSON.stringify(data, null, 2));
+			// console.log(JSON.stringify(data, null, 2));
 			var player = new catan.models.Player();
 			player.setInfo(data.players[0]);
 			var resourceList = new Array();
@@ -137,8 +137,8 @@ function loadMap()
 			resourceList["wood"] = 5;
 			ok(!player.hasResources(resourceList, "Doesn't have resources!"));
 			ok(player.getNumOfCards() == 3, "Has 3 Resource Cards");
-			console.log(player);
-			console.log(map);
+			// console.log(player);
+			// console.log(map);
 			ok(true,"Loaded the map!");
 		});
 	});
