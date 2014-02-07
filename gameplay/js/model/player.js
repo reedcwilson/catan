@@ -94,23 +94,6 @@ catan.models.Player = (function playerNameSpace() {
 			this.newDevCards[devCard] += 1;
   		}
 
- 	 	/**
-    		Play's the DevCard from the player's hand.
-
-    		<pre>
-    			PRE: The player has the said DevCard
-    			POST: The DevCard moves to the played pile
-    			POST: The dev card action took place
-    		</pre>
-    		@method playDevCard
-    		@param {DevCard} DevCard The DevCard to be played from the player's hand
-    	*/
-    	//TODO: Finish
-  		Player.prototype.playDevCard = function (devCard) {
-			this.oldDevCards[devCard] -= 1;
-			//devCard.play();
-  		}
-
 		/**
 			Query if player needs to discard
 

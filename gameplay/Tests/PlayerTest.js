@@ -1,16 +1,8 @@
-QUnit.config.autostart = false;
-var model = {};
 var player = new catan.models.Player();
-jQuery(function () {
-  getModel(function(data) {
-    model = data || model1;
-    QUnit.start();
-  });
-});
-
 test("Test Player DevCards", function() {
 	console.log(model.players[0]);
 	player.setInfo(model.players[0]);
+	console.log(player);
 	var devCardsList = new Array();
 	devCardsList["monopoly"] = 0;
 	devCardsList["monument"] = 0;
@@ -20,8 +12,6 @@ test("Test Player DevCards", function() {
 	player.setOldDevCards(devCardsList);
 	ok(player.canPlayDevCard("yearOfPlenty"), "Can play Year of Plenty");
 	ok(!player.canPlayDevCard("monopoly"), "Cannot play monopoly");
-	player.playDevCard("yearOfPlenty");
-	ok(!player.canPlayDevCard("yearOfPlenty"), "Played Year of Plenty");
 	player.addDevCard("soldier");
 	ok(player.newDevCards["soldier"] == 1, "Successfully added a devCard");
 });
@@ -33,12 +23,20 @@ test("Test Player Resource", function() {
 	resourceList["sheep"] = 1;
 	resourceList["wheat"] = 1;
 	resourceList["wood"] = 0;
-	ok(player.hasResources(resourceList, "Has resources!"));
-	resourceList["wood"] = 7;
-	ok(!player.hasResources(resourceList, "Doesn't have resources!"));
-	ok(player.getNumOfCards() == 3, "Has 3 Resource Cards");
-	ok(!player.needsToDiscard(), "The player shouldn't discard");
+	console.log(resourceList);
 	player.setResources(resourceList);
+	console.log(player.getResources());
+	ok(player.hasResources(resourceList, "Has resources!"));
+	var newResourceList = new Array();
+	newResourceList["brick"] = 0;
+	newResourceList["ore"] = 0;
+	newResourceList["sheep"] = 1;
+	newResourceList["wheat"] = 1;
+	newResourceList["wood"] = 7;
+	ok(!player.hasResources(newResourceList, "Doesn't have resources!"));
+	ok(player.getNumOfCards() == 2, "Has 3 Resource Cards");
+	ok(!player.needsToDiscard(), "The player shouldn't discard");
+	player.setResources(newResourceList);
 	ok(player.needsToDiscard(), "The player needs to discard. The player has: " + player.getNumOfCards());
 });
 
@@ -62,12 +60,3 @@ test("Test Player Trade", function() {
 	tradeOffer.setOffer(tradeList);
 	ok(!player.canOfferTrade(tradeOffer),"Cannot offer trade");
 });
-
-function getModel(callback) {
-  $.get('/game/model', function(data, status, jqxhr) {
-    callback(data);
-  }).fail(function(jqxhr, text) {
-    console.log("ahhh!!! couldn't get model!");
-  });
-}
-

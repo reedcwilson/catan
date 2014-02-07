@@ -1,12 +1,3 @@
-QUnit.config.autostart = false;
-var model = {};
-jQuery(function () {
-  getModel(function(data) {
-    model = data || model1;
-    QUnit.start();
-  });
-});
-
 test("Test Basic Init", function() {
 	var map = new catan.models.Map(2);
 	var hexes = map.hexGrid.getHexes();
@@ -74,12 +65,3 @@ test("Test Map", function() {
 	}
 	console.log(map);
 });
-
-function getModel(callback) {
-  $.get('/game/model', function(data, status, jqxhr) {
-    callback(data);
-  }).fail(function(jqxhr, text) {
-    console.log("ahhh!!! couldn't get model!");
-  });
-}
-
