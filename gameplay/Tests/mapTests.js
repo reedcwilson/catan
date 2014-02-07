@@ -8,6 +8,7 @@ $(function () {
   });
 });
 
+module("initialization");
 test( "Robber Test", function() {
   expect(2);
 
@@ -72,6 +73,7 @@ test( "Ports Test", function() {
     "port is in the correct location");
 });
 
+module("query");
 test( "Can Place Road", function() {
   // expect(2);
 
@@ -115,10 +117,6 @@ test( "Can Place City", function() {
 
   ok(true, "you really can place a city there");
 });
-
-asyncTest(" name", function() {
-  ok(stuf);
-};
 
 function getModel(callback) {
   $.get('/game/model', function(data, status, jqxhr) {

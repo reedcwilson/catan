@@ -129,11 +129,12 @@ catan.models.Map = (function mapNameSpace(){
      * </pre>
      *
      * @method canPlaceSettlement
-     * @param {hexLocation} location the location in question
+     * @param {CatanVertex} vertex the vertex in question
      * @param {number} playerId the id of the player wishing to place
      * @return {boolean} returns true if settlement can be placed
      */
     Map.prototype.canPlaceSettlement = function(loc, id) {
+      loc
       // TODO: use VertexLocation.getEquivalenceGroup to get all three hexes so you
       // can make sure everything is two edges away
       return false;
@@ -149,7 +150,7 @@ catan.models.Map = (function mapNameSpace(){
      * </pre>
      *
      * @method canPlaceCity
-     * @param {hexLocation} location the location in question
+     * @param {CatanVertex} vertex the vertex in question
      * @param {number} playerId the id of the player wishing to place
      * @return {boolean} returns true if city can be placed
      */
