@@ -9,7 +9,8 @@
 var catan = catan || {};
 catan.models = catan.models || {};
 
-catan.models.ClientModel  = (function clientModelNameSpace(){
+catan.models.ClientModel  = (function clientModelNameSpace()
+{
     /** 
 	This the top-level client model class that contains the local player, map contents, etc.
 	
@@ -120,32 +121,32 @@ catan.models.ClientModel  = (function clientModelNameSpace(){
 		
 		ClientModel.prototype.needsToDiscard = function () 
 		{               
-			return this.getPlayers[this.getPlayerID].needsToDiscard();
+			return this.getPlayers()[this.getPlayerID()].needsToDiscard();
 		};
 		
 		ClientModel.prototype.hasResources = function (resourceList) 
 		{               
-			return this.getPlayers[this.getPlayerID].hasResources(resourceList);
+			return this.getPlayers()[this.getPlayerID()].hasResources(resourceList);
 		};
 		
 		ClientModel.prototype.canPlayDevCard = function (devCard) 
 		{               
-			return this.getPlayers[this.getPlayerID].canPlayDevCard(devCard);
+			return this.getPlayers()[this.getPlayerID()].canPlayDevCard(devCard);
 		};
 		
 		ClientModel.prototype.getResources = function () 
 		{               
-			return this.getPlayers[this.getPlayerID].getResources();
+			return this.getPlayers()[this.getPlayerID()].getResources();
 		};
 		
 		ClientModel.prototype.canOfferTrade = function () 
 		{               
-			return this.getPlayers[this.getPlayerID].canOfferTrade(this.getTradeOffer());
+			return this.getPlayers()[this.getPlayerID()].canOfferTrade(this.getTradeOffer());
 		};
 		
 		ClientModel.prototype.canAcceptTrade = function () 
 		{               
-			return this.getPlayers[this.getPlayerID].canAcceptTrade(this.getTradeOffer());
+			return this.getPlayers()[this.getPlayerID()].canAcceptTrade(this.getTradeOffer());
 		};
 		
 		// Proxy Calls	
