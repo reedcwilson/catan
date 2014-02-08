@@ -2,11 +2,49 @@
 QUnit.config.autostart = false;
 var model = {};
 $(function () {
-  getModel(function(data) {
-    model = data || model1;
-    QUnit.start();
+  login(function() {
+    join(function() {
+      getModel(function(data) {
+        model = data || model1;
+        QUnit.start();
+      });
+    });
   });
 });
+
+function getModel(callback) {
+  $.get('/game/model', function(data, status, jqxhr) {
+    callback(data);
+  }).fail(function(jqxhr, text) {
+    console.log("ahhh!!! couldn't get model!");
+  });
+}
+
+function login(callback) {
+  $.post("/user/login", {
+    username: "Sam",
+    password: "sam"
+  }, function(data){
+    console.log("User Logged in");
+    callback();
+  }).fail(function(data){
+    console.log("User failed to login");
+    callback();
+  })
+}
+
+function join(callback) {
+  $.post("/games/join", {
+    color: 'blue',
+    id: 0
+  }, function(data){
+    console.log("You Joined the game");
+    callback();
+  }).fail(function(data){
+    console.log("Failed to join the game");
+    callback();
+  })
+}
 
 module("initialization");
 test( "Robber Test", function() {
@@ -118,7 +156,14 @@ test( "Can Place Settlement", function() {
 
   var canPlace = false;
   var adjacentVertex = map.hexgrid.hexes[3][3].vertexes[4];
-  var vertex = map.hexgrid.hexes[3][3].vertexes[3];
+  var vertexes = map.hexgrid.hexes[3][3].vertexes;
+  var vertexes2 = map.hexgrid.hexes[2][3].vertexes;
+  var vertexes3 = map.hexgrid.hexes[3][4].vertexes;
+  resetVertices(vertexes);
+  resetVertices(vertexes2);
+  resetVertices(vertexes3);
+
+  var vertex = vertexes[3];
 
   // test empty vertex 
   canPlace = map.canPlaceSettlement(vertex, 1);
@@ -131,6 +176,12 @@ test( "Can Place Settlement", function() {
   canPlace = map.canPlaceSettlement(vertex, 1);
   ok(canPlace == false, "user can no longer place settlement");
 });
+
+function resetVertices(verts) {
+  for (var v in verts) {
+    verts[v].ownerID = -1;
+  }
+}
 
 test( "Can Place City", function() {
   expect(2);
@@ -152,13 +203,3 @@ test( "Can Place City", function() {
   canPlace = map.canPlaceCity(vertex, 1);
   ok(canPlace == true, "user can now place city on settlement");
 });
-
-function getModel(callback) {
-  $.get('/game/model', function(data, status, jqxhr) {
-    callback(data);
-  }).fail(function(jqxhr, text) {
-    console.log("ahhh!!! couldn't get model!");
-  });
-}
-
-// check query functions
