@@ -24,9 +24,9 @@ catan.models.Map = (function mapNameSpace(){
      * @constructor
      * @param {number} radius the radius of the map
      */
-    var Map = (function Map_Class(radius){
+    var Map = function (radius){
       this.hexgrid = hexgrid.HexGrid.getRegular(radius, CatanHex);
-    });
+    };
 
     /**
      * Initializes all data for the map
@@ -118,17 +118,42 @@ catan.models.Map = (function mapNameSpace(){
      * @return {boolean} returns true if road can be placed
      */
     Map.prototype.canPlaceRoad = function(edge, id) {
-      // check the four edges connected to current edge
-      // var group = edge.getEquivalenceGroup();
-      // for (var item in group) {
-        // var edges = this.hexgrid.getEdges(
-            // new catan.models.hexgrid.HexLocation(item.x, item.y));
+      var ownerId = false;
+      var connectedEdge = false;
 
-        // if (edges[e].isOccupied == true) {
-          return false;
-        // }
-      // }
-      // return true;
+      // check current edge
+      if (edge.isOccupied() == true) {
+        return false;
+      }
+
+      // check vertices for settlements
+      var vertices = edge.location.getConnected();
+      for (var key in vertices) {
+        var v = vertices[key];
+        var hex = this.hexgrid.getHex(
+            new catan.models.hexgrid.HexLocation(v.x, v.y));
+
+        if (hex.vertexes[v.direction].ownerID == id)
+        {
+          ownerId = true;
+          break;
+        }
+      }
+
+      // check the four edges connected to current edge
+      var edges = edge.location.getConnectedEdges();
+      for (var key in edges) {
+        var e = edges[key];
+        var hex = this.hexgrid.getHex(
+            new catan.models.hexgrid.HexLocation(e.x, e.y));
+        
+        if (hex.edges[e.direction].ownerID == id) {
+          connectedEdge = true;
+          break;
+        }
+      }
+
+      return ownerId == true || connectedEdge == true;
     };
 
     /**
@@ -141,12 +166,28 @@ catan.models.Map = (function mapNameSpace(){
      * </pre>
      *
      * @method canPlaceSettlement
-     * @param {hexLocation} location the location in question
+     * @param {CatanVertex} vertex the vertex in question
      * @param {number} playerId the id of the player wishing to place
      * @return {boolean} returns true if settlement can be placed
      */
     Map.prototype.canPlaceSettlement = function(loc, id) {
-      return false;
+      // if there is no settlement within two vertices
+      var edges = loc.location.getConnectedEdges();
+      for (var eKey in edges) {
+        var edge = edges[eKey];
+        var vertexes = edge.getConnected();
+        for (var vKey in vertexes) {
+          var vertex = vertexes[vKey];
+
+          var hex = this.hexgrid.getHex(
+              new catan.models.hexgrid.HexLocation(vertex.x, vertex.y));
+
+          if (hex.vertexes[vertex.direction].isOccupied() == true) {
+            return false;
+          }
+        }
+      }
+      return true;
     };
 
     /**
@@ -159,12 +200,14 @@ catan.models.Map = (function mapNameSpace(){
      * </pre>
      *
      * @method canPlaceCity
-     * @param {hexLocation} location the location in question
+     * @param {CatanVertex} vertex the vertex in question
      * @param {number} playerId the id of the player wishing to place
      * @return {boolean} returns true if city can be placed
      */
     Map.prototype.canPlaceCity = function(loc, id) {
-      return false;
+      var hex = this.hexgrid.getHex(
+          new catan.models.hexgrid.HexLocation(loc.location.x, loc.location.y));
+      return hex.vertexes[loc.location.direction].ownerID == id;
     };
 
     /**
@@ -343,7 +386,7 @@ catan.models.Map = (function mapNameSpace(){
 				var vertexinfo = vertexJSON[position];
 				vertex.setWorth(vertexinfo.value.worth);
 				vertex.setOwnerID(vertexinfo.value.ownerID);
-				vertex.setLocation(new catan.models.hexgrid.VertexLocation(this.getLocation(), position));
+				vertex.setLocation(new catan.models.hexgrid.VertexLocation(this.getLocation(), parseInt(position)));
 			}
 		}
 
@@ -361,7 +404,7 @@ catan.models.Map = (function mapNameSpace(){
 				var edge = this.edges[position];
 				var edgeinfo = edgeJSON[position];
 				edge.setOwnerID(edgeinfo.value.ownerID);
-				edge.setLocation(new catan.models.hexgrid.EdgeLocation(this.getLocation(), position));
+				edge.setLocation(new catan.models.hexgrid.EdgeLocation(this.getLocation(), parseInt(position)));
 			}
 		}
 
