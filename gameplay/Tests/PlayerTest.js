@@ -1,4 +1,6 @@
 var player = new catan.models.Player();
+
+module("query");
 test("Test Player DevCards", function() {
 	player.setInfo(model.players[0]);
 	var devCardsList = new Array();
