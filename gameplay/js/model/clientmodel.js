@@ -66,7 +66,7 @@ catan.models.ClientModel  = (function clientModelNameSpace()
 		{  
 			this.setChat(new catan.models.MessageList());			
 			this.setLog(new catan.models.MessageList());
-			this.setMap(new catan.models.Map());
+			this.setMap(new catan.models.Map(model.map.radius));
 			this.setTradeOffer(new catan.models.TradeOffer());
 			this.setTurnTracker(new catan.models.TurnTracker());
 						
