@@ -73,6 +73,15 @@ test( "Ports Test", function() {
     "port is in the correct location");
 });
 
+test( "Radius Test", function() {
+  expect(1);
+
+  var map = new catan.models.Map(model.map.radius);
+  map.setInfo(model.map);
+
+  ok(map.getRadius() == model.map.radius);
+});
+
 module("query");
 test( "Can Place Road", function() {
   // expect(2);
