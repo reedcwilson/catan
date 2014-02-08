@@ -1,6 +1,3 @@
-test( "hello test", function() {
-  ok( 1 == "1", "Passed!" );
-});
 
 test( "proxy login", function() {
 	var prox = new catan.models.Proxy();
@@ -44,6 +41,7 @@ test( "Game List", function() {
 
 	 ok( 1 == "1", "Passed!" );
 });
+
 test( "Create Game", function() {
 	var prox = new catan.models.Proxy();
 

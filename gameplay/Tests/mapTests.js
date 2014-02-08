@@ -2,12 +2,51 @@
 QUnit.config.autostart = false;
 var model = {};
 $(function () {
-  getModel(function(data) {
-    model = data || model1;
-    QUnit.start();
+  login(function() {
+    join(function() {
+      getModel(function(data) {
+        model = data || model1;
+        QUnit.start();
+      });
+    });
   });
 });
 
+function getModel(callback) {
+  $.get('/game/model', function(data, status, jqxhr) {
+    callback(data);
+  }).fail(function(jqxhr, text) {
+    console.log("ahhh!!! couldn't get model!");
+  });
+}
+
+function login(callback) {
+  $.post("/user/login", {
+    username: "Sam",
+    password: "sam"
+  }, function(data){
+    console.log("User Logged in");
+    callback();
+  }).fail(function(data){
+    console.log("User failed to login");
+    callback();
+  })
+}
+
+function join(callback) {
+  $.post("/games/join", {
+    color: 'blue',
+    id: 0
+  }, function(data){
+    console.log("You Joined the game");
+    callback();
+  }).fail(function(data){
+    console.log("Failed to join the game");
+    callback();
+  })
+}
+
+module("initialization");
 test( "Robber Test", function() {
   expect(2);
 
@@ -72,56 +111,95 @@ test( "Ports Test", function() {
     "port is in the correct location");
 });
 
+test( "Radius Test", function() {
+  expect(1);
+
+  var map = new catan.models.Map(model.map.radius);
+  map.setInfo(model.map);
+
+  ok(map.getRadius() == model.map.radius);
+});
+
+module("query");
 test( "Can Place Road", function() {
-  // expect(2);
+  expect(2);
 
-  // var map = new catan.models.Map(model.map.radius);
-  // map.setInfo(model.map);
+  var map = new catan.models.Map(model.map.radius);
+  map.setInfo(model.map);
 
-  // var canPlace = false;
+  var canPlace = false;
+  var loc = new catan.models.hexgrid.HexLocation(0,0);
 
-  // var direction = catan.models.hexgrid.EdgeDirection.NE;
-  // var loc = new catan.models.hexgrid.HexLocation(0,0);
+  // set adjacent edge so that user can place road
+  var adjacentEdge = map.hexgrid.hexes[3][4].edges[5];
+  adjacentEdge.ownerID = 1;
 
-  // canPlace = map.canPlaceRoad(
-    // new catan.models.hexgrid.EdgeLocation(loc, direction));
-  // ok(canPlace == true, "you really can place a road there");
+  var edge = map.hexgrid.hexes[3][3].edges[3];
 
-  // set NE (0, 0) edge as occupied and test again
-  // map.hexgrid.getHex(
-    // new catan.models.hexgrid.HexLocation(0,0)).edges[2].setOwnerID(1);
+  // test empty edge
+  canPlace = map.canPlaceRoad(edge, 1);
+  ok(canPlace == true, "user can place road on designated edge");
 
-  // canPlace = map.canPlaceRoad(
-    // new catan.models.hexgrid.EdgeLocation(loc, direction));
-  // ok(canPlace == false, "not anymore");
+  // set edge to occupied
+  edge.ownerID = 1;
 
-  ok(true, "dummy");
+  // test again to see if it changed correctly
+  canPlace = map.canPlaceRoad(edge, 1);
+  ok(canPlace == false, "user can no longer place road");
 });
 
 test( "Can Place Settlement", function() {
-  expect(1);
+  expect(2);
 
   var map = new catan.models.Map(model.map.radius);
   map.setInfo(model.map);
 
-  ok(true, "you really can place a settlement there");
+  var canPlace = false;
+  var adjacentVertex = map.hexgrid.hexes[3][3].vertexes[4];
+  var vertexes = map.hexgrid.hexes[3][3].vertexes;
+  var vertexes2 = map.hexgrid.hexes[2][3].vertexes;
+  var vertexes3 = map.hexgrid.hexes[3][4].vertexes;
+  resetVertices(vertexes);
+  resetVertices(vertexes2);
+  resetVertices(vertexes3);
+
+  var vertex = vertexes[3];
+
+  // test empty vertex 
+  canPlace = map.canPlaceSettlement(vertex, 1);
+  ok(canPlace == true, "user can place settlement on designated vertex");
+
+  // set adjacent vertex to occupied
+  adjacentVertex.ownerID = 1;
+
+  // test again to see if it changed correctly
+  canPlace = map.canPlaceSettlement(vertex, 1);
+  ok(canPlace == false, "user can no longer place settlement");
 });
 
-test( "Can Place City", function() {
-  expect(1);
-
-  var map = new catan.models.Map(model.map.radius);
-  map.setInfo(model.map);
-
-  ok(true, "you really can place a city there");
-});
-
-function getModel(callback) {
-  $.get('/game/model', function(data, status, jqxhr) {
-    callback(data);
-  }).fail(function(jqxhr, text) {
-    console.log("ahhh!!! couldn't get model!");
-  });
+function resetVertices(verts) {
+  for (var v in verts) {
+    verts[v].ownerID = -1;
+  }
 }
 
-// check query functions
+test( "Can Place City", function() {
+  expect(2);
+
+  var map = new catan.models.Map(model.map.radius);
+  map.setInfo(model.map);
+
+  var canPlace = false;
+  var vertex = map.hexgrid.hexes[3][3].vertexes[3];
+
+  // test empty vertex 
+  canPlace = map.canPlaceCity(vertex, 1);
+  ok(canPlace == false, "user cannot place city on empty vertex");
+
+  // set vertex to occupied
+  vertex.ownerID = 1;
+
+  // test again to see if it changed correctly
+  canPlace = map.canPlaceCity(vertex, 1);
+  ok(canPlace == true, "user can now place city on settlement");
+});
