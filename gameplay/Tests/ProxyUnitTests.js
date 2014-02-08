@@ -112,8 +112,7 @@ function ajaxConnect(sendType, sendUrl, sendData, successFunc)
 	return jqXHR;
 }
 
-<<<<<<< HEAD
-=======
-	 ok( 1 == "1", "Passed!" );
-});
->>>>>>> 8ca74d636ec97ecfe722c0ee5cb1a464ca4ed81a
+
+	
+
+
