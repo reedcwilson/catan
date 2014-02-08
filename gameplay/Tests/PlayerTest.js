@@ -1,8 +1,6 @@
 var player = new catan.models.Player();
 test("Test Player DevCards", function() {
-	console.log(model.players[0]);
 	player.setInfo(model.players[0]);
-	console.log(player);
 	var devCardsList = new Array();
 	devCardsList["monopoly"] = 0;
 	devCardsList["monument"] = 0;
@@ -23,9 +21,7 @@ test("Test Player Resource", function() {
 	resourceList["sheep"] = 1;
 	resourceList["wheat"] = 1;
 	resourceList["wood"] = 0;
-	console.log(resourceList);
 	player.setResources(resourceList);
-	console.log(player.getResources());
 	ok(player.hasResources(resourceList, "Has resources!"));
 	var newResourceList = new Array();
 	newResourceList["brick"] = 0;
