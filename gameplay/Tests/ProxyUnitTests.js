@@ -1,63 +1,118 @@
+test( "Proxy Testing Start", function() {
+	ConnectAsSam();
 
-test( "proxy login", function() {
+  ok( 1 == "1", "Passed!" );
+});
+
+
+function testProxy(){
+test( "MessageList Print Message", function() {
+		var testbest = new catan.models.MessageList();
+	testbest.setInfo(JSON.stringify({lines:[{message: "hey", source: "jake"}]}));
+
+	ok(testbest.printList() == "hey");
+
+	});
+  
 	var prox = new catan.models.Proxy();
+	var sender = new catan.models.CommandObject({type: "sendChat",playerIndex:1, content:"hey buddy"});
 
-	//should succeed
-	var UserLogin = {username: "Sam", password: "sam"};
-	var check = prox.login(UserLogin);
+	prox.send(sender, function(data){
 
-	//should fail
+		test("sending chat", function(){
+			ok(data);
+		});
+	});
 
-	UserLogin = {username: "sam", password: "sam"};
-	var check = prox.login(UserLogin);
+	var sender = new catan.models.CommandObject({type: "buildRoad",playerIndex:1,roadLocation: {x:1,y:1,direction:"NE"},free:true});
 
-	ok( 1 == "1", "Passed!" );
+	prox.send(sender, function(data){
+
+		test("building a road", function(){
+			ok(data);
+		});
+	});
+
+	var sender = new catan.models.CommandObject({type: "rollNumber",playerIndex:1,number:2});
+
+	prox.send(sender, function(data){
+
+		test("rollNumber", function(){
+			ok(data);
+		});
+	});
+
+
+	var sender = new catan.models.CommandObject({type: "finishTurn",playerIndex:1});
+
+	prox.send(sender, function(data){
+
+		test("finishTurn", function(){
+			ok(data);
+		});
+	});
+
+	prox.getModel(testGetModel, success);
 
 	 
-});
 
-test( "proxy register", function() {
-	var prox = new catan.models.Proxy();
+}
+function testGetModel(data){
 
-	//should succeed
-	var UserLogin = {username: "rank", password: "frank"};
-	var check = prox.register(UserLogin);
+test("get Model update callback", function(){
+			ok(data);
+		});
 
-	//should fail
-	UserLogin = {username: "Sam", password: "sam"};
-	var check = prox.register(UserLogin);
+}
+function success(data){
 
-	ok( 1 == "1", "Passed!" );
+test("get Model success callback", function(){
+			ok(data);
+		});
 
-	 
-});
+}
 
-test( "Game List", function() {
-	var prox = new catan.models.Proxy();
+function ConnectAsSam()
+{
+	var jqXHR = ajaxConnect("POST", "/user/login", 'username=Sam&password=sam');
+	jqXHR.done(function (data) {
+		var string = 'color=red&id=0';
+		var newjqXHR = ajaxConnect("POST", "/games/join", string);
+		newjqXHR.done(function (data){
+			testProxy();
+		});
+	});
+}
 
-	//should succeed
+function ajaxConnect(sendType, sendUrl, sendData, successFunc)
+{
+	var options = {
+		type: sendType,
+		url: sendUrl
+	};
+
+	// Making the sendData parameter optional
+	if (sendData !== undefined)
+	{
+		options.data = sendData;
+	}
+
+	var jqXHR = jQuery.ajax(options);
+
+	// Making the successFunc parameter optional
+	if (successFunc !== undefined)
+	{
+		jqXHR.done(successFunc);
+	}
+
+	jqXHR.fail(function(error) {
+		jQuery('#responseBody').html(error.responseText);
+	});
+
+	return jqXHR;
+}
+
+
 	
-	 prox.listGames();
 
-	 ok( 1 == "1", "Passed!" );
-});
 
-test( "Create Game", function() {
-	var prox = new catan.models.Proxy();
-
-	//should succeed
-	
-	 prox.createGame({randomTiles: false, randomNumbers: true,randomPorts: true, name: "MyGame"});
-
-	 ok( 1 == "1", "Passed!" );
-});
-
-test( "Join Game", function() {
-	var prox = new catan.models.Proxy();
-
-	//should succeed
-	
-	 prox.joinGame({color: "red", id: 3});
-
-	 ok( 1 == "1", "Passed!" );
-});
