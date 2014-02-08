@@ -1,5 +1,6 @@
 var map;
 
+module("initialization");
 test("Test Basic HexGrid Init", function() {
 	var map = new catan.models.Map(2);
 	var hexes = map.hexgrid.getHexes();
