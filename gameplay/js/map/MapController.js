@@ -39,8 +39,32 @@ catan.map.Controller = (function catan_controller_namespace() {
 			catan.core.BaseController.call(this,view,model);
 			this.setModalView(modalView);
 			this.setRobView(robView);
+			//TODO: Finish inital init of the map
+			this.loadHexes(view, model);
 		}
-        
+
+		MapController.prototype.loadHexes = function(view, model){
+			var hexes = model.map.hexgrid.hexes;
+			//TODO: Finish inital init of the map
+			for(var x in hexes) {
+				for(var y in hexes[x]){
+					hex = hexes[x][y];
+					hexLocation =  new catan.models.hexgrid.HexLocation(hex.location.x, hex.location.y);
+					var type;
+					if(hex.isLand == false) {
+						type = 'water';
+					}
+					else if(hex.landType == undefined) {
+						type = 'desert'
+					}
+					else {
+						type = hex.landType.toLowerCase();
+					}
+					type = type.toLowerCase();
+					view.addHex(hexLocation, type);
+				}
+			}
+        }
         /**
 		 This method is called by the Rob View when a player to rob is selected via a button click.
 		 @param {Integer} orderID The index (0-3) of the player who is to be robbed

@@ -48,6 +48,13 @@ catan.comm.Controller = (function () {
 		**/
 		function LogController(logView,model){
 			BaseCommController.call(this,logView,model);
+			//TODO Fix
+			var mylog = model.log;
+			for(var each in mylog) {
+				mylog[each].className = 'red';
+				console.log(mylog[each].className);
+			}
+			logView.resetLines(mylog);
 		}
         
 		return LogController;
@@ -69,6 +76,11 @@ catan.comm.Controller = (function () {
 		**/
 		function ChatController(chatView,model){
 			BaseCommController.call(this,chatView,model);
+			var chat = model.chat;
+			for(var each in chat) {
+				chat[each]['className'] = 'red';
+			}
+			chatView.resetLines(chat);
 		}
         
 		/**

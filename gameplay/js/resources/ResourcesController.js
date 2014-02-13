@@ -37,6 +37,17 @@ catan.resources.Controller = (function resources_namespace() {
 		function ResourceBarController(view,clientModel,actions){
 			this.setActions(actions);
 			Controller.call(this,view,clientModel);
+			var player = clientModel.players[clientModel.playerID];
+			for (var resource in player.resources) {
+				view.updateAmount(resource, player.resources[resource]);
+			}
+			view.updateAmount("Roads", player.roads);
+			view.updateAmount("Settlements", player.settlements);
+			view.updateAmount("Cities", player.cities);
+			//TODO Finish correct amounts
+			view.updateAmount("BuyCard", 0);
+			view.updateAmount("DevCards", 0);
+			view.updateAmount("Soldiers", player.soldiers);
 		};
 
 		core.forceClassInherit(ResourceBarController,Controller);

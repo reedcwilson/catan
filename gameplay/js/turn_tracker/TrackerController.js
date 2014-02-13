@@ -25,8 +25,14 @@ catan.turntracker.Controller = (function turntracker_namespace() {
 	
 		function TurnTrackerController(view, clientModel){
 			Controller.call(this,view,clientModel);
-            
-            // TODO: This constructor should configure its view by calling view.setClientColor and view.initializePlayer
+			playerID = clientModel.playerID;
+            for(var i in clientModel.players) {
+				player = clientModel.players[i];
+				if(i==playerID) {
+					view.setClientColor(player.color);
+				}
+				view.initializePlayer(i, player.name, player.color);
+            }
             // NOTE: The view.updateViewState and view.updatePlayer will not work if called from here.  Instead, these
             //          methods should be called later each time the client model is updated from the server.
 		}
