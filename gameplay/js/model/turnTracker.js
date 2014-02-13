@@ -34,4 +34,4 @@ catan.models.TurnTracker = (function TurnTrackerClass() {
     }
 
 	return TurnTracker;
-});
+}());

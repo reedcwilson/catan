@@ -1,18 +1,13 @@
 //STUDENT-EDITABLE-BEGIN   
-var catan = catan || {};
-catan.models = catan.models || {};
-
-var vdLookup = ["W","NW","NE","E","SE","SW"]
-var VertexDirection = core.numberEnumeration(vdLookup);
-var edLookup = ["NW","N","NE","SE","S","SW"]
-var EdgeDirection = core.numberEnumeration(edLookup);
-
 /**
 	This module contains the map
 	
 	@module	catan.models
 	@namespace models
 */
+
+var catan = catan || {};
+catan.models = catan.models || {};
 
 catan.models.Map = (function mapNameSpace(){
     
@@ -333,7 +328,7 @@ catan.models.Map = (function mapNameSpace(){
 	
 	@class CatanVertex
 	*/
-    var CatanHex = (function CatanHex_Class(){
+    var CatanHex = (function CatanHex_Class() {
     
         core.forceClassInherit(CatanHex, hexgrid.BasicHex);
 		core.defineProperty(CatanHex.prototype, "landType");

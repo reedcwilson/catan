@@ -33,9 +33,7 @@ catan.models.MessageList = (function() {
     */
 
   MessageList.prototype.setInfo = function(messageJSON) {
-     
-        var temp = JSON.parse(messageJSON);
-        this.setLines(temp.lines);
+        this.setLines(messageJSON.lines);
     }
 
   /**
@@ -53,8 +51,8 @@ catan.models.MessageList = (function() {
    */
   MessageList.prototype.printList = function() { 
     var messages ="";
-    for(var i =0; i < this.lines.length; i++){
-      messages = messages + this.lines[i].message;
+    for(var i =0; i < this.getLines().length; i++){
+      messages = messages + this.getLines()[i].message;
     }
 
     return messages;

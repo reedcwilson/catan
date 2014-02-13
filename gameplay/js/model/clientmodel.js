@@ -9,8 +9,7 @@
 var catan = catan || {};
 catan.models = catan.models || {};
 
-catan.models.ClientModel  = (function clientModelNameSpace()
-{
+catan.models.ClientModel  = (function clientModelNameSpace() {
     /** 
 	This the top-level client model class that contains the local player, map contents, etc.
 	
@@ -52,8 +51,7 @@ catan.models.ClientModel  = (function clientModelNameSpace()
 		ClientModel.prototype.initFromServer = function(success)
 		{
             // TODO: 1) fetch the game state from the server, 2) update the client model, 3) call the "success" function.
-			
-			this.getProxy().getModel(this.init, success);
+			this.getProxy().getModel(this, success);
 		}
 		
 		 /**
@@ -62,7 +60,7 @@ catan.models.ClientModel  = (function clientModelNameSpace()
          * @method init
          * @param {JSON} model - The JSON model of the game.
          * */
-		ClientModel.prototype.init = function (model) 
+		ClientModel.prototype.init = function(model) 
 		{  
 			this.setChat(new catan.models.MessageList());			
 			this.setLog(new catan.models.MessageList());
@@ -98,7 +96,7 @@ catan.models.ClientModel  = (function clientModelNameSpace()
 			this.setWinner(model.winner);
 			
 			var players = this.getPlayers();
-			for(var i = 0; i < players.length; i++)
+			for(var i = 0; i < 4; i++)
 				players[model.players[i].playerID].setInfo(model.players[i]);
 		};	
 

@@ -2,7 +2,7 @@
 module("initialization");
 test( "MessageList Print Message", function() {
   var testbest = new catan.models.MessageList();
-  testbest.setInfo(JSON.stringify({lines:[{message: "hey", source: "jake"}]}));
+  testbest.setInfo(({lines:[{message: "hey", source: "jake"}]}));
 
   ok(testbest.printList() == "hey", "successfully printed message");
 
