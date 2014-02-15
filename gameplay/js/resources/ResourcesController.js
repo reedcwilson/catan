@@ -50,9 +50,8 @@ catan.resources.Controller = (function resources_namespace() {
 		ResourceBarController.prototype.initFromModel = function() {
 			var clientModel = this.getClientModel();
 			var view = this.getView();
-			var player = clientModel.players[clientModel.playerID];
+			var player = clientModel.players[clientModel.clientID];
 			for (var resource in player.resources) {
-				console.log(resource, player.resources[resource]);
 				view.updateAmount(resource, player.resources[resource]);
 			}
 			view.updateAmount("Roads", player.roads);

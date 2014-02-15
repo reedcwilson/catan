@@ -53,7 +53,7 @@ catan.models.ClientModel  = (function clientModelNameSpace()
 		{
             // TODO: 1) fetch the game state from the server, 2) update the client model, 3) call the "success" function.
 			
-			this.getProxy().getModel(this.init, success);
+			this.getProxy().getModel(this, success);
 		}
 		
 		 /**

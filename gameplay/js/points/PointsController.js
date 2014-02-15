@@ -32,7 +32,7 @@ catan.points.Controller = (function VPController_Class(){
 	}
 
 	PointController.prototype.loadModel = function(view, clientModel){
-		var playerID = clientModel.playerID;
+		var playerID = clientModel.clientID;
 		view.setPoints(clientModel.players[playerID].victoryPoints);
 	}
 	

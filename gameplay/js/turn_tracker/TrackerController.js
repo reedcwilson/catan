@@ -33,7 +33,7 @@ catan.turntracker.Controller = (function turntracker_namespace() {
 		core.forceClassInherit(TurnTrackerController,Controller);
 
 		TurnTrackerController.prototype.loadModel = function(view, clientModel) {
-			playerID = clientModel.playerID;
+			playerID = clientModel.clientID;
             for(var i in clientModel.players) {
 				player = clientModel.players[i];
 				if(i==playerID) {
