@@ -32,14 +32,40 @@ catan.roll.Controller = (function roll_namespace(){
 			this.rollInterval = false;
 			this.showRollResult = false;
 			
+            this.updateFromModel();
 		};
+
+        RollController.prototype.updateFromModel = function() {
+          var model = this.getClientModel();
+          if (model.getTurnTracker().getStatus() == 'Rolling') {
+            if (model.getTurnTracker().getCurrentTurn() == model.getClientID()) {
+              var view = this.getView()
+              view.showModal();
+
+              var timeout = 5;
+              var counter = setInterval(tick, 1000);
+
+              function tick() {
+                view.changeMessage('rolling automagically in ' + timeout);
+                console.log(timeout);
+                timeout = timeout - 1;
+                if (timeout == 0) {
+                  clearInterval(counter);
+                  RollController.rollDice();
+                }
+              }
+            }
+          }
+        };
         
 		/**
-		 * This is called from the roll result view.  It should close the roll result view and allow the game to continue.
+		 * This is called from the roll result view.  
+         * It should close the roll result view and allow the game to continue.
 		 * @method closeResult
 		 * @return void
 		**/
 		RollController.prototype.closeResult = function(){
+          this.getRollResultView().closeModal();
 		}
 		
 		/**
@@ -48,6 +74,7 @@ catan.roll.Controller = (function roll_namespace(){
 		 * @return void
 		**/
 		RollController.prototype.rollDice = function(){
+          console.log("worked");
 		};
 		
 		return RollController;

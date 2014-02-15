@@ -13,7 +13,7 @@ $(function () {
 });
 
 function getModel(callback) {
-  $.get('/game/model', function(data, status, jqxhr) {
+  $.get('/game/reset', function(data, status, jqxhr) {
     callback(data);
   }).fail(function(jqxhr, text) {
     console.log("ahhh!!! couldn't get model!");
