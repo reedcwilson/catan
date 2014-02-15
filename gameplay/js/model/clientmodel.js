@@ -9,13 +9,14 @@
 var catan = catan || {};
 catan.models = catan.models || {};
 
-catan.models.ClientModel  = (function clientModelNameSpace() {
+catan.models.ClientModel  = (function clientModelNameSpace()
+{
     /** 
 	This the top-level client model class that contains the local player, map contents, etc.
 	
 	@class ClientModel
 	@constructor
-	@param {integer} playerID The id of the local player, extracted from the cookie
+	@param {integer} clientID The id of the local player, extracted from the cookie
     */
 	var ClientModel = (function ClientModelClass()
 	{ 
@@ -27,15 +28,15 @@ catan.models.ClientModel  = (function clientModelNameSpace() {
 		core.defineProperty(ClientModel.prototype, "longestRoad");
 		core.defineProperty(ClientModel.prototype, "map");
 		core.defineProperty(ClientModel.prototype, "players");
-		core.defineProperty(ClientModel.prototype, "playerID");
+		core.defineProperty(ClientModel.prototype, "clientID");
 		core.defineProperty(ClientModel.prototype, "proxy");
 		core.defineProperty(ClientModel.prototype, "tradeOffer");
 		core.defineProperty(ClientModel.prototype, "turnTracker");
 		core.defineProperty(ClientModel.prototype, "winner");
 		
-		function ClientModel(playerID)
+		function ClientModel(clientID)
 		{
-			this.setPlayerID(playerID);
+			this.setClientID(clientID);
 			this.setProxy(new catan.models.Proxy());
 		}      
         
@@ -51,7 +52,8 @@ catan.models.ClientModel  = (function clientModelNameSpace() {
 		ClientModel.prototype.initFromServer = function(success)
 		{
             // TODO: 1) fetch the game state from the server, 2) update the client model, 3) call the "success" function.
-			this.getProxy().getModel(this, success);
+			
+			this.getProxy().getModel(this.init, success);
 		}
 		
 		 /**
@@ -60,7 +62,7 @@ catan.models.ClientModel  = (function clientModelNameSpace() {
          * @method init
          * @param {JSON} model - The JSON model of the game.
          * */
-		ClientModel.prototype.init = function(model) 
+		ClientModel.prototype.init = function (model) 
 		{  
 			this.setChat(new catan.models.MessageList());			
 			this.setLog(new catan.models.MessageList());
@@ -71,6 +73,7 @@ catan.models.ClientModel  = (function clientModelNameSpace() {
 			var tempPlayers = [];			
 			for(var i = 0; i < model.players.length; i++)
 				tempPlayers[model.players[i].playerID] = new catan.models.Player();
+	
 			this.setPlayers(tempPlayers);
 			
 			this.update(model);			
@@ -93,11 +96,11 @@ catan.models.ClientModel  = (function clientModelNameSpace() {
 			this.getMap().setInfo(model.map);
 			this.getTradeOffer().setInfo(model.tradeOffer);
 			this.getTurnTracker().setInfo(model.turnTracker);
-			this.setWinner(model.winner);
+			this.setWinner(model.winner);			
 			
-			var players = this.getPlayers();
-			for(var i = 0; i < 4; i++)
-				players[model.players[i].playerID].setInfo(model.players[i]);
+			for(var i = 0; i < model.players.length; i++)
+				this.getPlayers()[model.players[i].playerID].setInfo(model.players[i]);			
+				
 		};	
 
 		//Queries
@@ -119,32 +122,32 @@ catan.models.ClientModel  = (function clientModelNameSpace() {
 		
 		ClientModel.prototype.needsToDiscard = function () 
 		{               
-			return this.getPlayers()[this.getPlayerID()].needsToDiscard();
+			return this.getPlayers()[this.getClientID()].needsToDiscard();
 		};
 		
 		ClientModel.prototype.hasResources = function (resourceList) 
 		{               
-			return this.getPlayers()[this.getPlayerID()].hasResources(resourceList);
+			return this.getPlayers()[this.getClientID()].hasResources(resourceList);
 		};
 		
 		ClientModel.prototype.canPlayDevCard = function (devCard) 
 		{               
-			return this.getPlayers()[this.getPlayerID()].canPlayDevCard(devCard);
+			return this.getPlayers()[this.getClientID()].canPlayDevCard(devCard);
 		};
 		
 		ClientModel.prototype.getResources = function () 
 		{               
-			return this.getPlayers()[this.getPlayerID()].getResources();
+			return this.getPlayers()[this.getClientID()].getResources();
 		};
 		
 		ClientModel.prototype.canOfferTrade = function () 
 		{               
-			return this.getPlayers()[this.getPlayerID()].canOfferTrade(this.getTradeOffer());
+			return this.getPlayers()[this.getClientID()].canOfferTrade(this.getTradeOffer());
 		};
 		
 		ClientModel.prototype.canAcceptTrade = function () 
 		{               
-			return this.getPlayers()[this.getPlayerID()].canAcceptTrade(this.getTradeOffer());
+			return this.getPlayers()[this.getClientID()].canAcceptTrade(this.getTradeOffer());
 		};
 		
 		// Proxy Calls	
