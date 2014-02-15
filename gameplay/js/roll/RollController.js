@@ -19,7 +19,7 @@ catan.roll.Controller = (function roll_namespace(){
 		 * @param{roll.View} view
 		 * @param{roll.ResultView} resultView
 		 * @param{models.ClientModel} clientModel
-		 */
+		 */ 
 	var RollController = (function RollController_Class(){
 		
 		core.forceClassInherit(RollController,Controller);
@@ -31,8 +31,35 @@ catan.roll.Controller = (function roll_namespace(){
 			Controller.call(this,view,clientModel);
 			this.rollInterval = false;
 			this.showRollResult = false;
-			
+			this.updateFromModel();
 		};
+
+
+        RollController.prototype.updateFromModel = function(){
+			var model = this.getClientModel();
+			if(model.getTurnTracker().getStatus() == 'Rolling') {
+				if(model.getTurnTracker().getCurrentTurn() == model.getClientID()){
+					this.getView().showModal();
+					this.getView().changeMessage('5');
+
+					var timeout = 5;
+					var counter = setInterval(tick, 1000);
+
+					function tick() {
+						view.changeMessage(timeout + " Meows");
+						console.log(timeout + " Meows");
+						timout = timeout -1;
+						if(timeout == 0) {
+							console.log('Cancelled');
+							clearInterval(counter);
+							this.rollDice();
+						}
+					}
+					
+					//counter = setInterval(timer, 1000);
+				}
+			}
+        }
         
 		/**
 		 * This is called from the roll result view.  It should close the roll result view and allow the game to continue.
@@ -40,6 +67,7 @@ catan.roll.Controller = (function roll_namespace(){
 		 * @return void
 		**/
 		RollController.prototype.closeResult = function(){
+			this.getRollResultView().closeModal();
 		}
 		
 		/**
@@ -48,6 +76,7 @@ catan.roll.Controller = (function roll_namespace(){
 		 * @return void
 		**/
 		RollController.prototype.rollDice = function(){
+			console.log('meow');
 		};
 		
 		return RollController;
