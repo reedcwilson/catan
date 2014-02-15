@@ -3,6 +3,7 @@ module("initialization");
 test( "MessageList Print Message", function() {
   var testbest = new catan.models.MessageList();
   testbest.setInfo(({lines:[{message: "hey", source: "jake"}]}));
+
   ok(testbest.getLines()[0].getMessage() == "hey", "successfully printed message");
 
 });
