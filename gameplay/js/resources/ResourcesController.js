@@ -37,17 +37,8 @@ catan.resources.Controller = (function resources_namespace() {
 		function ResourceBarController(view,clientModel,actions){
 			this.setActions(actions);
 			Controller.call(this,view,clientModel);
-			var player = clientModel.players[clientModel.playerID];
-			for (var resource in player.resources) {
-				view.updateAmount(resource, player.resources[resource]);
-			}
-			view.updateAmount("Roads", player.roads);
-			view.updateAmount("Settlements", player.settlements);
-			view.updateAmount("Cities", player.cities);
-			//TODO Finish correct amounts
-			view.updateAmount("BuyCard", 0);
-			view.updateAmount("DevCards", 0);
-			view.updateAmount("Soldiers", player.soldiers);
+			view.setController(this);
+			this.initFromModel();
 		};
 
 		core.forceClassInherit(ResourceBarController,Controller);
@@ -56,6 +47,23 @@ catan.resources.Controller = (function resources_namespace() {
         
 		core.defineProperty(ResourceBarController.prototype, "Actions");
 
+		ResourceBarController.prototype.initFromModel = function() {
+			var clientModel = this.getClientModel();
+			var view = this.getView();
+			var player = clientModel.players[clientModel.playerID];
+			for (var resource in player.resources) {
+				console.log(resource, player.resources[resource]);
+				view.updateAmount(resource, player.resources[resource]);
+			}
+			view.updateAmount("Roads", player.roads);
+			view.updateAmount(SETTLEMENT, player.settlements);
+			view.updateAmount("Cities", player.cities);
+			//TODO Finish correct amounts
+			view.updateAmount("BuyCard", 1);
+			view.updateAmount("DevCards", 0);
+			view.updateAmount("Soldiers", player.soldiers);
+			
+		};
 		/**
 		 * The action to take on clicking the resource bar road button. Brings up the map 
 		 * overlay and allows you to place a road.

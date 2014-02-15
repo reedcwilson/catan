@@ -70,7 +70,6 @@ catan.comm.View = (function () {
 		 message(the contents of the line), and className(the color of the object)	 
 	*/
 	CommView.prototype.resetLines = function(lines){
-		console.log(JSON.stringify(lines, null, 2));
 		var isDifferent = lines.length - this.getOutputElem().getLines().length > 0;
 		
 		this.getOutputElem().setLines([]);

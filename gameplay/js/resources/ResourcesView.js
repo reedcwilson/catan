@@ -63,6 +63,7 @@ catan.resources.View = function resources_namespace() {
 		 * @return void
 		 */
 		ResourceBarView.prototype.updateAmount = function(value, amount){
+			console.log(this, this.getDisplayValues());
 			var elemNum = this.getDisplayValues().indexOf(value);
 			if(elemNum != -1)
 				this.getDisplayElems()[elemNum].updateLabel(amount);

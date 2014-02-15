@@ -66,7 +66,7 @@ catan.client = (function Client_NameSpace(){
 			
 			var view = new Views.Resources();
 			var controller = new Controllers.Resources(view,model,buildMoves);
-			view.setController(controller);
+			//view.setController(controller);
 			
 			views.resources = view;
 			controllers.resources = controller;

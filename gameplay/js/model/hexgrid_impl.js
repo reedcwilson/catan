@@ -359,8 +359,16 @@ catan.models.Map = (function mapNameSpace(){
 		CatanHex.prototype.setInfo = function(hexJSON){
 			this.setIsLand(hexJSON.isLand);
 			if(hexJSON.isLand){
-				this.setLandType(hexJSON.landtype);
+				if(hexJSON.landtype == undefined) {
+					this.setLandType('desert');
+				}
+				else {
+					this.setLandType(hexJSON.landtype);
+				}
 				this.setIsPort(false);
+			}
+			else {
+				this.setLandType('water');
 			}
 			this.setVertexInfo(hexJSON.vertexes);
 			this.setEdgeInfo(hexJSON.edges);

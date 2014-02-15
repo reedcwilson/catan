@@ -40,31 +40,26 @@ catan.map.Controller = (function catan_controller_namespace() {
 			this.setModalView(modalView);
 			this.setRobView(robView);
 			//TODO: Finish inital init of the map
-			this.loadHexes(view, model);
+			this.initFromModel();
 		}
-
-		MapController.prototype.loadHexes = function(view, model){
-			var hexes = model.map.hexgrid.hexes;
+		MapController.prototype.initFromModel = function(){
+			view = this.getView();
+			var map = this.getClientModel().getMap();
+			var hexes = map.hexgrid.getHexes();
+			var ports = map.getPorts();
 			//TODO: Finish inital init of the map
-			for(var x in hexes) {
-				for(var y in hexes[x]){
-					hex = hexes[x][y];
-					hexLocation =  new catan.models.hexgrid.HexLocation(hex.location.x, hex.location.y);
-					var type;
-					if(hex.isLand == false) {
-						type = 'water';
-					}
-					else if(hex.landType == undefined) {
-						type = 'desert'
-					}
-					else {
-						type = hex.landType.toLowerCase();
-					}
-					type = type.toLowerCase();
-					view.addHex(hexLocation, type);
-				}
-			}
+			hexes.map(function (hex) {
+				var hexType = hex.getLandType();
+				hexType = hexType.toLowerCase();
+				view.addHex(hex.getLocation(), hexType);
+			});
+			ports.map(function (port) {
+				//load ports here using view.makePort();
+			});
+			//you will probably want to make a call to the update from model function to load roads and such.
         }
+		//TODO: updateFromModel()
+        
         /**
 		 This method is called by the Rob View when a player to rob is selected via a button click.
 		 @param {Integer} orderID The index (0-3) of the player who is to be robbed
@@ -89,6 +84,7 @@ catan.map.Controller = (function catan_controller_namespace() {
 		 * @return void
 		**/	
 		MapController.prototype.startDoubleRoadBuilding = function(){
+			this.getModalView().showModal();
 		}
 		
         

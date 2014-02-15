@@ -25,6 +25,14 @@ catan.turntracker.Controller = (function turntracker_namespace() {
 	
 		function TurnTrackerController(view, clientModel){
 			Controller.call(this,view,clientModel);
+			this.loadModel(view, clientModel);
+            // NOTE: The view.updateViewState and view.updatePlayer will not work if called from here.  Instead, these
+            //          methods should be called later each time the client model is updated from the server.
+		}
+
+		core.forceClassInherit(TurnTrackerController,Controller);
+
+		TurnTrackerController.prototype.loadModel = function(view, clientModel) {
 			playerID = clientModel.playerID;
             for(var i in clientModel.players) {
 				player = clientModel.players[i];
@@ -33,11 +41,7 @@ catan.turntracker.Controller = (function turntracker_namespace() {
 				}
 				view.initializePlayer(i, player.name, player.color);
             }
-            // NOTE: The view.updateViewState and view.updatePlayer will not work if called from here.  Instead, these
-            //          methods should be called later each time the client model is updated from the server.
 		}
-
-		core.forceClassInherit(TurnTrackerController,Controller);
 
 		/**
 		 * Called by the view when the local player ends their turn.

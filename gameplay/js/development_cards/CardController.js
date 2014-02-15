@@ -32,6 +32,14 @@ catan.devCards.Controller = (function(){
 		function DevCardController(view, buyView, clientModel, soldierAction, roadAction){
 			Controller.call(this,view,clientModel);
 			this.setBuyView(buyView);
+			this.initFromModel();
+		}
+
+		DevCardController.prototype.initFromModel = function(){
+			var clientModel = this.getClientModel();
+			var view = this.getView();
+			console.log(view);
+			//view.updateAmount('soldier', 2);
 		}
 		
 		/**
@@ -75,6 +83,7 @@ catan.devCards.Controller = (function(){
 		 * @return void
 		 */
 		DevCardController.prototype.useSoldier= function(){
+			this.getView().closeModal();
 		}
         
 		/**
@@ -83,6 +92,8 @@ catan.devCards.Controller = (function(){
 		 * @return void
 		 */
 		DevCardController.prototype.useRoadBuild = function(resource){
+			console.log('You Used a Road Build Card!');
+			this.getView().closeModal();
 		}
 
 		return DevCardController;

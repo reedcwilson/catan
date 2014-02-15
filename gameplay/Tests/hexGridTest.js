@@ -53,7 +53,9 @@ test("Test Hex Storage", function() {
 			hexJSON = model.map.hexGrid.hexes[x][y];
 			hexPiece = map.hexgrid.getHex(new catan.models.hexgrid.HexLocation(hexJSON.location.x, hexJSON.location.y));
 			hexPiece.setInfo(hexJSON);
-			ok(hexPiece.getLandType() == hexJSON.landtype, "The land types are the same!");
+			if(hexJSON.landtype != undefined) {
+				ok(hexPiece.getLandType() == hexJSON.landtype, "The land types are the same!");
+			}
 		}
 	}
 });

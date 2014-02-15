@@ -28,6 +28,21 @@ catan.comm.Controller = (function () {
 		function BaseCommController(logView, model){
 			Controller.call(this,logView,model);
 		}
+
+		//BROKEN Consider changing the way client model loads the logs or chat and get it to add the className = player.color;
+		BaseCommController.prototype.initFromModel = function(type) {
+			var mylog = this.getClientModel().type.lines;
+			mylog.map(function (logpiece) {
+				model.players.map(function (player) {
+					if(player.name == logpiece.source) {
+						logpiece.className = player.color;		
+					}
+				});
+			});
+			if(mylog.length != undefined) {
+				logView.resetLines(mylog);
+			}
+		}
 		
 		return BaseCommController;
 	}());
@@ -48,13 +63,18 @@ catan.comm.Controller = (function () {
 		**/
 		function LogController(logView,model){
 			BaseCommController.call(this,logView,model);
-			//TODO Fix
-			var mylog = model.log;
-			for(var each in mylog) {
-				mylog[each].className = 'red';
-				console.log(mylog[each].className);
+			//TODO Redundant code with the chatControllor
+			var mylog = model.log.lines;
+			mylog.map(function (logpiece) {
+				model.players.map(function (player) {
+					if(player.name == logpiece.source) {
+						logpiece.className = player.color;		
+					}
+				});
+			});
+			if(mylog.length != undefined) {
+				logView.resetLines(mylog);
 			}
-			logView.resetLines(mylog);
 		}
         
 		return LogController;
@@ -76,11 +96,14 @@ catan.comm.Controller = (function () {
 		**/
 		function ChatController(chatView,model){
 			BaseCommController.call(this,chatView,model);
-			var chat = model.chat;
-			for(var each in chat) {
-				chat[each]['className'] = 'red';
-			}
-			chatView.resetLines(chat);
+			/**var chat = model.chat;
+			chat.map(function (chatLine){
+				//TODO Get right player color
+				chatLine['className'] = 'red'
+			});
+			if(chat.length != undefined) {
+				chatView.resetLines(chat);
+			}*/
 		}
         
 		/**
