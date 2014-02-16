@@ -112,12 +112,7 @@ catan.comm.Controller = (function () {
 		**/
 		ChatController.prototype.addLine = function(lineContents){
 			var clientModel = this.getClientModel();
-			var proxy = clientModel.getProxy();
-			console.log(clientModel.getClientID());
-			var command = new catan.models.CommandObject({type:"sendChat",playerIndex:clientModel.getClientID(), content:lineContents});
-			proxy.send(command, function(){});
-			
-			
+			clientModel.sendMove({type:"sendChat",playerIndex:clientModel.getClientID(), content:lineContents});		
 		};
 		
 		return ChatController;

@@ -54,8 +54,9 @@ catan.models.ClientModel  = (function clientModelNameSpace()
             // TODO: 1) fetch the game state from the server, 2) update the client model, 3) call the "success" function.
 			
 			this.getProxy().getModel(this, success);
+			self = this;
 		}
-		
+		var self;
 		 /**
          * This is called to initialize the ClientModel member variables.
          * 
@@ -87,19 +88,19 @@ catan.models.ClientModel  = (function clientModelNameSpace()
          * */
 		ClientModel.prototype.update = function (model) 
 		{               
-			this.setBank(model.bank);
-			this.setBiggestArmy(model.biggestArmy);
-			this.getChat().setInfo(model.chat);
-			this.setDeck(model.deck);
-			this.getLog().setInfo(model.log);
-			this.setLongestRoad(model.longestRoad);
-			this.getMap().setInfo(model.map);
-			this.getTradeOffer().setInfo(model.tradeOffer);
-			this.getTurnTracker().setInfo(model.turnTracker);
-			this.setWinner(model.winner);			
+			self.setBank(model.bank);
+			self.setBiggestArmy(model.biggestArmy);
+			self.getChat().setInfo(model.chat);
+			self.setDeck(model.deck);
+			self.getLog().setInfo(model.log);
+			self.setLongestRoad(model.longestRoad);
+			self.getMap().setInfo(model.map);
+			self.getTradeOffer().setInfo(model.tradeOffer);
+			self.getTurnTracker().setInfo(model.turnTracker);
+			self.setWinner(model.winner);			
 			
 			for(var i = 0; i < model.players.length; i++)
-				this.getPlayers()[model.players[i].playerID].setInfo(model.players[i]);			
+				self.getPlayers()[model.players[i].playerID].setInfo(model.players[i]);			
 				
 		};	
 
@@ -154,7 +155,7 @@ catan.models.ClientModel  = (function clientModelNameSpace()
 		
 		ClientModel.prototype.sendMove = function (data) 
 		{    
-			this.getProxy().send(new CommandObject(data), this.update);
+			this.getProxy().send(new catan.models.CommandObject(data), this.update);
 		};	
         
 		return ClientModel;
