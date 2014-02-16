@@ -34,7 +34,7 @@ catan.roll.Controller = (function roll_namespace(){
 			
             this.updateFromModel();
 		};
-
+		var counter;
         RollController.prototype.updateFromModel = function() {
           var model = this.getClientModel();
           if (model.getTurnTracker().getStatus() == 'Rolling') {
@@ -43,15 +43,14 @@ catan.roll.Controller = (function roll_namespace(){
               view.showModal();
 
               var timeout = 5;
-              var counter = setInterval(tick, 1000);
+              counter = setInterval(tick, 1000);
 
               function tick() {
-                view.changeMessage('rolling automagically in ' + timeout);
-                console.log(timeout);
+                view.changeMessage('Rolling automagically in ' + timeout);
                 timeout = timeout - 1;
                 if (timeout == 0) {
                   clearInterval(counter);
-                  RollController.rollDice();
+                  view.rollDice();
                 }
               }
             }
@@ -65,7 +64,7 @@ catan.roll.Controller = (function roll_namespace(){
 		 * @return void
 		**/
 		RollController.prototype.closeResult = function(){
-          this.getRollResultView().closeModal();
+         	this.getRollResultView().closeModal();
 		}
 		
 		/**
@@ -74,7 +73,8 @@ catan.roll.Controller = (function roll_namespace(){
 		 * @return void
 		**/
 		RollController.prototype.rollDice = function(){
-          console.log("worked");
+			clearInterval(counter);
+			this.getView().closeModal();
 		};
 		
 		return RollController;

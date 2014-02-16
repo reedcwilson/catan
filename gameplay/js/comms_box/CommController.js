@@ -29,9 +29,20 @@ catan.comm.Controller = (function () {
 			Controller.call(this,logView,model);
 		}
 
-		//BROKEN Consider changing the way client model loads the logs or chat and get it to add the className = player.color;
-		BaseCommController.prototype.initFromModel = function(type) {
-			var mylog = this.getClientModel().type.lines;
+		/**
+			Function called by the log and chat controllers updateFromModel
+			Updates the log or chat model depending on the type send in
+			@param {string} type The type of what you want to update 'log' for the log and 'chat' for the 'chat'
+		**/
+		BaseCommController.prototype.internalUpdate = function(type) {
+			var model = this.getClientModel();
+			var mylog;
+			if(type == 'log') {
+				mylog = model.getLog().getLines();
+			}
+			else {
+				mylog = model.getChat().getLines();
+			}		
 			mylog.map(function (logpiece) {
 				model.players.map(function (player) {
 					if(player.name == logpiece.source) {
@@ -40,7 +51,7 @@ catan.comm.Controller = (function () {
 				});
 			});
 			if(mylog.length != undefined) {
-				logView.resetLines(mylog);
+				this.getView().resetLines(mylog);
 			}
 		}
 		
@@ -63,18 +74,10 @@ catan.comm.Controller = (function () {
 		**/
 		function LogController(logView,model){
 			BaseCommController.call(this,logView,model);
-			//TODO Redundant code with the chatControllor
-			var mylog = model.log.lines;
-			mylog.map(function (logpiece) {
-				model.players.map(function (player) {
-					if(player.name == logpiece.source) {
-						logpiece.className = player.color;		
-					}
-				});
-			});
-			if(mylog.length != undefined) {
-				logView.resetLines(mylog);
-			}
+		}
+
+		LogController.prototype.updateFromModel = function(){
+			this.internalUpdate('log');
 		}
         
 		return LogController;
@@ -96,14 +99,10 @@ catan.comm.Controller = (function () {
 		**/
 		function ChatController(chatView,model){
 			BaseCommController.call(this,chatView,model);
-			/**var chat = model.chat;
-			chat.map(function (chatLine){
-				//TODO Get right player color
-				chatLine['className'] = 'red'
-			});
-			if(chat.length != undefined) {
-				chatView.resetLines(chat);
-			}*/
+		}
+
+		ChatController.prototype.updateFromModel = function(){
+			this.internalUpdate('chat');
 		}
         
 		/**
@@ -112,6 +111,13 @@ catan.comm.Controller = (function () {
 		@param {String} lineContents The contents of the submitted string
 		**/
 		ChatController.prototype.addLine = function(lineContents){
+			var clientModel = this.getClientModel();
+			var proxy = clientModel.getProxy();
+			console.log(clientModel.getClientID());
+			var command = new catan.models.CommandObject({type:"sendChat",playerIndex:clientModel.getClientID(), content:lineContents});
+			proxy.send(command, function(){});
+			
+			
 		};
 		
 		return ChatController;

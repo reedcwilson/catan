@@ -28,12 +28,16 @@ catan.points.Controller = (function VPController_Class(){
 	function PointController(view, gameFinishedView, clientModel){
 		this.setGameFinishedView(gameFinishedView);
 		Controller.call(this,view,clientModel);
-		this.loadModel(view, clientModel);
+		this.updateFromModel();
 	}
 
-	PointController.prototype.loadModel = function(view, clientModel){
+	PointController.prototype.updateFromModel = function(){
+		var clientModel = this.getClientModel();
 		var playerID = clientModel.clientID;
-		view.setPoints(clientModel.players[playerID].victoryPoints);
+		this.getView().setPoints(clientModel.players[playerID].victoryPoints);
+		if(clientModel.players[playerID].victoryPoints >= 10) {
+			this.getGameFinishedView().showModal();
+		}
 	}
 	
 	return PointController;	

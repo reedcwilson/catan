@@ -208,6 +208,7 @@ catan.client = (function Client_NameSpace(){
 		var ClientModel = catan.models.ClientModel;
 
 		core.defineProperty(CatanGame.prototype, "ClientModel");
+		core.defineProperty(CatanGame.prototype, "ObserverSubject");
         
         function getClientIDFromCookie(){
             return JSON.parse(decodeURIComponent(Cookies.get("catan.user"))).playerID;
@@ -215,6 +216,7 @@ catan.client = (function Client_NameSpace(){
         
 		function CatanGame(){
 			this.setClientModel(new ClientModel(getClientIDFromCookie()));
+			this.setObserverSubject(new catan.core.Subject());
 		}        
         
         // called when the dom is loaded
@@ -222,12 +224,13 @@ catan.client = (function Client_NameSpace(){
 			this.getClientModel().initFromServer(
 				core.makeAnonymousAction(this,this.makeViewsAndControllers,undefined));
 		}	
-		
+
         // adds all the controllers as listeners to the client model
 		CatanGame.prototype.makeViewsAndControllers = function makeViewsAndControllers(){
 			var views = {}
 			var controllers = {}
 			var model = this.getClientModel();
+			var obsSubject = this.getObserverSubject();
 			ViewIniter.initAll(views,controllers,model);
 			this.views = views;
 			this.controllers = controllers;
@@ -236,8 +239,13 @@ catan.client = (function Client_NameSpace(){
 
                     var controller = controllers[name];
                     // implement adding listeners here
+                    obsSubject.addObserver(controller);
+                    controller.initFromModel();
                 }
             }())
+            setInterval(function(){
+				obsSubject.notify();
+            },5000);
 		};
 		
         
