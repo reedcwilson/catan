@@ -60,7 +60,6 @@ catan.core.Subject = (function Subject_Class(){
 
 	Subject.prototype.notify = function(context){
 		var observerCount = this.observers.count();
-		console.log("Notifying:");
 		for(var i=0; i<observerCount; i++){
 			this.observers.get(i).updateFromModel(context);
 		}

@@ -32,15 +32,12 @@ catan.devCards.Controller = (function(){
 		function DevCardController(view, buyView, clientModel, soldierAction, roadAction){
 			Controller.call(this,view,clientModel);
 			this.setBuyView(buyView);
-			this.initFromModel();
 		}
 
 		DevCardController.prototype.initFromModel = function(){
 			var clientModel = this.getClientModel();
 			var view = this.getView();
-			console.log(view);
-			//view.updateAmount('soldier', 2);
-		}
+			}
 		
 		/**
 		 * Called when the player buys a development card

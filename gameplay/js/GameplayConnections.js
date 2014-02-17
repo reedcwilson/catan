@@ -236,11 +236,8 @@ catan.client = (function Client_NameSpace(){
 			this.controllers = controllers;
 			(function(){
                 for( name in controllers){         
-
                     var controller = controllers[name];
-                    // implement adding listeners here
                     obsSubject.addObserver(controller);
-                    controller.initFromModel();
                 }
             }())
             setInterval(function(){

@@ -22,6 +22,7 @@ catan.core.BaseController = (function baseControllerClass(){
 	function BaseController(view,clientModel){
 		this.setView(view);
 		this.setClientModel(clientModel);
+		this.initFromModel();
 	};
 	
 	core.forceClassInherit(BaseController, catan.core.Observer);
