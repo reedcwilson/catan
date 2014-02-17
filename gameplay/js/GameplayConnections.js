@@ -209,6 +209,7 @@ catan.client = (function Client_NameSpace(){
 
 		core.defineProperty(CatanGame.prototype, "ClientModel");
 		core.defineProperty(CatanGame.prototype, "ObserverSubject");
+		core.defineProperty(CatanGame.prototype, "PreviousModel");
         
         function getClientIDFromCookie(){
             return JSON.parse(decodeURIComponent(Cookies.get("catan.user"))).playerID;
@@ -223,14 +224,18 @@ catan.client = (function Client_NameSpace(){
 		CatanGame.prototype.domLoaded = function domLoaded(){
 			this.getClientModel().initFromServer(
 				core.makeAnonymousAction(this,this.makeViewsAndControllers,undefined));
+			this.setPreviousModel(this.getClientModel());
 		}	
 
+	
+		
         // adds all the controllers as listeners to the client model
 		CatanGame.prototype.makeViewsAndControllers = function makeViewsAndControllers(){
 			var views = {}
 			var controllers = {}
 			var model = this.getClientModel();
 			var obsSubject = this.getObserverSubject();
+			var previousModel = this.getPreviousModel();
 			ViewIniter.initAll(views,controllers,model);
 			this.views = views;
 			this.controllers = controllers;
@@ -241,8 +246,15 @@ catan.client = (function Client_NameSpace(){
                 }
             }())
             setInterval(function(){
+            	if(previousModel === model){
+            		console.log("They were the same");	
+				}
+				else if(previousModel !== model){
+					console.log("They were not the same");
+					//notify
+				}
 				obsSubject.notify();
-            },5000);
+            },1000);
 		};
 		
         

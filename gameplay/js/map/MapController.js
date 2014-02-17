@@ -60,7 +60,7 @@ catan.map.Controller = (function catan_controller_namespace() {
 					inputResource = "three";
 				}
 				inputResource = inputResource.toLowerCase();
-				var portLoc = new catan.map.View.PortLoc(port.location.x,port.location.y,1);
+				var portLoc = new catan.map.View.PortLoc(port.location.x,port.location.y,port.validVertex1.location.getDirection());
 				view.addPort(portLoc,inputResource, true);
 			});
 			//Load Numbers
@@ -77,27 +77,45 @@ catan.map.Controller = (function catan_controller_namespace() {
 			var view = this.getView();
 			view.placeRobber(model.map.getRobber());
 			var hexes = model.map.hexgrid.getHexes();
+			var self = this;
 			hexes.map(function (hex){
-				hex.edges.map(function (edge){
+				//load roads
+				hex.edges.map(function (edge) {
 					var owner = edge.ownerID;
-					if(owner != -1){
-						view.placeRoad(edge.location,owner,true);
+					if(owner != -1) {
+						var player = self.loadPersonByIndex(owner);
+						view.placeRoad(edge.location,player.color,true);
 					}
 				});
+				//load cities and settlements
 				hex.vertexes.map(function (vertex){
 					var owner = vertex.ownerID;
 					if(owner != -1){
+						var player = self.loadPersonByIndex(owner);
 						if(vertex.worth == 1){
-							console.log('placing settlement');
-							view.placeSettlement(vertex.location,owner,true);
+							view.placeSettlement(vertex.location,player.color,true);
 						}
 						else if(vertex.worth == 2){
-							view.placeCity(vertex.location,owner,true);
+							view.placeCity(vertex.location,player.color,true);
 						}
 					}
 				});
 			});
         }
+
+		/**
+			This method will return the play at the specific index.  For example if index is 3 it will get the 4th player whose ID might be 11.
+		*/
+		MapController.prototype.loadPersonByIndex = function(index){
+			var myint = -1;
+			for(var newplayer in this.getClientModel().players)
+			{
+				myint++;
+				if(myint == index) {
+					return this.getClientModel().players[newplayer];
+				}
+			}
+		}
         
         /**
 		 This method is called by the Rob View when a player to rob is selected via a button click.

@@ -31,8 +31,6 @@ catan.roll.Controller = (function roll_namespace(){
 			Controller.call(this,view,clientModel);
 			this.rollInterval = false;
 			this.showRollResult = false;
-			
-            this.updateFromModel();
 		};
 		var counter;
         RollController.prototype.updateFromModel = function() {

@@ -38,7 +38,21 @@ catan.resources.Controller = (function resources_namespace() {
 			this.setActions(actions);
 			Controller.call(this,view,clientModel);
 			view.setController(this);
-			this.initFromModel();
+			this.settlementResources = new Array();
+			this.settlementResources['wood'] = 1;
+			this.settlementResources['brick'] = 1;
+			this.settlementResources['sheep'] = 1;
+			this.settlementResources['wheat'] = 1;
+			this.roadResources = new Array();
+			this.roadResources["brick"] = 1;
+			this.roadResources['wood'] = 1;
+			this.cityResources = new Array();
+			this.cityResources['wheat'] = 2;
+			this.cityResources['ore'] = 3;
+			this.devCardResources = new Array();
+			this.devCardResources['sheep'] = 1;
+			this.devCardResources['wheat'] = 1;
+			this.devCardResources['ore'] = 1;
 		};
 
 		core.forceClassInherit(ResourceBarController,Controller);
@@ -46,8 +60,12 @@ catan.resources.Controller = (function resources_namespace() {
 		ResourceBarController.prototype.constructor = ResourceBarController;
         
 		core.defineProperty(ResourceBarController.prototype, "Actions");
+		core.defineProperty(ResourceBarController.prototype, "roadResources");
+		core.defineProperty(ResourceBarController.prototype, "settlementResources");
+		core.defineProperty(ResourceBarController.prototype, "cityResources");
+		core.defineProperty(ResourceBarController.prototype, "devCardResources");
 
-		ResourceBarController.prototype.initFromModel = function() {
+		ResourceBarController.prototype.updateFromModel = function() {
 			var clientModel = this.getClientModel();
 			var view = this.getView();
 			var player = clientModel.players[clientModel.clientID];
@@ -55,11 +73,32 @@ catan.resources.Controller = (function resources_namespace() {
 				view.updateAmount(resource, player.resources[resource]);
 			}
 			view.updateAmount("Roads", player.roads);
+			if(player.hasResources(this.roadResources)) {
+				view.setActionEnabled("Roads", true);
+			}
+			else {
+				view.setActionEnabled("Roads", false);
+			}
 			view.updateAmount(SETTLEMENT, player.settlements);
+			if(player.hasResources(this.settlementResources)) {
+				view.setActionEnabled("Settlements", true);
+			}
+			else {
+				view.setActionEnabled("Settlements", false);
+			}
 			view.updateAmount("Cities", player.cities);
-			//TODO Finish correct amounts
-			view.updateAmount("BuyCard", 1);
-			view.updateAmount("DevCards", 0);
+			if(player.hasResources(this.cityResources)) {
+				view.setActionEnabled("Cities", true);
+			}
+			else {
+				view.setActionEnabled("Cities", false);
+			}
+			if(player.hasResources(this.devCardResources)) {
+				view.setActionEnabled("BuyCard", true);
+			}
+			else {
+				view.setActionEnabled("BuyCard", false);
+			}
 			view.updateAmount("Soldiers", player.soldiers);
 			
 		};
