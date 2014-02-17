@@ -102,7 +102,7 @@ catan.client = (function Client_NameSpace(){
 			overlayView.setCancelAllowed(true);
 			
 			var controller = new Controllers.Map(view,overlayView, model,robberView);
-			view.setController(controller);
+			//view.setController(controller);
 			overlayView.setController(controller);
 			robberView.setController(controller);
 			

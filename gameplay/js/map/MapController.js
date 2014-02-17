@@ -39,26 +39,65 @@ catan.map.Controller = (function catan_controller_namespace() {
 			catan.core.BaseController.call(this,view,model);
 			this.setModalView(modalView);
 			this.setRobView(robView);
-			//TODO: Finish inital init of the map
-			this.initFromModel();
+			view.setController(this);
 		}
 		MapController.prototype.initFromModel = function(){
 			view = this.getView();
 			var map = this.getClientModel().getMap();
 			var hexes = map.hexgrid.getHexes();
 			var ports = map.getPorts();
-			//TODO: Finish inital init of the map
+			var numbers = map.getNumbers();
+			//Load Hexes
 			hexes.map(function (hex) {
 				var hexType = hex.getLandType();
 				hexType = hexType.toLowerCase();
 				view.addHex(hex.getLocation(), hexType);
 			});
+			//Load Ports
 			ports.map(function (port) {
-				//load ports here using view.makePort();
+				var inputResource = port.inputResource;
+				if(inputResource == undefined) {
+					inputResource = "three";
+				}
+				inputResource = inputResource.toLowerCase();
+				var portLoc = new catan.map.View.PortLoc(port.location.x,port.location.y,1);
+				view.addPort(portLoc,inputResource, true);
 			});
-			//you will probably want to make a call to the update from model function to load roads and such.
+			//Load Numbers
+			for(var number in numbers) {
+				numbers[number].map(function (newNumber) {
+					view.addNumber(newNumber, number, true);
+				});
+			}
+			this.updateFromModel();
         }
-		//TODO: updateFromModel()
+
+        MapController.prototype.updateFromModel = function(){
+			var model = this.getClientModel();
+			var view = this.getView();
+			view.placeRobber(model.map.getRobber());
+			var hexes = model.map.hexgrid.getHexes();
+			hexes.map(function (hex){
+				hex.edges.map(function (edge){
+					var owner = edge.ownerID;
+					if(owner != -1){
+						view.placeRoad(edge.location,owner,true);
+					}
+				});
+				hex.vertexes.map(function (vertex){
+					var owner = vertex.ownerID;
+					if(owner != -1){
+						if(vertex.worth == 1){
+							console.log('placing settlement');
+							view.placeSettlement(vertex.location,owner,true);
+						}
+						else if(vertex.worth == 2){
+							view.placeCity(vertex.location,owner,true);
+						}
+					}
+				});
+			});
+        }
         
         /**
 		 This method is called by the Rob View when a player to rob is selected via a button click.
