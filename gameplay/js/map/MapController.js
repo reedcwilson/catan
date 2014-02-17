@@ -84,7 +84,9 @@ catan.map.Controller = (function catan_controller_namespace() {
 					var owner = edge.ownerID;
 					if(owner != -1) {
 						var player = self.loadPersonByIndex(owner);
-						view.placeRoad(edge.location,player.color,true);
+						var dir = edge.location.getDir();
+						var noDraw = dir !== "S" && dir !== "SE" && dir !== "SW";
+						view.placeRoad(edge.location,player.color,noDraw);
 					}
 				});
 				//load cities and settlements
@@ -93,10 +95,10 @@ catan.map.Controller = (function catan_controller_namespace() {
 					if(owner != -1){
 						var player = self.loadPersonByIndex(owner);
 						if(vertex.worth == 1){
-							view.placeSettlement(vertex.location,player.color,true);
+							view.placeSettlement(vertex.location,player.color,false);
 						}
 						else if(vertex.worth == 2){
-							view.placeCity(vertex.location,player.color,true);
+							view.placeCity(vertex.location,player.color,false);
 						}
 					}
 				});

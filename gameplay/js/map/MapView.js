@@ -345,7 +345,7 @@ catan.map.View = (function makeMapView(){
 		LocFactory.prototype.getEdgeCenter = function getEdgeCenter(edgeLoc){
 			var hexCenter = this.getHexCenter(edgeLoc);
 			var diff;
-			switch (edgeLoc.dir){
+			switch (edgeLoc.getDir()){
 				case "SW":
 					hexCenter.x = hexCenter.x - this.getRadius()*0.75;
 					hexCenter.y = hexCenter.y + this.getHexHeight()/4;

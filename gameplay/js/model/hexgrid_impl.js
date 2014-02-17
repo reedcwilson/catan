@@ -312,12 +312,18 @@ catan.models.Map = (function mapNameSpace(){
     }()); 
     
 	catan.models.hexgrid.EdgeLocation.prototype.getDir = function() {
-		return this.getDirection();
+		return edLookup[this.getDirection()];
 	}
 
 	catan.models.hexgrid.VertexLocation.prototype.getDir = function() {
-		return this.getDirection();
+		return vdLookup[this.getDirection()];
 	}
+
+    var edLookup = ["NW","N","NE","SE","S","SW"]
+	var EdgeDirection = core.numberEnumeration(edLookup);
+
+    var vdLookup = ["W","NW","NE","E","SE","SW"]
+	var VertexDirection = core.numberEnumeration(vdLookup);
     
     /**
 	This class represents a Hex. You may add any methods that you need (e.g., to get the resource/hex type, etc.)
