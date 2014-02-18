@@ -31,18 +31,31 @@ catan.turntracker.Controller = (function turntracker_namespace() {
 
 		core.forceClassInherit(TurnTrackerController,Controller);
 
-		//Only needs to be called once, on load
+		TurnTrackerController.prototype.initFromModel = function() {
+			var clientModel = this.getClientModel();
+			var playerID = clientModel.getClientID();
+			var view = this.getView();
+			clientModel.players.map(function (player) {
+				if(player.getPlayerID() == clientModel.getClientID()) {
+					view.setClientColor(player.color);
+				}
+				view.initializePlayer(player.getPlayerID(), player.name, player.color);
+			});
+			this.updateFromModel();
+		}
+
 		TurnTrackerController.prototype.updateFromModel = function() {
 			var clientModel = this.getClientModel();
 			var playerID = clientModel.getClientID();
 			var view = this.getView();
-            for(var i in clientModel.players) {
-				player = clientModel.players[i];
-				if(i==playerID) {
-					view.setClientColor(player.color);
-				}
-				view.initializePlayer(i, player.name, player.color);
-            }
+			var self = this;
+			clientModel.players.map(function (player){
+				var myHighlight = self.isCurrentTurn(player.getPlayerID());
+				view.updatePlayer({playerIndex:player.getPlayerID(),score:player.victoryPoints,highlight:myHighlight,army:player.largestArmy,road:player.longestRoad});
+            });
+            //if(this.isCurrentTurn()) {
+            	view.updateStateView(true, "End Turn");
+            //}
 		}
 
 		/**
@@ -51,6 +64,7 @@ catan.turntracker.Controller = (function turntracker_namespace() {
 		 * @return void
 		 */
 		TurnTrackerController.prototype.endTurn = function(){
+			this.getClientModel().sendMove({type:"finishTurn",playerIndex:this.getClientModel().getClientID()});
 		}
 		
 		return TurnTrackerController;

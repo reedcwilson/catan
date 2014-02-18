@@ -37,7 +37,6 @@ catan.resources.Controller = (function resources_namespace() {
 		function ResourceBarController(view,clientModel,actions){
 			this.setActions(actions);
 			Controller.call(this,view,clientModel);
-			view.setController(this);
 			this.settlementResources = new Array();
 			this.settlementResources['wood'] = 1;
 			this.settlementResources['brick'] = 1;
@@ -53,6 +52,7 @@ catan.resources.Controller = (function resources_namespace() {
 			this.devCardResources['sheep'] = 1;
 			this.devCardResources['wheat'] = 1;
 			this.devCardResources['ore'] = 1;
+			console.log(clientModel);
 		};
 
 		core.forceClassInherit(ResourceBarController,Controller);

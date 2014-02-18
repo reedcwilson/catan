@@ -73,6 +73,7 @@ catan.turntracker.View = (function turntracker_namespace(){
 		TurnTrackerView.prototype.initializePlayer = function(playerNumber, playerName, playerColor){
 			var displayElem = new DisplayElement.TurnTrackerPlayerElement(playerName, playerColor);
 			this.getDisplayElems()[playerNumber] = (displayElem);
+
 			
 		}
 
@@ -104,13 +105,14 @@ catan.turntracker.View = (function turntracker_namespace(){
 		 */
 		TurnTrackerView.prototype.updateStateView = function(enable, message){
 			var stateElem = this.getStateElem();
-			
+			if(stateElem != undefined){
 			stateElem.setMessage(message);
 			
 			if(enable)
 				stateElem.enable();
 			else
 				stateElem.disable();
+				}
 		}
 		
 		var buildView = function(){

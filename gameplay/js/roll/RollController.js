@@ -25,17 +25,20 @@ catan.roll.Controller = (function roll_namespace(){
 		core.forceClassInherit(RollController,Controller);
  
 		core.defineProperty(RollController.prototype,"rollResultView");
+		core.defineProperty(RollController.prototype,"rolling");
 		
 		function RollController(view,resultView, clientModel){
 			this.setRollResultView(resultView);
 			Controller.call(this,view,clientModel);
 			this.rollInterval = false;
 			this.showRollResult = false;
+			this.rolling = false;
 		};
 		var counter;
         RollController.prototype.updateFromModel = function() {
           var model = this.getClientModel();
-          if (model.getTurnTracker().getStatus() == 'Rolling') {
+          if (model.getTurnTracker().getStatus() == 'Rolling' && this.rolling != true) {
+          this.rolling = true;
             if (model.getTurnTracker().getCurrentTurn() == model.getClientID()) {
               var view = this.getView()
               view.showModal();
@@ -61,10 +64,11 @@ catan.roll.Controller = (function roll_namespace(){
 		 * @method closeResult
 		 * @return void
 		**/
+		var roll;
 		RollController.prototype.closeResult = function(){
          	this.getRollResultView().closeModal();
          	var clientModel = this.getClientModel();
-         	//clientModel.sendMove({type:"
+         	clientModel.sendMove({type:"rollNumber",playerIndex:this.getClientModel().getClientID(),number:roll});
 		}
 		
 		/**
@@ -75,7 +79,8 @@ catan.roll.Controller = (function roll_namespace(){
 		RollController.prototype.rollDice = function(){
 			clearInterval(counter);
 			this.getView().closeModal();
-			this.getRollResultView().setAmount(4);
+			roll = Math.floor(Math.random() * 12) + 2;
+			this.getRollResultView().setAmount(roll);
 			this.getRollResultView().showModal();
 		};
 		

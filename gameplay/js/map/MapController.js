@@ -104,20 +104,6 @@ catan.map.Controller = (function catan_controller_namespace() {
 				});
 			});
         }
-
-		/**
-			This method will return the play at the specific index.  For example if index is 3 it will get the 4th player whose ID might be 11.
-		*/
-		MapController.prototype.loadPersonByIndex = function(index){
-			var myint = -1;
-			for(var newplayer in this.getClientModel().players)
-			{
-				myint++;
-				if(myint == index) {
-					return this.getClientModel().players[newplayer];
-				}
-			}
-		}
         
         /**
 		 This method is called by the Rob View when a player to rob is selected via a button click.

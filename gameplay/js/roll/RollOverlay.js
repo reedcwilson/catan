@@ -80,7 +80,7 @@ catan.roll.View = (function roll_namespace(){
         RollView.prototype.changeMessage = function(message){
             var msgElem = this.getMessageElem();
             msgElem.textContent = message;
-            jQuery(".roll-area label")[0].innerHTML = message;
+            //jQuery(".roll-area label")[0].innerHTML = message;
         };
        
         return RollView;
