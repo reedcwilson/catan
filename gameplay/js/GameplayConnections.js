@@ -235,7 +235,6 @@ catan.client = (function Client_NameSpace(){
 			var controllers = {}
 			var model = this.getClientModel();
 			var obsSubject = this.getObserverSubject();
-			var previousModel = this.getPreviousModel();
 			ViewIniter.initAll(views,controllers,model);
 			this.views = views;
 			this.controllers = controllers;
@@ -246,13 +245,6 @@ catan.client = (function Client_NameSpace(){
                 }
             }())
             setInterval(function(){
-            	if(previousModel === model){
-            		console.log("They were the same");	
-				}
-				else if(previousModel !== model){
-					console.log("They were not the same");
-					//notify
-				}
 				obsSubject.notify();
             },1000);
 		};

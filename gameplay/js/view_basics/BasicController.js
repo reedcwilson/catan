@@ -44,6 +44,18 @@ catan.core.BaseController = (function baseControllerClass(){
 		}
 	}
 
+	BaseController.prototype.loadIndexByClientID = function(clientID) {
+		var myint = -1;
+		for(var player in this.getClientModel().players)
+		{
+			myint++;
+			if(clientID == this.getClientModel().players[player].playerID){
+				return myint;
+			}
+		}
+		return -1;
+	}
+
 	/**
 		Takes the playerID as input and sees if it is that player's current turn
 	*/
