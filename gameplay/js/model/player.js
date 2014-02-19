@@ -126,7 +126,12 @@ catan.models.Player = (function playerNameSpace() {
 			@return {bool} whether he can play a dev card
 		*/
   		Player.prototype.canPlayDevCard = function(devCard){
-			return this.oldDevCards[devCard] > 0;
+  			if(devCard == "monument") {
+				return this.oldDevCards[devCard] > 0 || this.newDevCards[devCard] > 0;
+  			}
+  			else {
+				return this.oldDevCards[devCard] > 0 && !this.playedDevCard;
+			}
   		}
 
 		/**

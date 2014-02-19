@@ -142,6 +142,7 @@ catan.map.Controller = (function catan_controller_namespace() {
 		 * @return void
 		**/	
 		MapController.prototype.startMove = function (pieceType,free,disconnected){
+			console.log("Building: " + pieceType);
 		};
         
 		/**

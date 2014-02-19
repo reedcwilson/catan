@@ -43,7 +43,7 @@ catan.resources.Controller = (function resources_namespace() {
 			this.settlementResources['sheep'] = 1;
 			this.settlementResources['wheat'] = 1;
 			this.roadResources = new Array();
-			this.roadResources["brick"] = 1;
+			this.roadResources['brick'] = 1;
 			this.roadResources['wood'] = 1;
 			this.cityResources = new Array();
 			this.cityResources['wheat'] = 2;
@@ -73,27 +73,27 @@ catan.resources.Controller = (function resources_namespace() {
 				view.updateAmount(resource, player.resources[resource]);
 			}
 			view.updateAmount("Roads", player.roads);
-			if(player.hasResources(this.roadResources)) {
+			if(player.hasResources(this.roadResources) && this.isCurrentTurn(player.playerID)) {
 				view.setActionEnabled("Roads", true);
 			}
 			else {
 				view.setActionEnabled("Roads", false);
 			}
 			view.updateAmount(SETTLEMENT, player.settlements);
-			if(player.hasResources(this.settlementResources)) {
+			if(player.hasResources(this.settlementResources) && this.isCurrentTurn(player.playerID)) {
 				view.setActionEnabled("Settlements", true);
 			}
 			else {
 				view.setActionEnabled("Settlements", false);
 			}
 			view.updateAmount("Cities", player.cities);
-			if(player.hasResources(this.cityResources)) {
+			if(player.hasResources(this.cityResources) && this.isCurrentTurn(player.playerID)) {
 				view.setActionEnabled("Cities", true);
 			}
 			else {
 				view.setActionEnabled("Cities", false);
 			}
-			if(player.hasResources(this.devCardResources)) {
+			if(player.hasResources(this.devCardResources) && this.isCurrentTurn(player.playerID)) {
 				view.setActionEnabled("BuyCard", true);
 			}
 			else {

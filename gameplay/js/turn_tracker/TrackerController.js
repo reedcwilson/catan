@@ -53,7 +53,7 @@ catan.turntracker.Controller = (function turntracker_namespace() {
 				var myHighlight = self.isCurrentTurn(player.getPlayerID());
 				view.updatePlayer({playerIndex:player.getPlayerID(),score:player.victoryPoints,highlight:myHighlight,army:player.largestArmy,road:player.longestRoad});
             });
-            if(this.isCurrentTurn(playerID) && clientModel.turnTracker.status == "Playing") {
+            if(this.isCurrentTurn(playerID) && clientModel.turnTracker.status != "Rolling") {
             	view.updateStateView(true, "End Turn");
             }
             else{
