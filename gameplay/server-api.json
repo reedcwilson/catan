@@ -144,6 +144,19 @@
         "description": "Get a list of the AI players"
     },
     {
+        "args": [
+            {
+                "name": "logLevel",
+                "description": "",
+                "type": "STRING"
+            }
+        ],
+        "url": "/util/changeLogLevel",
+        "method": "POST",
+        "description": "Set's the server's log level ( ALL, SEVERE, WARNING ,INFO, CONFIG, FINE, FINER, FINEST, OFF) ",
+        "type": "FORM"
+    },
+    {
         "args": [],
         "url": "/moves/sendChat",
         "method": "POST",
@@ -165,6 +178,22 @@
             "type": "rollNumber",
             "playerIndex": -1,
             "number": -1
+        }
+    },
+    {
+        "args": [],
+        "url": "/moves/robPlayer",
+        "method": "POST",
+        "description": "Moves the robber, selecting the new robber position and player to rob.",
+        "type": "JSON",
+        "template": {
+            "type": "robPlayer",
+            "playerIndex": -1,
+            "victimIndex": -1,
+            "robberSpot": {
+                "x": "",
+                "y": ""
+            }
         }
     },
     {
@@ -233,7 +262,7 @@
             "type": "Soldier",
             "playerIndex": -1,
             "victimIndex": -1,
-            "robberSpot": {
+            "location": {
                 "x": "",
                 "y": ""
             }
@@ -342,6 +371,20 @@
             "type": "acceptTrade",
             "playerIndex": -1,
             "willAccept": false
+        }
+    },
+    {
+        "args": [],
+        "url": "/moves/maritimeTrade",
+        "method": "POST",
+        "description": "Accept or reject a trade offered to you.",
+        "type": "JSON",
+        "template": {
+            "type": "maritimeTrade",
+            "playerIndex": -1,
+            "ratio": -1,
+            "inputResource": "",
+            "outputResource": ""
         }
     },
     {

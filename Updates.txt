@@ -1,4 +1,9 @@
-
+02-18-14
+Modified the joinGame.html to submit the form correctly so that using random tiles, ports and numbers placement actually works
+Modified the server to use "location" instead of "robberSpot" in the PlaceRobber API endpoint to make it consistent with the Soldier endpoint
+Fixed the MapView.js to get rid of an assert that it had been throwing
+Removed images from the partial zip to make it smaller. 
+Fixed the server-api file included in the zip for the Maritime trade command
 
 01-31-14
 Updated all the files to have a '//DO NOT EDIT THIS' comment at the top of the file

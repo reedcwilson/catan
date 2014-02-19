@@ -39,25 +39,27 @@ catan.turntracker.Controller = (function turntracker_namespace() {
 				if(player.getPlayerID() == clientModel.getClientID()) {
 					view.setClientColor(player.color);
 				}
-				view.initializePlayer(player.getPlayerID(), player.name, player.color);
+				view.initializePlayer(player.getOrderNumber(), player.name, player.color);
 			});
 			this.updateFromModel();
 		}
 
 		TurnTrackerController.prototype.updateFromModel = function() {
 			var clientModel = this.getClientModel();
-			var playerID = clientModel.getClientID();
+			var playerID = this.loadIndexByClientID(clientModel.getClientID());
 			var view = this.getView();
 			var self = this;
 			clientModel.players.map(function (player){
-				var myHighlight = self.isCurrentTurn(player.getPlayerID());
-				view.updatePlayer({playerIndex:player.getPlayerID(),score:player.victoryPoints,highlight:myHighlight,army:player.largestArmy,road:player.longestRoad});
+				var myHighlight = self.isCurrentTurn(player.getOrderNumber());
+				view.updatePlayer({playerIndex:player.getOrderNumber(),score:player.victoryPoints,highlight:myHighlight,army:player.largestArmy,road:player.longestRoad});
             });
-            if(this.isCurrentTurn(playerID) && clientModel.turnTracker.status != "Rolling") {
-            	view.updateStateView(true, "End Turn");
-            }
-            else{
-				view.updateStateView(false, "Waiting for other Players...");
+            if(view.getStateElem() != undefined){
+            	if(this.isCurrentTurn(playerID) && clientModel.turnTracker.status != "Rolling") {
+            		view.updateStateView(true, "End Turn");
+            	}
+            	else{
+					view.updateStateView(false, "Waiting for other Players...");
+            	}
             }
 		}
 

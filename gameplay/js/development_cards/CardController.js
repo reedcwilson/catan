@@ -48,8 +48,9 @@ catan.devCards.Controller = (function()
 		DevCardController.prototype.updateFromModel = function()
 		{			
 			var clientModel = this.getClientModel();
-			var view = this.getView();			
-			var player = clientModel.players[clientModel.clientID];
+			var view = this.getView();	
+					
+			var player = clientModel.players[this.loadIndexByClientID(clientModel.clientID)];
 			
 			view.updateAmount("soldier", player.newDevCards.soldier + player.oldDevCards.soldier);
 			view.updateAmount("yearOfPlenty", player.newDevCards.yearOfPlenty + player.oldDevCards.yearOfPlenty);

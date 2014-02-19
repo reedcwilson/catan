@@ -1,4 +1,3 @@
-<!--STUDENT-CORE-BEGIN-->
 <!DOCTYPE html>
 <html lang="en">
 	<head>
@@ -66,9 +65,9 @@
 			<div class="modal-body">
 				<form id="make-game" method="post" action="/games/create">
 					<label>Title: </label><input type="text" name="name">
-					<label class="checkbox"><input type="checkbox" name="randomTiles"> Randomly place Numbers</label>
-					<label class="checkbox"><input type="checkbox" name="randomHexes"> Randomly place Hexes</label>
-					<label class="checkbox"><input type="checkbox" name="randomtile"> Use Random ports</label>
+					<label class="checkbox"><input type="checkbox" value=true name="randomTiles"> Randomly place Numbers</label>
+					<label class="checkbox"><input type="checkbox" value=true name="randomHexes"> Randomly place Hexes</label>
+					<label class="checkbox"><input type="checkbox" value=true name="randomtile"> Use Random ports</label>
 				</form>
 			</div>
 			<div class="modal-footer">
@@ -90,5 +89,6 @@
 		</div>			
 	</body>
 </html>
+
 
 

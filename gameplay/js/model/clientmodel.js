@@ -73,7 +73,7 @@ catan.models.ClientModel  = (function clientModelNameSpace()
 						
 			var tempPlayers = [];			
 			for(var i = 0; i < model.players.length; i++)
-				tempPlayers[model.players[i].playerID] = new catan.models.Player();
+				tempPlayers[model.players[i].orderNumber] = new catan.models.Player();
 	
 			this.setPlayers(tempPlayers);
 			
@@ -100,7 +100,7 @@ catan.models.ClientModel  = (function clientModelNameSpace()
 			self.setWinner(model.winner);			
 			
 			for(var i = 0; i < model.players.length; i++)
-				self.getPlayers()[model.players[i].playerID].setInfo(model.players[i]);			
+				self.getPlayers()[model.players[i].orderNumber].setInfo(model.players[i]);			
 				
 		};	
 
