@@ -39,7 +39,8 @@ catan.roll.Controller = (function roll_namespace(){
           var model = this.getClientModel();
           if (model.getTurnTracker().getStatus() == 'Rolling' && this.rolling != true) {
           this.rolling = true;
-            if (model.getTurnTracker().getCurrentTurn() == model.getClientID()) {
+          var person = this.loadPersonByIndex(model.getTurnTracker().getCurrentTurn());
+            if (person.getPlayerID() == model.getClientID()) {
               var view = this.getView()
               view.showModal();
 
@@ -79,7 +80,8 @@ catan.roll.Controller = (function roll_namespace(){
 		RollController.prototype.rollDice = function(){
 			clearInterval(counter);
 			this.getView().closeModal();
-			roll = Math.floor(Math.random() * 12) + 2;
+			roll = Math.floor(Math.random() * 6) + 1;
+			roll += Math.floor(Math.random() * 6) + 1;
 			this.getRollResultView().setAmount(roll);
 			this.getRollResultView().showModal();
 		};

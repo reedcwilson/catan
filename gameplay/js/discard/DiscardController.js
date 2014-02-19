@@ -46,6 +46,8 @@ catan.discard.Controller = (function discard_namespace(){
 		 @return void
 		 */	
 		DiscardController.prototype.discard = function(){
+			var myPlayerIndex = this.loadIndexByClientID(this.getClientModel().getClientID());
+			this.getClientModel().sendMove({type:"discardCards",playerIndex:myPlayerIndex,discardedCards:resourceList});
 		}
         
 		/**
