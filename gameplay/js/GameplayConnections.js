@@ -209,7 +209,6 @@ catan.client = (function Client_NameSpace(){
 
 		core.defineProperty(CatanGame.prototype, "ClientModel");
 		core.defineProperty(CatanGame.prototype, "ObserverSubject");
-		core.defineProperty(CatanGame.prototype, "PreviousModel");
         
         function getClientIDFromCookie(){
             return JSON.parse(decodeURIComponent(Cookies.get("catan.user"))).playerID;
@@ -224,7 +223,6 @@ catan.client = (function Client_NameSpace(){
 		CatanGame.prototype.domLoaded = function domLoaded(){
 			this.getClientModel().initFromServer(
 				core.makeAnonymousAction(this,this.makeViewsAndControllers,undefined));
-			this.setPreviousModel(this.getClientModel());
 		}	
 
 	

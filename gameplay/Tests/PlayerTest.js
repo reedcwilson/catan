@@ -14,6 +14,10 @@ test("Test Player DevCards", function() {
 	ok(!player.canPlayDevCard("monopoly"), "Cannot play monopoly");
 	player.addDevCard("soldier");
 	ok(player.newDevCards["soldier"] == 1, "Successfully added a devCard");
+	player.addDevCard('monument');
+	ok(player.newDevCards['monument'] == 1, "Successfully added a devCard");
+	ok(player.canPlayDevCard('soldier') == false, "Can't play soldier");
+	ok(player.canPlayDevCard('monument') == true, "Can play monument");
 });
 
 test("Test Player Resource", function() {

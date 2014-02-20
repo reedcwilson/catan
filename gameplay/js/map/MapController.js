@@ -120,6 +120,7 @@ catan.map.Controller = (function catan_controller_namespace() {
 		 * @return void
 		**/		
 		MapController.prototype.doSoldierAction = function(){    
+			this.getModalView().showModal("Solider");
 		}
         
 		/**
@@ -129,7 +130,7 @@ catan.map.Controller = (function catan_controller_namespace() {
 		 * @return void
 		**/	
 		MapController.prototype.startDoubleRoadBuilding = function(){
-			this.getModalView().showModal();
+			this.getModalView().showModal("Road");
 		}
 		
         
@@ -142,6 +143,8 @@ catan.map.Controller = (function catan_controller_namespace() {
 		 * @return void
 		**/	
 		MapController.prototype.startMove = function (pieceType,free,disconnected){
+			console.log("Building: " + pieceType);
+			this.getModalView().showModal(pieceType);
 		};
         
 		/**
