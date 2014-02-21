@@ -33,6 +33,12 @@ catan.discard.Controller = (function discard_namespace(){
             
             waitingView.setController(this);
             this.setWaitingView(waitingView);
+         }
+
+		DiscardController.prototype.initFromModel = function() {
+		}
+
+		DiscardController.prototype.updateFromModel = function() {
 		}
 
 		core.forceClassInherit(DiscardController,Controller);
