@@ -74,8 +74,9 @@ catan.core.Observer = (function Observer_Class(){
 	}
 
 	Observer.prototype.updateFromModel = function(){};
+
 	Observer.prototype.initFromModel = function() {
-		this.updateFromModel();
+		// this.updateFromModel();
 	};
 	return Observer;
 }());
