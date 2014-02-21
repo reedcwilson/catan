@@ -86,7 +86,8 @@ catan.devCards.Controller = (function()
 		DevCardController.prototype.useYearOfPlenty = function(resource1, resource2)
 		{
 			var clientModel = this.getClientModel();			
-			clientModel.sendMove({type:'buyDevCard', playerIndex: clientModel.getTurnTracker().getCurrentTurn(), resource1: resource1, resource2: resource2});
+			clientModel.sendMove({type:'Year_of_Plenty', playerIndex: clientModel.getTurnTracker().getCurrentTurn(), resource1: resource1, resource2: resource2});
+			this.getView().closeModal();
 		}
         
 		/**
@@ -99,6 +100,8 @@ catan.devCards.Controller = (function()
 		{
 			var clientModel = this.getClientModel();			
 			clientModel.sendMove({type:'Monopoly', resource: resource, playerIndex: clientModel.getTurnTracker().getCurrentTurn()});
+			this.getView().closeModal();
+
 		}
         
 		/**
@@ -110,6 +113,8 @@ catan.devCards.Controller = (function()
 		{
 			var clientModel = this.getClientModel();			
 			clientModel.sendMove({type:'Monument', playerIndex: clientModel.getTurnTracker().getCurrentTurn()});
+			this.getView().closeModal();
+
 		}
         
 		/**

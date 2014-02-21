@@ -34,11 +34,13 @@ catan.discard.Controller = (function discard_namespace(){
             waitingView.setController(this);
             this.setWaitingView(waitingView);
 
+
             //waitingView.showModal();
             //view.showModal();
             console.log("clientModel", clientModel);
             
          }
+
 
 		DiscardController.prototype.initFromModel = function() {
 
