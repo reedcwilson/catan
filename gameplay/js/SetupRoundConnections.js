@@ -103,7 +103,7 @@ catan.client = (function Client_NameSpace(){
 			};
             
 			viewFunctionsInOrder.map(initView);
-            	
+
 			controllers.setup = new Controllers.Setup(clientModel, controllers.map);
 		}
 		
@@ -115,6 +115,7 @@ catan.client = (function Client_NameSpace(){
 		var ClientModel = catan.models.ClientModel;
 
 		core.defineProperty(CatanGame.prototype, "ClientModel");
+		core.defineProperty(CatanGame.prototype, "ObserverSubject");
 		
         function getClientIDFromCookie(){
             JSON.parse(decodeURIComponent(Cookies.get("catan.user"))).playerID;
@@ -122,6 +123,7 @@ catan.client = (function Client_NameSpace(){
         
 		function CatanGame(){
 			this.setClientModel(new ClientModel(getClientIDFromCookie()));
+			this.setObserverSubject(new catan.core.Subject());
 		}
 		
 		
@@ -134,16 +136,22 @@ catan.client = (function Client_NameSpace(){
 			var views = {}
 			var controllers = {}
 			var model = this.getClientModel();
+			var obsSubject = this.getObserverSubject();
+			if(model.turnTracker.status != "FirstRound" && model.turnTracker.status != "SecondRound") {
+				window.location = "catan.html"
+			}
 			ViewIniter.initAll(views,controllers,model);
 			this.views = views;
 			this.controllers = controllers;
 			(function(){
-                for( name in controllers){
+                for( name in controllers){         
                     var controller = controllers[name];
-                    // Add your Observer here
-                    console.log(controller);
+                    obsSubject.addObserver(controller);
                 }
             }())
+            setInterval(function(){
+				obsSubject.notify();
+            },1000);
 		};
 		
 		CatanGame.getPlayable = function(proxy){

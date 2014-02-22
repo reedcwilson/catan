@@ -26,7 +26,7 @@ catan.map.Controller = (function catan_controller_namespace() {
         
 		core.defineProperty(MapController.prototype,"robView");
 		core.defineProperty(MapController.prototype,"modalView");
-        
+        core.defineProperty(MapController.prototype,"printed");
         /**
 		 * @class MapController
 		 * @constructor
@@ -40,6 +40,7 @@ catan.map.Controller = (function catan_controller_namespace() {
 			this.setModalView(modalView);
 			this.setRobView(robView);
 			view.setController(this);
+			this.setPrinted(false);
 		}
 		MapController.prototype.initFromModel = function(){
 			view = this.getView();
@@ -93,6 +94,10 @@ catan.map.Controller = (function catan_controller_namespace() {
 				hex.vertexes.map(function (vertex){
 					var owner = vertex.ownerID;
 					if(owner != -1){
+						if(self.getPrinted() == false)
+						{
+							console.log(vertex.location);
+						}
 						var player = self.loadPersonByIndex(owner);
 						if(vertex.worth == 1){
 							view.placeSettlement(vertex.location,player.color,false);
@@ -103,6 +108,10 @@ catan.map.Controller = (function catan_controller_namespace() {
 					}
 				});
 			});
+			this.setPrinted(true);
+			if(model.getTurnTracker.status == "Robbing"){
+				this.getRobView().showModal();
+			}
         }
         
         /**

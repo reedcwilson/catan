@@ -21,9 +21,12 @@ catan.models.Proxy = (function() {
 		@return (JSON) the model of the game
 	*/
 
-	Proxy.prototype.send = function(CommandObject, update){
+	Proxy.prototype.send = function(CommandObject, update, observerNotify){
 			jQuery.post(CommandObject.url, JSON.stringify(CommandObject.type), function(data){
 				update(data);
+				if(observerNotifty != undefined){
+					observerNotify();
+				}
 		});			
 	};
 

@@ -153,9 +153,9 @@ catan.models.ClientModel  = (function clientModelNameSpace()
 		
 		// Proxy Calls	
 		
-		ClientModel.prototype.sendMove = function (data) 
+		ClientModel.prototype.sendMove = function (data, observerNotify) 
 		{    
-			this.getProxy().send(new catan.models.CommandObject(data), this.update);
+			this.getProxy().send(new catan.models.CommandObject(data), this.update, observerNotify);
 		};	
         
 		return ClientModel;

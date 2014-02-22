@@ -56,7 +56,6 @@ catan.trade.maritime.Controller = (function trade_namespace()
 					//view.showGiveOptions(["wood","brick","sheep","wheat","ore"]);
 					view.showGiveOptions(hand);				
 					view.hideGetOptions();
-					
 					if(hand.length != 0)
 						view.setMessage("Choose what to give");
 					else
