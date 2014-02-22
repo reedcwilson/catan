@@ -26,6 +26,10 @@ catan.setup.Controller = (function(){
 			
 			Controller.call(this,undefined,clientModel);
 		};
+
+        SetupRoundController.prototype.updateFromModel = function (){
+          console.log("working");
+        }
         
 		core.forceClassInherit(SetupRoundController,Controller);
         

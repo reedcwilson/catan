@@ -25,21 +25,22 @@ catan.roll.Controller = (function roll_namespace(){
 		core.forceClassInherit(RollController,Controller);
  
 		core.defineProperty(RollController.prototype,"rollResultView");
-		core.defineProperty(RollController.prototype,"rolling");
+		// core.defineProperty(RollController.prototype,"rolling");
 		
 		function RollController(view, resultView, clientModel){
 			this.setRollResultView(resultView);
 			Controller.call(this,view,clientModel);
 			this.rollInterval = false;
 			this.showRollResult = false;
-			this.rolling = false;
+			// this.rolling = false;
 		};
 
 		var counter;
         RollController.prototype.updateFromModel = function() {
           var model = this.getClientModel();
-          if (model.getTurnTracker().getStatus() == 'Rolling' && this.rolling != true) {
-            this.rolling = true;
+          var turnTracker = model.getTurnTracker();
+          if (turnTracker.getStatus() == 'Rolling' && turnTracker.rollStatus == "NeedsRoll") {
+            turnTracker.rollStatus = "Rolling";
             var person = this.loadPersonByIndex(model.getTurnTracker().getCurrentTurn());
 
             if (person.getPlayerID() == model.getClientID()) {
@@ -72,9 +73,6 @@ catan.roll.Controller = (function roll_namespace(){
          	this.getRollResultView().closeModal();
          	var clientModel = this.getClientModel();
          	clientModel.sendMove({type:"rollNumber",playerIndex:this.getClientModel().getClientID(),number:roll});
-         	if(roll == 7) {
-				//TODO: Open Robber Overlay!
-         	}
 		}
 		
 		/**
