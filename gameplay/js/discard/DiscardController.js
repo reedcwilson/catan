@@ -24,6 +24,8 @@ catan.discard.Controller = (function discard_namespace(){
      * @param{models.ClientModel} clientModel
      */
 	var DiscardController = (function DiscardController_Class(){
+
+
 			
 		function DiscardController(view, waitingView, clientModel){
         
@@ -37,21 +39,29 @@ catan.discard.Controller = (function discard_namespace(){
 
             //waitingView.showModal();
             //view.showModal();
-            console.log("clientModel", clientModel);
+            //console.log("clientModel", clientModel);
+           // console.log("resource types", ResourceTypes);
+           // console.log("defnitions", Definitions);
             
          }
-
-
-		DiscardController.prototype.initFromModel = function() {
-
-		}
-
-		DiscardController.prototype.updateFromModel = function() {
-		}
 
 		core.forceClassInherit(DiscardController,Controller);
 
 		core.defineProperty(DiscardController.prototype,"waitingView");
+
+		DiscardController.prototype.initFromModel = function() {
+			this.updateFromModel();
+
+		}
+
+		DiscardController.prototype.updateFromModel = function() {
+			//is turn tracker status Discarding?
+			var clientModel = this.getClientModel();
+			var playerID = clientModel.clientID;
+			var player = clientModel.players[this.loadIndexByClientID(playerID)];
+			//if(player.resources)
+			//console.log("player",player);
+		}
 
 		/**
 		 Called by the view when the player clicks the discard button.

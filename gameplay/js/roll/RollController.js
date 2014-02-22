@@ -86,6 +86,10 @@ catan.roll.Controller = (function roll_namespace(){
 			roll = Math.floor(Math.random() * 6) + 1;
 			roll += Math.floor(Math.random() * 6) + 1;
 			this.getRollResultView().setAmount(roll);
+			if(roll == 7)
+			{
+				//TODO: Open Discard Overlay
+			}
 			this.getRollResultView().showModal();
 		};
 		

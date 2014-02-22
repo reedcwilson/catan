@@ -101,6 +101,7 @@ catan.resources.Controller = (function resources_namespace() {
 			}
 			view.updateAmount("Soldiers", player.soldiers);
 			
+			
 		};
 		
 		/**
