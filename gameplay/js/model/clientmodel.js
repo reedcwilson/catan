@@ -151,6 +151,25 @@ catan.models.ClientModel  = (function clientModelNameSpace()
 			return this.getPlayers()[this.getClientID()].canAcceptTrade(this.getTradeOffer());
 		};
 		
+		ClientModel.prototype.getTradingPartners = function () 
+		{               
+			var partners = [];
+			var players = this.getPlayers();
+			
+			for(var player in players)
+			{
+				if(players[player].getPlayerID() != this. getClientID())
+				{
+					var partner = new Object();
+					partner.name = players[player].getName();
+					partner.color = players[player].getColor();
+					partner.index = players[player].getPlayerID();
+					partners.push(partner);
+				}				
+			}
+			return partners;
+		};
+		
 		// Proxy Calls	
 		
 		ClientModel.prototype.sendMove = function (data) 

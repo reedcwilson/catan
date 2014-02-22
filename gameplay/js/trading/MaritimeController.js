@@ -52,8 +52,7 @@ catan.trade.maritime.Controller = (function trade_namespace()
 			if(this.isCurrentTurn(player.playerID))
 			{
 				if(!trading)
-				{
-					//view.showGiveOptions(["wood","brick","sheep","wheat","ore"]);
+				{					
 					view.showGiveOptions(hand);				
 					view.hideGetOptions();
 					
@@ -79,7 +78,7 @@ catan.trade.maritime.Controller = (function trade_namespace()
 			
 			temp["wood"] 	= 4;
 			temp["brick"] 	= 4;
-			temp["sheep"] 	= 3;
+			temp["sheep"] 	= 4;
 			temp["wheat"] 	= 4;
 			temp["ore"] 	= 4;
 			
@@ -163,11 +162,10 @@ catan.trade.maritime.Controller = (function trade_namespace()
 		MaritimeController.prototype.makeTrade= function()
 		{
 			var client = this.getClientModel();
-			var player = client.players[this.loadIndexByClientID(client.clientID)];
-			//var ratio = ports;
+			var player = client.players[this.loadIndexByClientID(client.clientID)];			
 			
 			trading = false;
-			alert("Traded " + ports[resourceGive] + " " + resourceGive + " for 1 " + resourceGet);
+			//alert("Traded " + ports[resourceGive] + " " + resourceGive + " for 1 " + resourceGet);
 			client.sendMove({type:'maritimeTrade', playerIndex: player.playerID, ratio: ports[resourceGive], inputResource: resourceGive, outputResource: resourceGet});			
 		}
 		
