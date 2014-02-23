@@ -208,7 +208,7 @@ catan.models.Player = (function playerNameSpace() {
 catan.models.TradeOffer = (function TradeOfferSpace() {
 
 		core.defineProperty(TradeOffer.prototype, "sender");
-		core.defineProperty(TradeOffer.prototype, "reciever");
+		core.defineProperty(TradeOffer.prototype, "receiver");
 		core.defineProperty(TradeOffer.prototype, "offer");
   		/**
     		The tradeOffer class contains the information about trading
@@ -224,7 +224,7 @@ catan.models.TradeOffer = (function TradeOfferSpace() {
 			<pre>
 				PRE: tradeOfferJSON is a valid JSON format with the correct info
 				POST: this.sender = JSON.sender
-				POST: this.reciever = JSON.reciever
+				POST: this.receiver = JSON.receiver
 				POST: this.offer = JSON.offer
 			</pre>
 			@method setInfo
