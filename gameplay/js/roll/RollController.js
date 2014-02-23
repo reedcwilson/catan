@@ -70,6 +70,8 @@ catan.roll.Controller = (function roll_namespace(){
          	this.getRollResultView().closeModal();
          	var clientModel = this.getClientModel();
          	clientModel.sendMove({type:"rollNumber",playerIndex:this.getClientModel().getClientID(),number:roll});
+
+
          	if(roll == 7) {
 				//TODO: Open Robber Overlay!
          	}
