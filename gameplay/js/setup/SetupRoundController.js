@@ -8,9 +8,12 @@
 var catan = catan || {};
 catan.setup= catan.setup || {};
 
-catan.setup.Controller = (function(){
+catan.setup.Controller = (function Setup_Class(){
 	
 	var Controller = catan.core.BaseController;
+
+    SetupRoundController.prototype = core.inherit(Controller.prototype);
+    core.defineProperty(SetupRoundController.prototype, "MapController");
     
 	/** 
 		@class SetupRoundController
@@ -19,24 +22,24 @@ catan.setup.Controller = (function(){
 		@param {models.ClientModel} clientModel
 		@param {map.MapController} mapController
 	*/
-	var SetupRoundController = (function (){
-		
-		var SetupRoundController = function (clientModel, mapController){
-			this.mapController = mapController;
-			
+	function SetupRoundController(clientModel, mapController) {
 			Controller.call(this,undefined,clientModel);
-		};
-
-		SetupRoundController.prototype.updateFromModel = function() {
-			this.mapController.getView().showModal();
-			console.log("hey");
+			this.setMapController(mapController);
+			this.updateFromModel();
+	}
+	
+	SetupRoundController.prototype.updateFromModel = function() {
+		var model = this.getClientModel();
+		if(this.getMapController() != undefined) {
+			var cookie = document.cookie;
+			console.log(cookie);
+			if(this.isCurrentTurn(model.clientID))
+			{
+				this.getMapController().startMove("road", true, true);
+			}
 		}
-        
-		core.forceClassInherit(SetupRoundController,Controller);
-        
-		return SetupRoundController;
-	}());
-    
+	};
+
 	return SetupRoundController;
 }());
 

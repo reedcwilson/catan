@@ -24,7 +24,7 @@ catan.models.Proxy = (function() {
 	Proxy.prototype.send = function(CommandObject, update, observerNotify){
 			jQuery.post(CommandObject.url, JSON.stringify(CommandObject.type), function(data){
 				update(data);
-				if(observerNotifty != undefined){
+				if(observerNotify != undefined){
 					observerNotify();
 				}
 		});			
@@ -42,6 +42,13 @@ catan.models.Proxy = (function() {
 	Proxy.prototype.getModel = function(clientmodel, success){
 		jQuery.get("/game/model", function(data){
 			clientmodel.init(data);
+			success(data);
+		});
+	};
+
+	Proxy.prototype.getCoolModel = function(clientmodel, success){
+		jQuery.get("/game/model", function(data){
+			clientmodel.update(data);
 			success(data);
 		});
 	};

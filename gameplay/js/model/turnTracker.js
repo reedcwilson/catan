@@ -14,6 +14,7 @@ catan.models.TurnTracker = (function TurnTrackerClass() {
 
     core.defineProperty(TurnTracker.prototype, "currentTurn");
     core.defineProperty(TurnTracker.prototype, "status");
+    core.defineProperty(TurnTracker.prototype, "rollStatus");
 
     function TurnTracker() {
     }
@@ -31,7 +32,7 @@ catan.models.TurnTracker = (function TurnTrackerClass() {
     TurnTracker.prototype.setInfo = function(turnJSON) {
         this.setStatus(turnJSON.status);
         this.setCurrentTurn(turnJSON.currentTurn);
-    }
+    };
 
 	return TurnTracker;
 }());

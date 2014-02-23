@@ -108,12 +108,16 @@ catan.map.Controller = (function catan_controller_namespace() {
 					}
 				});
 			});
-			this.setPrinted(true);
-			if(model.getTurnTracker.status == "Robbing"){
-				this.getRobView().showModal();
+			
+			if(model.getTurnTracker().status == "Robbing"){
+				if(this.getModalView() && this.getPrinted() == false)
+				{
+					this.setPrinted(true);
+					//this.getModalView().showModal("Robber");
+				}
 			}
         }
-        
+
         /**
 		 This method is called by the Rob View when a player to rob is selected via a button click.
 		 @param {Integer} orderID The index (0-3) of the player who is to be robbed
@@ -176,6 +180,7 @@ catan.map.Controller = (function catan_controller_namespace() {
 		 @return {boolean} Whether or not the given piece can be placed at the current location.
 		*/
 		MapController.prototype.onDrag = function (loc, type) {
+			return true;
 		};
 
 		/**
@@ -188,7 +193,12 @@ catan.map.Controller = (function catan_controller_namespace() {
 		*/
 		MapController.prototype.onDrop = function (loc, type) {
 		};
-        
+
+/**		var MapState = function() {
+
+			return MapState;
+		} ());
+        */
 		return MapController;
 	} ());
 

@@ -203,3 +203,19 @@ test( "Can Place City", function() {
   canPlace = map.canPlaceCity(vertex, 1);
   ok(canPlace == true, "user can now place city on settlement");
 });
+
+test( "Get best ratio", function() {
+  expect(2);
+
+  var map = new catan.models.Map(model.map.radius);
+  map.setInfo(model.map);
+
+  var playerId = 1;
+  map.ports[1].validVertex1.ownerID = playerId;
+  var ratio = map.getBestRatio("ore", playerId);
+  ok(ratio == 4, "player doesn't get any advantage from this port using ore");
+
+  ratio = map.getBestRatio("wheat", playerId);
+  ok(ratio == 2, "player gets an advantage from this port using wheat");
+});
+

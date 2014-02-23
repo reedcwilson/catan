@@ -243,6 +243,8 @@ catan.client = (function Client_NameSpace(){
                 }
             }())
             setInterval(function(){
+            	//console.log(obsSubject);
+            	//model.getProxy().getCoolModel(model, obsSubject.notify);
 				obsSubject.notify();
             },1000);
 		};

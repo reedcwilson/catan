@@ -126,7 +126,6 @@ catan.client = (function Client_NameSpace(){
 			this.setObserverSubject(new catan.core.Subject());
 		}
 		
-		
 		CatanGame.prototype.domLoaded = function domLoaded(){
 			this.getClientModel().initFromServer(
 				core.makeAnonymousAction(this,this.makeViewsAndControllers,undefined));
@@ -149,9 +148,9 @@ catan.client = (function Client_NameSpace(){
                     obsSubject.addObserver(controller);
                 }
             }())
-            setInterval(function(){
-				obsSubject.notify();
-            },1000);
+            setInterval(function() {
+              obsSubject.notify();
+            }, 1000);
 		};
 		
 		CatanGame.getPlayable = function(proxy){

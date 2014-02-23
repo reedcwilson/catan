@@ -186,6 +186,24 @@ catan.models.Map = (function mapNameSpace(){
     };
 
     /**
+     * Returns best trade ratio for given resource per given playerId
+     */
+    Map.prototype.getBestRatio = function(resource, playerId) {
+      var bestRatio = 4;
+      for (var pKey in this.ports) {
+        var port = this.ports[pKey];
+        if (port.validVertex1.ownerID == playerId || port.validVertex1.ownerID == playerId) {
+          if (port.tradeRatio == 3)
+            bestRatio = 3;
+          else if (port.inputResource.toLowerCase() == resource.toLowerCase()) {
+            return 2;
+          }
+        }
+      }
+      return bestRatio;
+    }
+
+    /**
      * Test to see if a city can be placed
      *
      * <pre>
@@ -217,7 +235,7 @@ catan.models.Map = (function mapNameSpace(){
     core.defineProperty(Map.prototype, "numbers");
     /**
      * @property ports
-     * @type ports[]
+     * @type CatanHex[]
      */
     core.defineProperty(Map.prototype, "ports");
     /**

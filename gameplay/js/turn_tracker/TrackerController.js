@@ -45,6 +45,7 @@ catan.turntracker.Controller = (function turntracker_namespace()
 				view.initializePlayer(player.getOrderNumber(), player.name, player.color);
 			});
 			this.updateFromModel();
+            clientModel.getTurnTracker().rollStatus = "NeedsRoll";
 		}
 
 		TurnTrackerController.prototype.updateFromModel = function() 
@@ -88,7 +89,9 @@ catan.turntracker.Controller = (function turntracker_namespace()
 		TurnTrackerController.prototype.endTurn = function(){
 			var myPlayerIndex = this.loadIndexByClientID(this.getClientModel().getClientID());
 			this.getView().updateStateView(false, "Waiting for other Players...");
-			this.getClientModel().sendMove({type:"finishTurn",playerIndex:myPlayerIndex});
+            var model = this.getClientModel();
+			model.sendMove({type:"finishTurn",playerIndex:myPlayerIndex});
+            model.getTurnTracker().rollStatus = "NeedsRoll";
 		}
 		
 		return TurnTrackerController;
