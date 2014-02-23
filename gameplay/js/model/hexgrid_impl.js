@@ -186,6 +186,24 @@ catan.models.Map = (function mapNameSpace(){
     };
 
     /**
+     * Returns best trade ratio for given resource per given playerId
+     */
+    Map.prototype.getBestRatio = function(resource, playerId) {
+      var bestRatio = 4;
+      for (var pKey in this.ports) {
+        var port = this.ports[pKey];
+        if (port.validVertex1.ownerID == playerId || port.validVertex1.ownerID == playerId) {
+          if (port.tradeRatio == 3)
+            bestRatio = 3;
+          else if (port.inputResource.toLowerCase() == resource.toLowerCase()) {
+            return 2;
+          }
+        }
+      }
+      return bestRatio;
+    }
+
+    /**
      * Test to see if a city can be placed
      *
      * <pre>
@@ -217,7 +235,7 @@ catan.models.Map = (function mapNameSpace(){
     core.defineProperty(Map.prototype, "numbers");
     /**
      * @property ports
-     * @type ports[]
+     * @type CatanHex[]
      */
     core.defineProperty(Map.prototype, "ports");
     /**
@@ -310,21 +328,7 @@ catan.models.Map = (function mapNameSpace(){
 
         return CatanVertex;
     }()); 
-    
-	catan.models.hexgrid.EdgeLocation.prototype.getDir = function() {
-		return edLookup[this.getDirection()];
-	}
 
-	catan.models.hexgrid.VertexLocation.prototype.getDir = function() {
-		return vdLookup[this.getDirection()];
-	}
-
-    var edLookup = ["NW","N","NE","SE","S","SW"]
-	var EdgeDirection = core.numberEnumeration(edLookup);
-
-    var vdLookup = ["W","NW","NE","E","SE","SW"]
-	var VertexDirection = core.numberEnumeration(vdLookup);
-    
     /**
 	This class represents a Hex. You may add any methods that you need (e.g., to get the resource/hex type, etc.)
     
@@ -402,7 +406,7 @@ catan.models.Map = (function mapNameSpace(){
 				var vertexinfo = vertexJSON[position];
 				vertex.setWorth(vertexinfo.value.worth);
 				vertex.setOwnerID(vertexinfo.value.ownerID);
-				vertex.setLocation(new catan.models.hexgrid.VertexLocation(this.getLocation(), parseInt(position)));
+				vertex.setLocation(new catan.models.hexgrid.VertexLocation(this.getLocation(), position));
 			}
 		}
 
@@ -420,7 +424,7 @@ catan.models.Map = (function mapNameSpace(){
 				var edge = this.edges[position];
 				var edgeinfo = edgeJSON[position];
 				edge.setOwnerID(edgeinfo.value.ownerID);
-				edge.setLocation(new catan.models.hexgrid.EdgeLocation(this.getLocation(), parseInt(position)));
+				edge.setLocation(new catan.models.hexgrid.EdgeLocation(this.getLocation(),position));
 			}
 		}
 

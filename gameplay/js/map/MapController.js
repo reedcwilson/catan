@@ -26,7 +26,7 @@ catan.map.Controller = (function catan_controller_namespace() {
         
 		core.defineProperty(MapController.prototype,"robView");
 		core.defineProperty(MapController.prototype,"modalView");
-        
+        core.defineProperty(MapController.prototype,"printed");
         /**
 		 * @class MapController
 		 * @constructor
@@ -40,6 +40,7 @@ catan.map.Controller = (function catan_controller_namespace() {
 			this.setModalView(modalView);
 			this.setRobView(robView);
 			view.setController(this);
+			this.setPrinted(false);
 		}
 		MapController.prototype.initFromModel = function(){
 			view = this.getView();
@@ -93,6 +94,10 @@ catan.map.Controller = (function catan_controller_namespace() {
 				hex.vertexes.map(function (vertex){
 					var owner = vertex.ownerID;
 					if(owner != -1){
+						if(self.getPrinted() == false)
+						{
+							console.log(vertex.location);
+						}
 						var player = self.loadPersonByIndex(owner);
 						if(vertex.worth == 1){
 							view.placeSettlement(vertex.location,player.color,false);
@@ -103,8 +108,16 @@ catan.map.Controller = (function catan_controller_namespace() {
 					}
 				});
 			});
+			
+			if(model.getTurnTracker().status == "Robbing"){
+				if(this.getModalView() && this.getPrinted() == false)
+				{
+					this.setPrinted(true);
+					//this.getModalView().showModal("Robber");
+				}
+			}
         }
-        
+
         /**
 		 This method is called by the Rob View when a player to rob is selected via a button click.
 		 @param {Integer} orderID The index (0-3) of the player who is to be robbed
@@ -167,6 +180,7 @@ catan.map.Controller = (function catan_controller_namespace() {
 		 @return {boolean} Whether or not the given piece can be placed at the current location.
 		*/
 		MapController.prototype.onDrag = function (loc, type) {
+			return true;
 		};
 
 		/**
@@ -179,7 +193,12 @@ catan.map.Controller = (function catan_controller_namespace() {
 		*/
 		MapController.prototype.onDrop = function (loc, type) {
 		};
-        
+
+/**		var MapState = function() {
+
+			return MapState;
+		} ());
+        */
 		return MapController;
 	} ());
 

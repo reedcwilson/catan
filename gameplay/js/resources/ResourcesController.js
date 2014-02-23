@@ -52,7 +52,7 @@ catan.resources.Controller = (function resources_namespace() {
 			this.devCardResources['sheep'] = 1;
 			this.devCardResources['wheat'] = 1;
 			this.devCardResources['ore'] = 1;
-			console.log("model",clientModel);
+
 		};
 
 		core.forceClassInherit(ResourceBarController,Controller);
@@ -69,6 +69,9 @@ catan.resources.Controller = (function resources_namespace() {
 			var clientModel = this.getClientModel();
 			var view = this.getView();
 			var player = clientModel.players[this.loadIndexByClientID(clientModel.clientID)];
+			if(player == undefined) {
+				player = clientModel.players[0];
+			}
 			for (var resource in player.resources) {
 				view.updateAmount(resource, player.resources[resource]);
 			}

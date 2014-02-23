@@ -9,7 +9,8 @@ The namespace for the turn tracker
 var catan = catan || {};
 catan.turntracker = catan.turntracker || {};
 
-catan.turntracker.Controller = (function turntracker_namespace() {	
+catan.turntracker.Controller = (function turntracker_namespace() 
+{	
 
 	var Controller = catan.core.BaseController;
     
@@ -21,44 +22,61 @@ catan.turntracker.Controller = (function turntracker_namespace() {
 		@param {models.ClientModel} clientModel The clientModel for this object to control.
 		@constructor
 	**/
-	var TurnTrackerController = (function TurnTrackerController_Class(){
+	var TurnTrackerController = (function TurnTrackerController_Class()
+	{
 	
-		function TurnTrackerController(view, clientModel){
+		function TurnTrackerController(view, clientModel)
+		{
 			Controller.call(this,view,clientModel);
-			// NOTE: The view.updateViewState and view.updatePlayer will not work if called from here.  Instead, these
-            //          methods should be called later each time the client model is updated from the server.
 		}
 
 		core.forceClassInherit(TurnTrackerController,Controller);
 
-		TurnTrackerController.prototype.initFromModel = function() {
+		TurnTrackerController.prototype.initFromModel = function() 
+		{
 			var clientModel = this.getClientModel();
 			var playerID = clientModel.getClientID();
 			var view = this.getView();
 			clientModel.players.map(function (player) {
-				if(player.getPlayerID() == clientModel.getClientID()) {
+				if(player.getPlayerID() == clientModel.getClientID()) 
+				{
 					view.setClientColor(player.color);
 				}
 				view.initializePlayer(player.getOrderNumber(), player.name, player.color);
 			});
 			this.updateFromModel();
+            clientModel.getTurnTracker().rollStatus = "NeedsRoll";
 		}
 
-		TurnTrackerController.prototype.updateFromModel = function() {
+		TurnTrackerController.prototype.updateFromModel = function() 
+		{
 			var clientModel = this.getClientModel();
-			var playerID = this.loadIndexByClientID(clientModel.getClientID());
 			var view = this.getView();
+
+			this.updatePlayerInfo(view, clientModel);
+            this.updateTurnButton(view, clientModel);
+		}
+
+		TurnTrackerController.prototype.updatePlayerInfo = function(view, clientModel) 
+		{
 			var self = this;
 			clientModel.players.map(function (player){
 				var myHighlight = self.isCurrentTurn(player.getOrderNumber());
 				view.updatePlayer({playerIndex:player.getOrderNumber(),score:player.victoryPoints,highlight:myHighlight,army:player.largestArmy,road:player.longestRoad});
             });
+		}
+
+		TurnTrackerController.prototype.updateTurnButton = function(view, clientModel)
+		{
+			var playerID = this.loadIndexByClientID(clientModel.getClientID());
+			
             if(view.getStateElem() != undefined){
-            	if(this.isCurrentTurn(playerID) && clientModel.turnTracker.status != "Rolling") {
+            	if(this.isCurrentTurn(playerID) && clientModel.turnTracker.status != "Rolling") 
+            	{
             		view.updateStateView(true, "End Turn");
             	}
             	else{
-					view.updateStateView(false, "Waiting for other Players...");
+					view.updateStateView(true, "End turn for: " + clientModel.turnTracker.currentTurn);
             	}
             }
 		}
@@ -70,7 +88,10 @@ catan.turntracker.Controller = (function turntracker_namespace() {
 		 */
 		TurnTrackerController.prototype.endTurn = function(){
 			var myPlayerIndex = this.loadIndexByClientID(this.getClientModel().getClientID());
-			this.getClientModel().sendMove({type:"finishTurn",playerIndex:myPlayerIndex});
+			this.getView().updateStateView(false, "Waiting for other Players...");
+            var model = this.getClientModel();
+			model.sendMove({type:"finishTurn",playerIndex:myPlayerIndex});
+            model.getTurnTracker().rollStatus = "NeedsRoll";
 		}
 		
 		return TurnTrackerController;

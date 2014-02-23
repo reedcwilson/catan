@@ -535,6 +535,10 @@ catan.models.hexgrid = (function HexGrid_Namespace(){
 		function EdgeLocation(hexLocation,direction,arg3){
 			BaseLocation.call(this,hexLocation,direction,arg3);
 		};
+
+		EdgeLocation.prototype.getDir = function() {
+			return edLookup[this.getDirection()];
+		}
 		
 		EdgeLocation.prototype.extend = function(data){
 			data.direction = EdgeDirection[data.direction];
@@ -612,6 +616,10 @@ catan.models.hexgrid = (function HexGrid_Namespace(){
 			}
 			BaseLocation.call(this,hexLocation,direction,arg3);
 		};
+
+		VertexLocation.prototype.getDir = function() {
+			return vdLookup[this.getDirection()];
+		}
 		
 		VertexLocation.prototype.extend = function(data){
 			data.direction = VertexDirection[data.direction];
