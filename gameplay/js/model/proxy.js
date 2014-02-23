@@ -25,6 +25,7 @@ catan.models.Proxy = (function() {
 			jQuery.post(CommandObject.url, JSON.stringify(CommandObject.type), function(data){
 				update(data);
 				if(observerNotify != undefined){
+					//console.log("observerNotify", observerNotify);
 					observerNotify();
 				}
 		});			

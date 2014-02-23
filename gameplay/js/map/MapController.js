@@ -96,7 +96,7 @@ catan.map.Controller = (function catan_controller_namespace() {
 					if(owner != -1){
 						if(self.getPrinted() == false)
 						{
-							console.log(vertex.location);
+							//console.log(vertex.location);
 						}
 						var player = self.loadPersonByIndex(owner);
 						if(vertex.worth == 1){

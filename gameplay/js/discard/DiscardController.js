@@ -61,7 +61,7 @@ catan.discard.Controller = (function discard_namespace(){
 			var clientModel = this.getClientModel();
 			var playerID = clientModel.clientID;
 			var player = clientModel.players[this.loadIndexByClientID(playerID)];
-			console.log("new c",clientModel);
+			//console.log("new c",this.getObserverSubject());
 			if(clientModel.turnTracker.status != "Discarding")
 				{
 					if(this.getWaitingView())

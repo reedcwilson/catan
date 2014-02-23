@@ -83,7 +83,6 @@ catan.roll.Controller = (function roll_namespace(){
 			this.getView().closeModal();
 			roll = Math.floor(Math.random() * 6) + 1;
 			roll += Math.floor(Math.random() * 6) + 1;
-			roll = 7;
 			this.getRollResultView().setAmount(roll);
 			if(roll == 7)
 			{

@@ -87,7 +87,8 @@ catan.models.ClientModel  = (function clientModelNameSpace()
          * @param {JSON} model - The JSON model of the game.
          * */
 		ClientModel.prototype.update = function (model) 
-		{               
+		{   
+		            
 			self.setBank(model.bank);
 			self.setBiggestArmy(model.biggestArmy);
 			self.getChat().setInfo(model.chat);
