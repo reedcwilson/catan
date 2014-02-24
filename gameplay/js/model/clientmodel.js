@@ -34,11 +34,13 @@ catan.models.ClientModel  = (function clientModelNameSpace()
 		core.defineProperty(ClientModel.prototype, "turnTracker");
 		core.defineProperty(ClientModel.prototype, "winner");
 		
+		
 		function ClientModel(clientID)
 		{
 			this.setClientID(clientID);
 			this.setProxy(new catan.models.Proxy());
 		}      
+		
         
         /**
          * This is called to fetch the game state from the server the very first time.
@@ -101,7 +103,9 @@ catan.models.ClientModel  = (function clientModelNameSpace()
 			self.setWinner(model.winner);			
 			
 			for(var i = 0; i < model.players.length; i++)
-				self.getPlayers()[model.players[i].orderNumber].setInfo(model.players[i]);			
+				self.getPlayers()[model.players[i].orderNumber].setInfo(model.players[i]);	
+
+
 				
 		};	
 

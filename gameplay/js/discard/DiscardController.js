@@ -38,6 +38,7 @@ catan.discard.Controller = (function discard_namespace(){
             this.setWaitingView(waitingView);
 
 			this.playerResources = {};
+
 			
 			
 			this.startDiscarding = true;
@@ -61,7 +62,7 @@ catan.discard.Controller = (function discard_namespace(){
 			var clientModel = this.getClientModel();
 			var playerID = clientModel.clientID;
 			var player = clientModel.players[this.loadIndexByClientID(playerID)];
-			//console.log("new c",this.getObserverSubject());
+	
 			if(clientModel.turnTracker.status != "Discarding")
 				{
 					if(this.getWaitingView())
@@ -101,7 +102,7 @@ catan.discard.Controller = (function discard_namespace(){
 						{
 							this.getView().setResourceAmount(ResourceTypes[i],0);
 						}
-						this.totalCards = totalRes -7;
+						this.totalCards = Math.floor(totalRes/2);
 						var statemessage = "0/" + this.totalCards;
 						
 						this.getView().setStateMessage(statemessage);
