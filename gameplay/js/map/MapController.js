@@ -263,14 +263,15 @@ catan.map.Controller = (function catan_controller_namespace() {
 			loc.getY = function() {return loc.y};
 			console.log(type.type);
 			var model = this.getClientModel();
+			var isfree = model.turnTracker.status == "FirstRound" || model.turnTracker.status == "SecondRound";
 			if(type.type == "road") {
 				loc.direction = loc.dir;
-				model.sendMove({type:"buildRoad",playerIndex:model.loadIndexByClientID(model.clientID),roadLocation:loc,free:false});
+				model.sendMove({type:"buildRoad",playerIndex:model.loadIndexByClientID(model.clientID),roadLocation:loc,free:isfree});
 			}
 			if(type.type == "settlement"){
 				console.log(loc);
 				loc.direction = loc.dir;
-				model.sendMove({type:"buildSettlement",playerIndex:model.loadIndexByClientID(model.clientID),vertexLocation:loc,free:false});
+				model.sendMove({type:"buildSettlement",playerIndex:model.loadIndexByClientID(model.clientID),vertexLocation:loc,free:isfree});
 			}
 			if(type.type == "city") {
 				loc.direction = loc.dir;

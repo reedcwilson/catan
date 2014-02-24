@@ -136,9 +136,6 @@ catan.client = (function Client_NameSpace(){
 			var controllers = {}
 			var model = this.getClientModel();
 			var obsSubject = this.getObserverSubject();
-			if(model.turnTracker.status != "FirstRound" && model.turnTracker.status != "SecondRound") {
-				window.location = "catan.html"
-			}
 			ViewIniter.initAll(views,controllers,model);
 			this.views = views;
 			this.controllers = controllers;

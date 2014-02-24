@@ -40,6 +40,9 @@ catan.setup.Controller = (function Setup_Class(){
 	
 	SetupRoundController.prototype.updateFromModel = function() {
 		var model = this.getClientModel();
+		if(model.turnTracker.status != "FirstRound" && model.turnTracker.status != "SecondRound") {
+				window.location = "catan.html"
+		}
 		var clientID = this.getClientFromCookie();
 		model.clientID = clientID;
 		
