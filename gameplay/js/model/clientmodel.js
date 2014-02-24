@@ -33,6 +33,7 @@ catan.models.ClientModel  = (function clientModelNameSpace()
 		core.defineProperty(ClientModel.prototype, "tradeOffer");
 		core.defineProperty(ClientModel.prototype, "turnTracker");
 		core.defineProperty(ClientModel.prototype, "winner");
+		core.defineProperty(ClientModel.prototype, "observers");
 		
 		function ClientModel(clientID)
 		{
@@ -176,7 +177,8 @@ catan.models.ClientModel  = (function clientModelNameSpace()
 		
 		ClientModel.prototype.sendMove = function (data, observerNotify) 
 		{    
-			this.getProxy().send(new catan.models.CommandObject(data), this.update, observerNotify);
+			console.log("meow");
+			this.getProxy().send(new catan.models.CommandObject(data), this.update, this.observers.notify(null, this.observers.observers));
 		};	
 
 		ClientModel.prototype.loadIndexByClientID = function(clientID) {

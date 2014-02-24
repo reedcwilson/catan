@@ -159,9 +159,11 @@ catan.map.Controller = (function catan_controller_namespace() {
 		 * @return void
 		**/	
 		MapController.prototype.startMove = function (pieceType,free,disconnected){
+			var model = this.getClientModel();
 			this.getModalView().showModal(pieceType);
-			var playerIndex = this.loadIndexByClientID(this.getClientModel().getClientID())
-			var color = this.loadPersonByIndex(playerIndex).color;
+			console.log(model);
+			var playerIndex = model.loadIndexByClientID(model.getClientID())
+			var color = model.loadPersonByIndex(playerIndex).color;
 			this.getView().startDrop(pieceType, color);
 		};
         

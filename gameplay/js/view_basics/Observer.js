@@ -58,10 +58,10 @@ catan.core.Subject = (function Subject_Class(){
 		this.observers.removeAt(this.observers.indexOf(observer, 0));
 	};
 
-	Subject.prototype.notify = function(context){
-		var observerCount = this.observers.count();
+	Subject.prototype.notify = function(context, obs){
+		var observerCount = obs.count();
 		for(var i=0; i<observerCount; i++){
-			this.observers.get(i).updateFromModel(context);
+			obs.get(i).updateFromModel(context);
 		}
 	};
 	

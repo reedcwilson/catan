@@ -96,7 +96,7 @@ catan.resources.Controller = (function resources_namespace() {
 			else {
 				view.setActionEnabled("Cities", false);
 			}
-			if(player.hasResources(this.devCardResources) && this.isCurrentTurn(player.playerID)) {
+			if(player.hasResources(this.devCardResources) && clientModel.isCurrentTurn(player.playerID)) {
 				view.setActionEnabled("BuyCard", true);
 			}
 			else {

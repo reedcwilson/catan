@@ -31,12 +31,11 @@ catan.setup.Controller = (function Setup_Class(){
 	SetupRoundController.prototype.updateFromModel = function() {
 		var model = this.getClientModel();
 		if(this.getMapController() != undefined) {
-			var cookie = document.cookie;
-			console.log(cookie);
-			if(this.isCurrentTurn(model.clientID))
-			{
+			//if(model.isCurrentTurn(model.clientID))
+			//{
 				this.getMapController().startMove("road", true, true);
-			}
+			//}
+			
 		}
 	};
 
