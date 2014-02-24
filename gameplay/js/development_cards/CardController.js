@@ -101,6 +101,7 @@ catan.devCards.Controller = (function()
 			var clientModel = this.getClientModel();			
 			clientModel.sendMove({type:'Monopoly', resource: resource, playerIndex: clientModel.getTurnTracker().getCurrentTurn()});
 			this.getView().closeModal();
+
 		}
         
 		/**
@@ -113,6 +114,7 @@ catan.devCards.Controller = (function()
 			var clientModel = this.getClientModel();			
 			clientModel.sendMove({type:'Monument', playerIndex: clientModel.getTurnTracker().getCurrentTurn()});
 			this.getView().closeModal();
+
 		}
         
 		/**

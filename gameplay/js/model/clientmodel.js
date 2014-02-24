@@ -87,7 +87,8 @@ catan.models.ClientModel  = (function clientModelNameSpace()
          * @param {JSON} model - The JSON model of the game.
          * */
 		ClientModel.prototype.update = function (model) 
-		{               
+		{   
+		            
 			self.setBank(model.bank);
 			self.setBiggestArmy(model.biggestArmy);
 			self.getChat().setInfo(model.chat);
@@ -149,6 +150,25 @@ catan.models.ClientModel  = (function clientModelNameSpace()
 		ClientModel.prototype.canAcceptTrade = function () 
 		{               
 			return this.getPlayers()[this.getClientID()].canAcceptTrade(this.getTradeOffer());
+		};
+		
+		ClientModel.prototype.getTradingPartners = function () 
+		{               
+			var partners = [];
+			var players = this.getPlayers();
+			
+			for(var player in players)
+			{
+				if(players[player].getPlayerID() != this. getClientID())
+				{
+					var partner = new Object();
+					partner.name = players[player].getName();
+					partner.color = players[player].getColor();
+					partner.index = players[player].getPlayerID();
+					partners.push(partner);
+				}				
+			}
+			return partners;
 		};
 		
 		// Proxy Calls	
