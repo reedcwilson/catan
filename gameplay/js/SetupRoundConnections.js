@@ -147,9 +147,10 @@ catan.client = (function Client_NameSpace(){
                     var controller = controllers[name];
                     obsSubject.addObserver(controller);
                 }
+                model.setObservers(obsSubject);
             }())
             setInterval(function() {
-              obsSubject.notify();
+              obsSubject.notify(null, obsSubject.observers);
             }, 1000);
 		};
 		

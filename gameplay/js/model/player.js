@@ -36,7 +36,8 @@ catan.models.Player = (function playerNameSpace() {
 		core.defineProperty(Player.prototype, "orderNumber");
 		core.defineProperty(Player.prototype, "name");
 		core.defineProperty(Player.prototype, "color");
-
+		core.defineProperty(Player.prototype, "startedRoad");
+		core.defineProperty(Player.prototype, "startedSettlement");
   		/**
     		The Player class contains the information about the player, including
     		the number of cities, color, id, etc..
@@ -46,6 +47,8 @@ catan.models.Player = (function playerNameSpace() {
    	 		@constructor
     	*/
 		function Player(){
+			this.setStartedRoad(false);
+			this.setStartedSettlement(false);
 		}
 
 		/**

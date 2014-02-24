@@ -201,7 +201,6 @@ catan.map.Controller = (function catan_controller_namespace() {
 			if(hex) {
 				if(type.type == "road") {
 					var edge = hex.edges[this.getIndexOfEdge(loc.dir)];
-					console.log('it"s a road');
 					return clientModel.canPlaceRoad(edge);
 				}
 				if(type.type == "settlement")
@@ -216,8 +215,7 @@ catan.map.Controller = (function catan_controller_namespace() {
 				}
 				if(type.type == "robber")
 				{
-					return true;
-					//return clientModel.canPlaceRobber(hex);
+					return clientModel.canPlaceRobber(hex);
 				}
 				return true;
 			}
@@ -265,6 +263,19 @@ catan.map.Controller = (function catan_controller_namespace() {
 			loc.getY = function() {return loc.y};
 			console.log(type.type);
 			var model = this.getClientModel();
+			if(type.type == "road") {
+				loc.direction = loc.dir;
+				model.sendMove({type:"buildRoad",playerIndex:model.loadIndexByClientID(model.clientID),roadLocation:loc,free:false});
+			}
+			if(type.type == "settlement"){
+				console.log(loc);
+				loc.direction = loc.dir;
+				model.sendMove({type:"buildSettlement",playerIndex:model.loadIndexByClientID(model.clientID),vertexLocation:loc,free:false});
+			}
+			if(type.type == "city") {
+				loc.direction = loc.dir;
+				model.sendMove({type:"buildCity",playerIndex:model.loadIndexByClientID(model.clientID),vertexLocation:loc,free:false});
+			}
 			if(type.type == "robber") {
 				var hex = model.getMap().hexgrid.getHex(loc);
 				var playersToRob = new Array();
@@ -280,7 +291,14 @@ catan.map.Controller = (function catan_controller_namespace() {
 							playerInfo.name = playerToAdd.name;
 							playerInfo.playerNum = vertexLoc;
 							playerInfo.cards = playerToAdd.getNumOfCards();
-							if(!jQuery.inArray(playerInfo, playersToRob))
+							var exsists = false;
+							for(var item in playersToRob)
+							{
+								if(playersToRob[item].name == playerInfo.name){
+									exsists = true;
+								}
+							}
+							if(playersToRob.count == 0 || !exsists)
 							{
 								playersToRob.push(playerInfo);
 							}

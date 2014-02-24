@@ -92,6 +92,12 @@ catan.turntracker.Controller = (function turntracker_namespace()
 			this.getView().updateStateView(false, "Waiting for other Players...");
 			model.sendMove({type:"finishTurn",playerIndex:myPlayerIndex});
             model.getTurnTracker().rollStatus = "NeedsRoll";
+            players = model.players;
+            for(var player in players)
+            {
+				players[player].startedRoad = false;
+				players[player].startedSettlement = false;
+            }
 		}
 		
 		return TurnTrackerController;
