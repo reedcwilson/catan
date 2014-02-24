@@ -335,7 +335,7 @@ catan.map.View = (function makeMapView(){
 		
 		LocFactory.prototype.getVertexCenter = function getVertexCenter(vertexLoc){
 			var hexCenter = this.getHexCenter(vertexLoc);
-			var diff = this.getRadius()
+			var diff = this.getRadius();
 			var diff = diff * ((vertexLoc.getDir() === "W") ? -1 : 1);
 			hexCenter.x = hexCenter.x + diff;
 			return hexCenter;
@@ -1146,7 +1146,9 @@ catan.map.View = (function makeMapView(){
 			var color = colors.color;
 			var outline = colors.outline;
 			if (!getPieceAt(this.getVertexLayer(),loc))
+			{
 				placeObject.call(this,this.getVertexLayer(),this.getVertexDefinition(),"makeSettlement",loc,color,outline,noDraw);
+			}
 		}
 
 		/**
@@ -1185,7 +1187,7 @@ catan.map.View = (function makeMapView(){
 			layer.add(definition[functionName](loc,color,outline));
 			if (!(noDraw))layer.draw();
 		}
-		
+
 		function getPieceAt(layer,loc){
 			for (var childCount = 0; childCount < layer.getChildren().length; childCount++){
 				if (loc.equals(layer.getChildren()[childCount].getMapLoc())){

@@ -96,12 +96,15 @@ catan.map.Controller = (function catan_controller_namespace() {
 				hex.vertexes.map(function (vertex){
 					var owner = vertex.ownerID;
 					if(owner != -1){
-						var player = self.loadPersonByIndex(owner);
-						if(vertex.worth == 1){
-							view.placeSettlement(vertex.location,player.color,false);
-						}
-						else if(vertex.worth == 2){
-							view.placeCity(vertex.location,player.color,false);
+						if(vertex.location.getDir() === "W" || vertex.location.getDir() === "E")
+						{
+							var player = self.loadPersonByIndex(owner);
+							if(vertex.worth == 1){
+								view.placeSettlement(vertex.location,player.color,false);
+							}
+							else if(vertex.worth == 2){
+								view.placeCity(vertex.location,player.color,false);
+							}
 						}
 					}
 				});

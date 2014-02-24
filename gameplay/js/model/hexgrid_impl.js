@@ -406,7 +406,7 @@ catan.models.Map = (function mapNameSpace(){
 				var vertexinfo = vertexJSON[position];
 				vertex.setWorth(vertexinfo.value.worth);
 				vertex.setOwnerID(vertexinfo.value.ownerID);
-				vertex.setLocation(new catan.models.hexgrid.VertexLocation(this.getLocation(), position));
+				vertex.setLocation(new catan.models.hexgrid.VertexLocation(this.getLocation(), parseInt(position)));
 			}
 		}
 
@@ -424,7 +424,7 @@ catan.models.Map = (function mapNameSpace(){
 				var edge = this.edges[position];
 				var edgeinfo = edgeJSON[position];
 				edge.setOwnerID(edgeinfo.value.ownerID);
-				edge.setLocation(new catan.models.hexgrid.EdgeLocation(this.getLocation(),position));
+				edge.setLocation(new catan.models.hexgrid.EdgeLocation(this.getLocation(),parseInt(position)));
 			}
 		}
 
