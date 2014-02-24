@@ -35,10 +35,10 @@ catan.turntracker.Controller = (function turntracker_namespace()
 		TurnTrackerController.prototype.initFromModel = function() 
 		{
 			var clientModel = this.getClientModel();
-			var playerID = clientModel.getClientID();
+			var playerID = this.getClientID();
 			var view = this.getView();
 			clientModel.players.map(function (player) {
-				if(player.getPlayerID() == clientModel.getClientID()) 
+				if(player.getPlayerID() == playerID) 
 				{
 					view.setClientColor(player.color);
 				}
@@ -76,7 +76,7 @@ catan.turntracker.Controller = (function turntracker_namespace()
             		view.updateStateView(true, "End Turn");
             	}
             	else{
-					view.updateStateView(true, "End turn for: " + clientModel.turnTracker.currentTurn);
+					view.updateStateView(false, "Waiting for other players...");
             	}
             }
 		}

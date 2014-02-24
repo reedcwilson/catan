@@ -28,6 +28,19 @@ catan.core.BaseController = (function baseControllerClass(){
 	core.forceClassInherit(BaseController, catan.core.Observer);
 	core.defineProperty(BaseController.prototype,"View");
 	core.defineProperty(BaseController.prototype,"ClientModel");
+
+	BaseController.prototype.getClientID = function() {
+		var id = this.getClientModel().clientID;
+		if(id == undefined) {
+			var mycookie = decodeURIComponent(document.cookie);
+			var n = mycookie.indexOf(";");
+			var start = mycookie.indexOf("{");
+			mycookie = mycookie.substring(start,n);
+			var myjson = JSON.parse(mycookie);
+			id = myjson.playerID;
+		}
+		return id;
+	}
         
 	return BaseController;	
 }());

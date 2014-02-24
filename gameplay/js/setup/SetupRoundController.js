@@ -43,7 +43,7 @@ catan.setup.Controller = (function Setup_Class(){
 		if(model.turnTracker.status != "FirstRound" && model.turnTracker.status != "SecondRound") {
 				window.location = "catan.html"
 		}
-		var clientID = this.getClientFromCookie();
+		var clientID = this.getClientID();
 		model.clientID = clientID;
 		
 		var player = model.loadPersonByIndex(model.loadIndexByClientID(model.clientID));
@@ -55,14 +55,22 @@ catan.setup.Controller = (function Setup_Class(){
 				player.startedRoad = true;
 				this.getMapController().startMove("road", true, true);
 			}
-			if(player.startedSettlement == false &&
+			else if(player.startedSettlement == false &&
 			model.isCurrentTurn(model.clientID) &&
 			((player.roads == 14 && player.settlements == 5) || (player.roads==13 && player.settlements==4)))
 			{	
 				player.startedSettlement = true;
 				this.getMapController().startMove("settlement",true, true);
 			}
-			
+			/**else if(player.startedRoad == true &&
+			player.startedSettlement == true &&
+			model.isCurrentTurn(model.clientID) &&
+			((player.roads == 14 && player.settlements == 4) ||
+			(player.roads == 13 && player.settlements ==3))) {
+				console.log('end turn');
+				player.startedVertex = false;
+				model.sendMove({type:"finishTurn",playerIndex:model.loadIndexByClientID(clientID)});
+			}*/
 		}
 	};
 
