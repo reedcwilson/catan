@@ -135,7 +135,6 @@ catan.map.Controller = (function catan_controller_namespace() {
 		 * @return void
 		**/		
 		MapController.prototype.doSoldierAction = function(){    
-
 			this.getModalView().showModal("Solider");
 			this.getView().startDrop("robber");
 
@@ -149,6 +148,7 @@ catan.map.Controller = (function catan_controller_namespace() {
 		**/	
 		MapController.prototype.startDoubleRoadBuilding = function(){
 			this.getModalView().showModal("Road");
+			this.startMove("road", true, false);
 		}
 		
         
@@ -190,6 +190,8 @@ catan.map.Controller = (function catan_controller_namespace() {
 		 @return {boolean} Whether or not the given piece can be placed at the current location.
 		*/
 		MapController.prototype.onDrag = function (loc, type) {
+			loc.getX = function() {return loc.x};
+			loc.getY = function() {return loc.y};
 			var clientModel = this.getClientModel();
 			var hex = clientModel.getMap().hexgrid.getHex(loc);
 			if(hex) {
@@ -210,7 +212,8 @@ catan.map.Controller = (function catan_controller_namespace() {
 				}
 				if(type.type == "robber")
 				{
-					return clientModel.canPlaceRobber(hex);
+					return true;
+					//return clientModel.canPlaceRobber(hex);
 				}
 				return true;
 			}
@@ -254,9 +257,25 @@ catan.map.Controller = (function catan_controller_namespace() {
 		 @method onDrop
 		*/
 		MapController.prototype.onDrop = function (loc, type) {
+			loc.getX = function() {return loc.x};
+			loc.getY = function() {return loc.y};
 			console.log(type.type);
-			
-			
+			var model = this.getClientModel();
+			if(type.type == "robber") {
+				var hex = model.getMap().hexgrid.getHex(loc);
+				var playersToRob = new Array();
+				for(var vertexLoc in hex)
+				{
+					var playerToAdd;
+					if(hex[vertexLoc].owner != -1)
+					{
+
+					}
+				}
+				console.log(hex);
+				
+			}
+			this.getModalView().closeModal();
 		};
 
 /**		var MapState = function() {
