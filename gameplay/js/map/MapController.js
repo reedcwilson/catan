@@ -135,8 +135,10 @@ catan.map.Controller = (function catan_controller_namespace() {
 		 * @return void
 		**/		
 		MapController.prototype.doSoldierAction = function(){    
+
 			this.getModalView().showModal("Solider");
 			this.getView().startDrop("robber");
+
 		}
         
 		/**

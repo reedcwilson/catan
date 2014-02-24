@@ -47,12 +47,7 @@ catan.models.Proxy = (function() {
 		});
 	};
 
-	Proxy.prototype.getCoolModel = function(clientmodel, success){
-		jQuery.get("/game/model", function(data){
-			clientmodel.update(data);
-			success(data);
-		});
-	};
+
 	   	 /**
 		Resets the current game 
 		<pre>

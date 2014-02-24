@@ -244,8 +244,6 @@ catan.client = (function Client_NameSpace(){
                 model.setObservers(obsSubject);
             }())
             setInterval(function(){
-            	//console.log(obsSubject);
-            	//model.getProxy().getCoolModel(model, obsSubject.notify);
 				obsSubject.notify(null, obsSubject.observers);
             },1000);
 		};
