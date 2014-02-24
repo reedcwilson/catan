@@ -49,10 +49,10 @@ catan.trade.domestic.Controller= (function trade_namespace()
 		{
 			var view = this.getView();
 			var client = this.getClientModel();
-			var player = client.players[this.loadIndexByClientID(client.clientID)];
+			var player = client.players[client.loadIndexByClientID(client.clientID)];
 			this.initHandFromModel(player);			
 			
-			if(this.isCurrentTurn(player.playerID))
+			if(client.isCurrentTurn(player.playerID))
 			{
 				if(!this.isTrading())
 				{

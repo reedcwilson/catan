@@ -134,7 +134,8 @@ catan.models.ClientModel  = (function clientModelNameSpace()
 		
 		ClientModel.prototype.canPlayDevCard = function (devCard) 
 		{               
-			return this.getPlayers()[this.getClientID()].canPlayDevCard(devCard);
+			var playerIndex = this.loadIndexByClientID(this.clientID);
+			return this.getPlayers()[playerIndex].canPlayDevCard(devCard) && this.isCurrentTurn(playerIndex);
 		};
 		
 		ClientModel.prototype.getResources = function () 
@@ -177,6 +178,41 @@ catan.models.ClientModel  = (function clientModelNameSpace()
 		{    
 			this.getProxy().send(new catan.models.CommandObject(data), this.update, observerNotify);
 		};	
+
+		ClientModel.prototype.loadIndexByClientID = function(clientID) {
+			var myint = -1;
+			for(var player in this.players)
+			{
+				myint++;
+				if(clientID == this.players[player].playerID){
+					return myint;
+				}
+			}
+			return -1;
+		}
+		
+		ClientModel.prototype.isCurrentTurn = function(playerID){
+			var currentPlayerID = this.loadPersonByIndex(this.turnTracker.currentTurn);
+			if(playerID == currentPlayerID.playerID){
+				return true;
+			}
+			return false;
+		}
+
+
+		/**
+			This method will return the play at the specific index.  For example if index is 3 it will get the 4th player whose ID might be 11.
+		*/
+		ClientModel.prototype.loadPersonByIndex = function(index){
+			var myint = -1;
+			for(var newplayer in this.players)
+			{
+				myint++;
+				if(myint == index) {
+					return this.players[newplayer];
+				}
+			}
+		}
         
 		return ClientModel;
 	}());	

@@ -44,12 +44,12 @@ catan.trade.maritime.Controller = (function trade_namespace()
 		{
 			var view = this.getView();
 			var client = this.getClientModel();
-			var player = client.players[this.loadIndexByClientID(client.clientID)];
+			var player = client.players[client.loadIndexByClientID(client.clientID)];
 			ports = this.setPortValues();
 			var hand = [];
 			this.setHandValues(hand, player);
 
-			if(this.isCurrentTurn(player.playerID))
+			if(client.isCurrentTurn(player.playerID))
 			{
 				if(!trading)
 				{					

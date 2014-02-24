@@ -141,10 +141,12 @@ catan.models.Map = (function mapNameSpace(){
         var e = edges[key];
         var hex = this.hexgrid.getHex(
             new catan.models.hexgrid.HexLocation(e.x, e.y));
-        
-        if (hex.edges[e.direction].ownerID == id) {
-          connectedEdge = true;
-          break;
+        if(hex)
+        {
+        	if (hex.edges[e.direction].ownerID == id) {
+         	 connectedEdge = true;
+          	break;
+        	}
         }
       }
 
@@ -176,10 +178,12 @@ catan.models.Map = (function mapNameSpace(){
 
           var hex = this.hexgrid.getHex(
               new catan.models.hexgrid.HexLocation(vertex.x, vertex.y));
-
+		if(hex)
+		{
           if (hex.vertexes[vertex.direction].isOccupied() == true) {
             return false;
           }
+         }
         }
       }
       return true;

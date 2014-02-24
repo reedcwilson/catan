@@ -84,7 +84,7 @@ catan.map.Controller = (function catan_controller_namespace() {
 				hex.edges.map(function (edge) {
 					var owner = edge.ownerID;
 					if(owner != -1) {
-						var player = self.loadPersonByIndex(owner);
+						var player = model.loadPersonByIndex(owner);
 						var dir = edge.location.getDir();
 						var noDraw = dir !== "S" && dir !== "SE" && dir !== "SW";
 						if(!noDraw){
@@ -98,7 +98,8 @@ catan.map.Controller = (function catan_controller_namespace() {
 					if(owner != -1){
 						if(vertex.location.getDir() === "W" || vertex.location.getDir() === "E")
 						{
-							var player = self.loadPersonByIndex(owner);
+							var player = model.loadPersonByIndex(owner);
+							vertex.location.equals = VertexLoc.prototype.equals;
 							if(vertex.worth == 1){
 								view.placeSettlement(vertex.location,player.color,false);
 							}
@@ -135,6 +136,7 @@ catan.map.Controller = (function catan_controller_namespace() {
 		**/		
 		MapController.prototype.doSoldierAction = function(){    
 			this.getModalView().showModal("Solider");
+			this.getView().startDrop("robber");
 		}
         
 		/**
@@ -157,8 +159,10 @@ catan.map.Controller = (function catan_controller_namespace() {
 		 * @return void
 		**/	
 		MapController.prototype.startMove = function (pieceType,free,disconnected){
-			console.log("Building: " + pieceType);
 			this.getModalView().showModal(pieceType);
+			var playerIndex = this.loadIndexByClientID(this.getClientModel().getClientID())
+			var color = this.loadPersonByIndex(playerIndex).color;
+			this.getView().startDrop(pieceType, color);
 		};
         
 		/**
@@ -168,6 +172,7 @@ catan.map.Controller = (function catan_controller_namespace() {
 		 * @return void
 		 * */
 		MapController.prototype.cancelMove = function(){
+			this.getView().cancelDrop();
 		}
 
 		/**
@@ -181,9 +186,61 @@ catan.map.Controller = (function catan_controller_namespace() {
 		 @return {boolean} Whether or not the given piece can be placed at the current location.
 		*/
 		MapController.prototype.onDrag = function (loc, type) {
-			return true;
+			var clientModel = this.getClientModel();
+			var hex = clientModel.getMap().hexgrid.getHex(loc);
+			if(hex) {
+				if(type.type == "road") {
+					var edge = hex.edges[this.getIndexOfEdge(loc.dir)];
+					console.log('it"s a road');
+					return clientModel.canPlaceRoad(edge);
+				}
+				if(type.type == "settlement")
+				{
+					var vertex = hex.vertexes[this.getIndexOfVertex(loc.dir)];
+					return clientModel.canPlaceSettlement(vertex);
+				}
+				if(type.type == "city")
+				{
+					var vertex = hex.vertexes[this.getIndexOfVertex(loc.dir)];
+					return clientModel.canPlaceCity(vertex);
+				}
+				if(type.type == "robber")
+				{
+					return clientModel.canPlaceRobber(hex);
+				}
+				return true;
+			}
 		};
 
+		MapController.prototype.getIndexOfVertex = function(dir) {
+			var index = -1;
+			for (var val in vdLookup)
+			{
+				index++;
+				if(dir == vdLookup[val]) {
+					return val;
+				}
+			}
+			return -1;
+		}
+
+		MapController.prototype.getIndexOfEdge = function(dir) {
+			var index = -1;
+			for(var val in edLookup)
+			{
+				index++;
+				if(dir == edLookup[val]) {
+					return val;
+				}
+			}
+			return -1;
+		}
+
+    var edLookup = ["NW","N","NE","SE","S","SW"]
+	var EdgeDirection = core.numberEnumeration(edLookup);
+
+    var vdLookup = ["W","NW","NE","E","SE","SW"]
+	var VertexDirection = core.numberEnumeration(vdLookup);
 		/**
 		 This method is called when the user clicks the mouse to place a piece.
          This method should close the modal and possibly trigger the Rob View.
@@ -193,6 +250,9 @@ catan.map.Controller = (function catan_controller_namespace() {
 		 @method onDrop
 		*/
 		MapController.prototype.onDrop = function (loc, type) {
+			console.log(type.type);
+			
+			
 		};
 
 /**		var MapState = function() {
