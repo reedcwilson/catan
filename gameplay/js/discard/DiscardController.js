@@ -61,8 +61,10 @@ catan.discard.Controller = (function discard_namespace(){
 		DiscardController.prototype.updateFromModel = function() {
 			var clientModel = this.getClientModel();
 			var playerID = clientModel.clientID;
-			var player = clientModel.players[this.loadIndexByClientID(playerID)];
-	
+
+			var player = clientModel.players[clientModel.loadIndexByClientID(playerID)];
+			//console.log("new c",this.getObserverSubject());
+
 			if(clientModel.turnTracker.status != "Discarding")
 				{
 					if(this.getWaitingView())
@@ -152,7 +154,7 @@ catan.discard.Controller = (function discard_namespace(){
 		 */	
 		DiscardController.prototype.discard = function(){
 			this.startDiscarding = true;
-			var myPlayerIndex = this.loadIndexByClientID(this.getClientModel().getClientID());
+			var myPlayerIndex = this.getClientModel().loadIndexByClientID(this.getClientModel().getClientID());
 			var resourceList = {brick:this.playerResources["brick"][1],ore:this.playerResources["ore"][1],sheep:this.playerResources["sheep"][1],wheat:this.playerResources["wheat"][1],wood:this.playerResources["wood"][1]};
 			this.getClientModel().sendMove({type:"discardCards",playerIndex:myPlayerIndex,discardedCards:resourceList});
 			this.getView().closeModal();

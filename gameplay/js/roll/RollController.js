@@ -39,7 +39,7 @@ catan.roll.Controller = (function roll_namespace(){
           var turnTracker = model.getTurnTracker();
           if (turnTracker.getStatus() == 'Rolling' && turnTracker.rollStatus == "NeedsRoll") {
             turnTracker.rollStatus = "Rolling";
-            var person = this.loadPersonByIndex(model.getTurnTracker().getCurrentTurn());
+            var person = model.loadPersonByIndex(model.getTurnTracker().getCurrentTurn());
 
             if (person.getPlayerID() == model.getClientID()) {
               var view = this.getView()
@@ -84,10 +84,6 @@ catan.roll.Controller = (function roll_namespace(){
 			roll = Math.floor(Math.random() * 6) + 1;
 			roll += Math.floor(Math.random() * 6) + 1;
 			this.getRollResultView().setAmount(roll);
-			if(roll == 7)
-			{
-				//TODO: Open Discard Overlay
-			}
 			this.getRollResultView().showModal();
 		};
 		

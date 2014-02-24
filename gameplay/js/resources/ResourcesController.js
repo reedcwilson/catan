@@ -68,7 +68,7 @@ catan.resources.Controller = (function resources_namespace() {
 		ResourceBarController.prototype.updateFromModel = function() {
 			var clientModel = this.getClientModel();
 			var view = this.getView();
-			var player = clientModel.players[this.loadIndexByClientID(clientModel.clientID)];
+			var player = clientModel.players[clientModel.loadIndexByClientID(clientModel.clientID)];
 			if(player == undefined) {
 				player = clientModel.players[0];
 			}
@@ -76,21 +76,21 @@ catan.resources.Controller = (function resources_namespace() {
 				view.updateAmount(resource, player.resources[resource]);
 			}
 			view.updateAmount("Roads", player.roads);
-			if(player.hasResources(this.roadResources) && this.isCurrentTurn(player.playerID)) {
+			if(player.hasResources(this.roadResources) && clientModel.isCurrentTurn(player.playerID)) {
 				view.setActionEnabled("Roads", true);
 			}
 			else {
 				view.setActionEnabled("Roads", false);
 			}
 			view.updateAmount(SETTLEMENT, player.settlements);
-			if(player.hasResources(this.settlementResources) && this.isCurrentTurn(player.playerID)) {
+			if(player.hasResources(this.settlementResources) && clientModel.isCurrentTurn(player.playerID)) {
 				view.setActionEnabled("Settlements", true);
 			}
 			else {
 				view.setActionEnabled("Settlements", false);
 			}
 			view.updateAmount("Cities", player.cities);
-			if(player.hasResources(this.cityResources) && this.isCurrentTurn(player.playerID)) {
+			if(player.hasResources(this.cityResources) && clientModel.isCurrentTurn(player.playerID)) {
 				view.setActionEnabled("Cities", true);
 			}
 			else {

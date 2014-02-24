@@ -34,7 +34,7 @@ catan.points.Controller = (function VPController_Class(){
 	PointController.prototype.updateFromModel = function(){
 		var clientModel = this.getClientModel();
 		var playerID = clientModel.clientID;
-		var player = clientModel.players[this.loadIndexByClientID(playerID)];
+		var player = clientModel.players[clientModel.loadIndexByClientID(playerID)];
 		if(player == undefined) {
 			player = clientModel.players[0];
 		}

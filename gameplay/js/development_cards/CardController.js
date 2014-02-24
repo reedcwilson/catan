@@ -50,7 +50,7 @@ catan.devCards.Controller = (function()
 			var clientModel = this.getClientModel();
 			var view = this.getView();	
 					
-			var player = clientModel.players[this.loadIndexByClientID(clientModel.clientID)];
+			var player = clientModel.players[clientModel.loadIndexByClientID(clientModel.clientID)];
 			
 			view.updateAmount("soldier", player.newDevCards.soldier + player.oldDevCards.soldier);
 			view.updateAmount("yearOfPlenty", player.newDevCards.yearOfPlenty + player.oldDevCards.yearOfPlenty);
@@ -58,11 +58,11 @@ catan.devCards.Controller = (function()
 			view.updateAmount("roadBuilding", player.newDevCards.roadBuilding + player.oldDevCards.roadBuilding);
 			view.updateAmount("monument", player.newDevCards.monument + player.oldDevCards.monument);
 			
-			view.setCardEnabled("soldier", player.canPlayDevCard("soldier"));
-			view.setCardEnabled("yearOfPlenty", player.canPlayDevCard("yearOfPlenty"));
-			view.setCardEnabled("monopoly", player.canPlayDevCard("monopoly"));
-			view.setCardEnabled("roadBuilding", player.canPlayDevCard("roadBuilding"));
-			view.setCardEnabled("monument", player.canPlayDevCard("monument"));
+			view.setCardEnabled("soldier", clientModel.canPlayDevCard("soldier"));
+			view.setCardEnabled("yearOfPlenty", clientModel.canPlayDevCard("yearOfPlenty"));
+			view.setCardEnabled("monopoly", clientModel.canPlayDevCard("monopoly"));
+			view.setCardEnabled("roadBuilding", clientModel.canPlayDevCard("roadBuilding"));
+			view.setCardEnabled("monument", clientModel.canPlayDevCard("monument"));
 		}
 		
 		/**
