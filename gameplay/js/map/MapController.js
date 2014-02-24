@@ -87,17 +87,15 @@ catan.map.Controller = (function catan_controller_namespace() {
 						var player = self.loadPersonByIndex(owner);
 						var dir = edge.location.getDir();
 						var noDraw = dir !== "S" && dir !== "SE" && dir !== "SW";
-						view.placeRoad(edge.location,player.color,noDraw);
+						if(!noDraw){
+							view.placeRoad(edge.location,player.color,noDraw);
+						}
 					}
 				});
 				//load cities and settlements
 				hex.vertexes.map(function (vertex){
 					var owner = vertex.ownerID;
 					if(owner != -1){
-						if(self.getPrinted() == false)
-						{
-							console.log(vertex.location);
-						}
 						var player = self.loadPersonByIndex(owner);
 						if(vertex.worth == 1){
 							view.placeSettlement(vertex.location,player.color,false);

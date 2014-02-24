@@ -445,6 +445,7 @@ catan.models.hexgrid = (function HexGrid_Namespace(){
 			this.setY(y);
 		}	
 		core.defineProperty(BaseLocation.prototype,"direction");
+		core.defineProperty(BaseLocation.prototype,"dir");
 		
 		BaseLocation.prototype.getHexLocation = function(){
 			return new HexLocation(this.getX(),this.getY());
@@ -534,11 +535,12 @@ catan.models.hexgrid = (function HexGrid_Namespace(){
 		core.forceClassInherit(EdgeLocation,BaseLocation);
 		function EdgeLocation(hexLocation,direction,arg3){
 			BaseLocation.call(this,hexLocation,direction,arg3);
+			this.setDir(edLookup[this.getDirection()]);
 		};
 
-		EdgeLocation.prototype.getDir = function() {
-			return edLookup[this.getDirection()];
-		}
+		//EdgeLocation.prototype.getDir = function() {
+		//	return edLookup[this.getDirection()];
+		//}
 		
 		EdgeLocation.prototype.extend = function(data){
 			data.direction = EdgeDirection[data.direction];
@@ -615,11 +617,12 @@ catan.models.hexgrid = (function HexGrid_Namespace(){
 				core.assert(0 <= direction < 6);
 			}
 			BaseLocation.call(this,hexLocation,direction,arg3);
+			this.setDir(vdLookup[this.getDirection()]);
 		};
 
-		VertexLocation.prototype.getDir = function() {
-			return vdLookup[this.getDirection()];
-		}
+		//VertexLocation.prototype.getDir = function() {
+		//	return vdLookup[this.getDirection()];
+		//}
 		
 		VertexLocation.prototype.extend = function(data){
 			data.direction = VertexDirection[data.direction];
