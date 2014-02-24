@@ -30,7 +30,15 @@ catan.setup.Controller = (function Setup_Class(){
 	
 	SetupRoundController.prototype.updateFromModel = function() {
 		var model = this.getClientModel();
+		var mycookie = decodeURIComponent(document.cookie);
+		var n = mycookie.indexOf(";");
+		var start = mycookie.indexOf("{");
+		mycookie = mycookie.substring(start,n);
+		var myjson = JSON.parse(mycookie);
+		console.log(myjson.playerID);
+		model.clientID = myjson.playerID;
 		if(this.getMapController() != undefined) {
+		
 			//if(model.isCurrentTurn(model.clientID))
 			//{
 				this.getMapController().startMove("road", true, true);

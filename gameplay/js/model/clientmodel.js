@@ -140,7 +140,7 @@ catan.models.ClientModel  = (function clientModelNameSpace()
 		ClientModel.prototype.canPlayDevCard = function (devCard) 
 		{               
 			var playerIndex = this.loadIndexByClientID(this.clientID);
-			return this.getPlayers()[playerIndex].canPlayDevCard(devCard) && this.isCurrentTurn(playerIndex);
+			return this.getPlayers()[playerIndex].canPlayDevCard(devCard) && this.isCurrentTurn(this.clientID);
 		};
 		
 		ClientModel.prototype.getResources = function () 
@@ -181,7 +181,6 @@ catan.models.ClientModel  = (function clientModelNameSpace()
 		
 		ClientModel.prototype.sendMove = function (data, observerNotify) 
 		{    
-			console.log("meow");
 			this.getProxy().send(new catan.models.CommandObject(data), this.update, this.observers.notify(null, this.observers.observers));
 		};	
 

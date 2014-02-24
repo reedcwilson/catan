@@ -126,6 +126,10 @@ catan.map.Controller = (function catan_controller_namespace() {
 		 @method robPlayer
 		*/
 		MapController.prototype.robPlayer = function(orderID){
+			var model = this.getClientModel();
+			var clientIndex = model.loadIndexByClientID(model.clientID);
+			model.sendMove({type:"Soldier",playerIndex:clientIndex,victimIndex:orderID,robberSpot:"2"});
+			this.robView().closeModal();
 		}
         
         /**
@@ -264,13 +268,28 @@ catan.map.Controller = (function catan_controller_namespace() {
 			if(type.type == "robber") {
 				var hex = model.getMap().hexgrid.getHex(loc);
 				var playersToRob = new Array();
-				for(var vertexLoc in hex)
+				for(var vertexLoc in hex.vertexes)
 				{
 					var playerToAdd;
-					if(hex[vertexLoc].owner != -1)
+					var playerInfo = new Array();;
+					if(hex.vertexes[vertexLoc].ownerID != -1)
 					{
-
+						playerToAdd = model.loadPersonByIndex(hex.vertexes[vertexLoc].ownerID);
+						if(playerToAdd !== model.loadPersonByIndex(model.loadIndexByClientID(model.clientID))) {
+							playerInfo.color = playerToAdd.color;
+							playerInfo.name = playerToAdd.name;
+							playerInfo.playerNum = vertexLoc;
+							playerInfo.cards = playerToAdd.getNumOfCards();
+							if(!jQuery.inArray(playerInfo, playersToRob))
+							{
+								playersToRob.push(playerInfo);
+							}
+						}
 					}
+				}
+				if(playersToRob.count != 0) {
+					this.getRobView().setPlayerInfo(playersToRob);
+					this.getRobView().showModal(playersToRob);
 				}
 				console.log(hex);
 				
