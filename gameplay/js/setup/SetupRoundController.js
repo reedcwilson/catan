@@ -27,23 +27,50 @@ catan.setup.Controller = (function Setup_Class(){
 			this.setMapController(mapController);
 			this.updateFromModel();
 	}
-	
-	SetupRoundController.prototype.updateFromModel = function() {
-		var model = this.getClientModel();
+
+	SetupRoundController.prototype.getClientFromCookie = function() {
 		var mycookie = decodeURIComponent(document.cookie);
 		var n = mycookie.indexOf(";");
 		var start = mycookie.indexOf("{");
 		mycookie = mycookie.substring(start,n);
 		var myjson = JSON.parse(mycookie);
 		console.log(myjson.playerID);
-		model.clientID = myjson.playerID;
-		if(this.getMapController() != undefined) {
+		return myjson.playerID;
+	}
+	
+	SetupRoundController.prototype.updateFromModel = function() {
+		var model = this.getClientModel();
+		if(model.turnTracker.status != "FirstRound" && model.turnTracker.status != "SecondRound") {
+				window.location = "catan.html"
+		}
+		var clientID = this.getClientID();
+		model.clientID = clientID;
 		
-			//if(model.isCurrentTurn(model.clientID))
-			//{
+		var player = model.loadPersonByIndex(model.loadIndexByClientID(model.clientID));
+		if(this.getMapController() != undefined) {
+			if(model.isCurrentTurn(model.clientID) && 
+				player.startedRoad == false && 
+				(player.roads == 15 || (player.roads == 14 && player.settlements ==4)))
+			{
+				player.startedRoad = true;
 				this.getMapController().startMove("road", true, true);
-			//}
-			
+			}
+			else if(player.startedSettlement == false &&
+			model.isCurrentTurn(model.clientID) &&
+			((player.roads == 14 && player.settlements == 5) || (player.roads==13 && player.settlements==4)))
+			{	
+				player.startedSettlement = true;
+				this.getMapController().startMove("settlement",true, true);
+			}
+			/**else if(player.startedRoad == true &&
+			player.startedSettlement == true &&
+			model.isCurrentTurn(model.clientID) &&
+			((player.roads == 14 && player.settlements == 4) ||
+			(player.roads == 13 && player.settlements ==3))) {
+				console.log('end turn');
+				player.startedVertex = false;
+				model.sendMove({type:"finishTurn",playerIndex:model.loadIndexByClientID(clientID)});
+			}*/
 		}
 	};
 
