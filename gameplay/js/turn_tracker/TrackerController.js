@@ -77,7 +77,7 @@ catan.turntracker.Controller = (function turntracker_namespace()
             		view.updateStateView(true, "End Turn");
             	}
             	else{
-					view.updateStateView(false, "Waiting for other players...");
+					view.updateStateView(true, "Waiting for other players...");
             	}
             }
 		}
