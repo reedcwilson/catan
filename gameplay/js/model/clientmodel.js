@@ -175,7 +175,7 @@ catan.models.ClientModel  = (function clientModelNameSpace()
 					var partner = new Object();
 					partner.name = players[player].getName();
 					partner.color = players[player].getColor();
-					partner.index = players[player].getPlayerID();
+					partner.index = players[player].getOrderNumber();
 					partners.push(partner);
 				}				
 			}
