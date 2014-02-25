@@ -61,7 +61,7 @@ catan.turntracker.Controller = (function turntracker_namespace()
 		{
 			var self = this;
 			clientModel.players.map(function (player){
-				var myHighlight = clientModel.isCurrentTurn(player.getOrderNumber());
+				var myHighlight = clientModel.isCurrentTurn(player.playerID);
 				view.updatePlayer({playerIndex:player.getOrderNumber(),score:player.victoryPoints,highlight:myHighlight,army:player.largestArmy,road:player.longestRoad});
             });
 		}
@@ -71,7 +71,8 @@ catan.turntracker.Controller = (function turntracker_namespace()
 			var playerID = clientModel.loadIndexByClientID(clientModel.getClientID());
 			
             if(view.getStateElem() != undefined){
-            	if(clientModel.isCurrentTurn(playerID) && clientModel.turnTracker.status != "Rolling") 
+            	console.log(clientModel.isCurrentTurn(clientModel.clientID), clientModel.clientID);
+            	if(clientModel.isCurrentTurn(clientModel.clientID) && clientModel.turnTracker.status != "Rolling") 
             	{
             		view.updateStateView(true, "End Turn");
             	}
@@ -93,11 +94,6 @@ catan.turntracker.Controller = (function turntracker_namespace()
 			model.sendMove({type:"finishTurn",playerIndex:myPlayerIndex});
             model.getTurnTracker().rollStatus = "NeedsRoll";
             players = model.players;
-            for(var player in players)
-            {
-				players[player].startedRoad = false;
-				players[player].startedSettlement = false;
-            }
 		}
 		
 		return TurnTrackerController;

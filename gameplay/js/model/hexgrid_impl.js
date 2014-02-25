@@ -115,23 +115,36 @@ catan.models.Map = (function mapNameSpace(){
     Map.prototype.canPlaceRoad = function(edge, id) {
       var ownerId = false;
       var connectedEdge = false;
+      var land = false;
 
       // check current edge
       if (edge.isOccupied() == true) {
         return false;
       }
 
-      // check vertices for settlements
       var vertices = edge.location.getConnected();
       for (var key in vertices) {
         var v = vertices[key];
+
+        // get 3 associated hexes if one is land then valid
+        var equivVerts = v.getEquivalenceGroup();
+        for (var vKey in equivVerts) {
+          var eV = equivVerts[vKey];
+          var vHex = this.hexgrid.getHex(
+            new catan.models.hexgrid.HexLocation(eV.x, eV.y));
+ 
+          if (vHex.getIsLand()) {
+            land = true;
+            break;
+          }
+        }
+
+        // check vertices for settlements
         var hex = this.hexgrid.getHex(
             new catan.models.hexgrid.HexLocation(v.x, v.y));
 
-        if (hex.vertexes[v.direction].ownerID == id)
-        {
+        if (hex.vertexes[v.direction].ownerID == id) {
           ownerId = true;
-          break;
         }
       }
 
@@ -141,8 +154,7 @@ catan.models.Map = (function mapNameSpace(){
         var e = edges[key];
         var hex = this.hexgrid.getHex(
             new catan.models.hexgrid.HexLocation(e.x, e.y));
-        if(hex)
-        {
+        if(hex) {
         	if (hex.edges[e.direction].ownerID == id) {
          	 connectedEdge = true;
           	break;
@@ -150,7 +162,41 @@ catan.models.Map = (function mapNameSpace(){
         }
       }
 
-      return ownerId == true || connectedEdge == true;
+      return land && (ownerId == true || connectedEdge == true);
+    };
+
+    Map.prototype.setupCanPlaceRoad = function(edge, id) {
+      var land = false;
+      var validRoad = false;
+
+      // check current edge
+      if (edge.isOccupied() == true) {
+        return false;
+      }
+
+      var vertices = edge.location.getConnected();
+      for (var key in vertices) {
+        var v = vertices[key];
+
+        // get 3 associated hexes if one is land then valid
+        var equivVerts = v.getEquivalenceGroup();
+        for (var vKey in equivVerts) {
+          var eV = equivVerts[vKey];
+          var vHex = this.hexgrid.getHex(
+            new catan.models.hexgrid.HexLocation(eV.x, eV.y));
+
+          if (this.setupCanPlaceSettlement(vHex.vertexes[eV.direction], id)) {
+            validRoad = true;
+          }
+ 
+          if (vHex.getIsLand()) {
+            land = true;
+            break;
+          }
+        }
+      }
+
+      return land && validRoad;
     };
 
     /**
@@ -168,9 +214,45 @@ catan.models.Map = (function mapNameSpace(){
      * @return {boolean} returns true if settlement can be placed
      */
     Map.prototype.canPlaceSettlement = function(loc, id) {
+      if (loc.getOwnerID() != -1)
+        return false;
+
       // if there is no settlement within two vertices
       var edges = loc.location.getConnectedEdges();
+      var occupied = false;
       for (var eKey in edges) {
+
+        var edge = edges[eKey];
+        var originHex = this.hexgrid.getHex(
+            new catan.models.hexgrid.HexLocation(edge.x, edge.y));
+
+        if (originHex && originHex.edges[edge.direction].ownerID == id) {
+          occupied = true;
+        }
+        var vertexes = edge.getConnected();
+        for (var vKey in vertexes) {
+          var vertex = vertexes[vKey];
+
+          var hex = this.hexgrid.getHex(
+              new catan.models.hexgrid.HexLocation(vertex.x, vertex.y));
+
+          if(hex && hex.vertexes[vertex.direction].isOccupied() == true) {
+              return false;
+          }
+        }
+      }
+      return occupied;
+    };
+
+    Map.prototype.setupCanPlaceSettlement = function(loc, id) {
+      if (loc.getOwnerID() != -1)
+        return false;
+
+      // if there is no settlement within two vertices
+      var edges = loc.location.getConnectedEdges();
+      var occupied = false;
+      for (var eKey in edges) {
+
         var edge = edges[eKey];
         var vertexes = edge.getConnected();
         for (var vKey in vertexes) {
@@ -178,19 +260,48 @@ catan.models.Map = (function mapNameSpace(){
 
           var hex = this.hexgrid.getHex(
               new catan.models.hexgrid.HexLocation(vertex.x, vertex.y));
-		if(hex)
-		{
-          if (hex.vertexes[vertex.direction].isOccupied() == true) {
-            return false;
+
+          if(hex && hex.vertexes[vertex.direction].isOccupied() == true) {
+              return false;
           }
-         }
         }
       }
+      return true;// occupied;
+    };
+
+    /**
+     * Tests to see if the robber can be placed on given hex
+     *
+     * <pre>
+     *    INVARIANT: robber is valid
+     *    PRE: hex is valid
+     *    POST: all properties are the same
+     *    POST: validity of placement is enforced
+     * </pre>
+     *
+     * @method canPlaceRobber
+     * @param {CatanHex} hex the hex in question
+     * @return {boolean} returns true if robber can be placed
+     */
+    Map.prototype.canPlaceRobber = function(hex) {
+      if ((this.robber.x == hex.location.x && this.robber.y == hex.location.y) || !hex.getIsLand())
+        return false;
       return true;
     };
 
     /**
      * Returns best trade ratio for given resource per given playerId
+     *
+     * <pre>
+     *    PRE: resource is valid
+     *    PRE: playerId is valid
+     *    POST: all properties are the same
+     *    POST: best ratio is given
+     * </pre>
+     *
+     * @method getBestRatio 
+     * @param {string} resource the resource in question
+     * @return {number} returns the best numeric ratio
      */
     Map.prototype.getBestRatio = function(resource, playerId) {
       var bestRatio = 4;

@@ -45,43 +45,63 @@ catan.trade.domestic.Controller= (function trade_namespace()
 		var tradeResources = [];
 		var tradeDirections = [];
 		var tradee = -1;
+		var tradeAccepted = false;
 		DomesticController.prototype.updateFromModel = function()
 		{
 			var view = this.getView();
 			var client = this.getClientModel();
 			var player = client.players[client.loadIndexByClientID(client.clientID)];
-			this.initHandFromModel(player);			
+			var tradeOffer = client.getTradeOffer();
+			this.initHandFromModel(player);
 			
-			if(client.isCurrentTurn(player.playerID))
+			if(tradeOffer.sender == -1)
 			{
-				if(!this.isTrading())
+				tradeAccepted = false;
+				this.waitingView.closeModal();
+				if(client.isCurrentTurn(player.playerID))
 				{
-					view.setTradeButtonEnabled(false);
-					view.setStateMessage("Set the trade you want to make");
-					view.setResourceSelectionEnabled(true);
-					view.setPlayerSelectionEnabled(true);
-					this.clearTrades();
-				}
-				if(this.isTradeReady() && tradee != -1)
-				{
-					view.setStateMessage("Send trade request!");
-					view.setTradeButtonEnabled(true);
+					if(!this.isTrading())
+					{
+						view.setTradeButtonEnabled(false);
+						view.setStateMessage("Set the trade you want to make");
+						view.setResourceSelectionEnabled(true);
+						view.setPlayerSelectionEnabled(true);
+						this.clearTrades();
+					}
+					if(this.isTradeReady() && tradee != -1)
+					{
+						view.setStateMessage("Send trade request!");
+						view.setTradeButtonEnabled(true);
+					}
+					else
+					{			
+						view.setTradeButtonEnabled(false);
+						if(this.isTradeReady())
+							view.setStateMessage("Choose who to trade with");
+					}
+					if(tradee != -1 && !this.isTradeReady())
+						view.setStateMessage("Set the trade you want to make");
 				}
 				else
-				{			
+				{
+					view.setStateMessage("Not your turn!");
 					view.setTradeButtonEnabled(false);
-					if(this.isTradeReady())
-						view.setStateMessage("Choose who to trade with");
+					view.setResourceSelectionEnabled(false);
+					view.setPlayerSelectionEnabled(false);	
 				}
-				if(tradee != -1 && !this.isTradeReady())
-					view.setStateMessage("Set the trade you want to make");
 			}
-			else
+			else if(!tradeAccepted)
 			{
-				view.setStateMessage("Not your turn!");
-				view.setTradeButtonEnabled(false);
-				view.setResourceSelectionEnabled(false);
-				view.setPlayerSelectionEnabled(false);	
+				if(tradeOffer.receiver == player.orderNumber)
+				{				
+					var trader = client.loadPersonByIndex(client.loadIndexByClientID(tradeOffer.sender));
+					this.acceptView.showModal();
+					this.acceptView.setPlayerName(trader.name);
+					this.displayOfferResources(this.acceptView);
+					this.acceptView.setAcceptEnabled(player.canAcceptTrade(client.getTradeOffer()));
+				}
+				else
+					this.waitingView.showModal();
 			}
 		};
 
@@ -140,6 +160,33 @@ catan.trade.domestic.Controller= (function trade_namespace()
 			offer.wood = tradeResources["wood"]*tradeDirections["wood"];			
 			return offer;
 		}
+		
+		DomesticController.prototype.displayOfferResources = function(vew)
+		{
+			var client = this.getClientModel();
+			var offer = client.getTradeOffer().offer;
+							
+			if(offer.brick > 0)
+				vew.addGiveResource("brick", offer.brick);
+			if(offer.brick < 0)
+				vew.addGetResource("brick", offer.brick);
+			if(offer.sheep > 0)
+				vew.addGiveResource("sheep", offer.sheep);
+			if(offer.sheep < 0)
+				vew.addGetResource("sheep", offer.sheep);
+			if(offer.ore > 0)
+				vew.addGiveResource("ore", offer.ore);
+			if(offer.ore < 0)
+				vew.addGetResource("ore", offer.ore);
+			if(offer.wheat > 0)
+				vew.addGiveResource("wheat", offer.wheat);
+			if(offer.wheat < 0)
+				vew.addGetResource("wheat", offer.wheat);
+			if(offer.wood > 0)
+				vew.addGiveResource("wood", offer.wood);
+			if(offer.wood < 0)
+				vew.addGetResource("wood", offer.wood);								
+		}		
          
 		/******** Methods called by the Domestic View *********/
         
@@ -240,9 +287,8 @@ catan.trade.domestic.Controller= (function trade_namespace()
 		{
 			var view = this.getView();	
 			var client = this.getClientModel();
-			var player = client.players[this.loadIndexByClientID(client.clientID)];
-			//alert(JSON.stringify(this.generateOffer(), null, '\t'));
-			client.sendMove({type:'offerTrade', playerIndex: player.playerID, offer: this.generateOffer(), receiver: tradee});			
+			var player = client.players[client.loadIndexByClientID(client.clientID)];
+			client.sendMove({type:'offerTrade', playerIndex: client.loadIndexByClientID(player.playerID), offer: this.generateOffer(), receiver: tradee});			
 			this.clearTrades();
 			view.clearTradeView();
 		};
@@ -259,8 +305,10 @@ catan.trade.domestic.Controller= (function trade_namespace()
 		DomesticController.prototype.acceptTrade = function(willAcceptBool)
 		{
 			var client = this.getClientModel();
-			var player = client.players[this.loadIndexByClientID(client.clientID)];
-			client.sendMove({type:'acceptTrade', playerIndex: player.playerID, willAccept:willAcceptBool});
+			var player = client.players[client.loadIndexByClientID(client.clientID)];
+			client.sendMove({type:'acceptTrade', playerIndex: client.loadIndexByClientID(player.playerID), willAccept:willAcceptBool});
+			tradeAccepted = true;
+			this.acceptView.closeModal();
 		};
             
 		return DomesticController;

@@ -240,6 +240,11 @@ catan.models.TradeOffer = (function TradeOfferSpace() {
 				this.setReceiver(tradeOfferJSON.receiver);
 				this.setOffer(tradeOfferJSON.offer);
 			}
+			else
+			{
+				this.setSender(-1);
+				this.setReceiver(-1);
+			}
 		}
 
 	return TradeOffer;

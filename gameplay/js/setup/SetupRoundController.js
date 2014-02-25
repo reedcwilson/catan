@@ -53,6 +53,7 @@ catan.setup.Controller = (function Setup_Class(){
 				(player.roads == 15 || (player.roads == 14 && player.settlements ==4)))
 			{
 				player.startedRoad = true;
+				player.startedSettlement = false;
 				this.getMapController().startMove("road", true, true);
 			}
 			else if(player.startedSettlement == false &&
@@ -62,15 +63,6 @@ catan.setup.Controller = (function Setup_Class(){
 				player.startedSettlement = true;
 				this.getMapController().startMove("settlement",true, true);
 			}
-			/**else if(player.startedRoad == true &&
-			player.startedSettlement == true &&
-			model.isCurrentTurn(model.clientID) &&
-			((player.roads == 14 && player.settlements == 4) ||
-			(player.roads == 13 && player.settlements ==3))) {
-				console.log('end turn');
-				player.startedVertex = false;
-				model.sendMove({type:"finishTurn",playerIndex:model.loadIndexByClientID(clientID)});
-			}*/
 		}
 	};
 

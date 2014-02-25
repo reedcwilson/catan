@@ -149,7 +149,7 @@ test( "Can Place Road", function() {
 });
 
 test( "Can Place Settlement", function() {
-  expect(2);
+  expect(5);
 
   var map = new catan.models.Map(model.map.radius);
   map.setInfo(model.map);
@@ -162,8 +162,16 @@ test( "Can Place Settlement", function() {
   resetVertices(vertexes);
   resetVertices(vertexes2);
   resetVertices(vertexes3);
+  resetEdges(map.hexgrid.hexes[3][3].edges);
 
   var vertex = vertexes[3];
+
+  // try a settlement without any road
+  canPlace = map.canPlaceSettlement(vertex, 1);
+  ok(canPlace == false, "user cannot place settlement without a connected road");
+
+  // place a road on an edge
+  map.hexgrid.hexes[3][3].edges[3].ownerID = 1;
 
   // test empty vertex 
   canPlace = map.canPlaceSettlement(vertex, 1);
@@ -175,11 +183,26 @@ test( "Can Place Settlement", function() {
   // test again to see if it changed correctly
   canPlace = map.canPlaceSettlement(vertex, 1);
   ok(canPlace == false, "user can no longer place settlement");
+
+  // test placing in water
+  var vertexes = map.hexgrid.hexes[5][4].vertexes;
+  canPlace = map.canPlaceSettlement(vertexes[5]);
+  ok(canPlace == false, "user cannot place settlement in water");
+
+  var vertexes = map.hexgrid.hexes[0][0].vertexes;
+  canPlace = map.canPlaceSettlement(vertexes[0]);
+  ok(canPlace == false, "user cannot place settlement in water");
 });
 
 function resetVertices(verts) {
   for (var v in verts) {
     verts[v].ownerID = -1;
+  }
+}
+
+function resetEdges(edges) {
+  for (var e in edges) {
+    edges[e].ownerID = -1;
   }
 }
 
@@ -202,6 +225,30 @@ test( "Can Place City", function() {
   // test again to see if it changed correctly
   canPlace = map.canPlaceCity(vertex, 1);
   ok(canPlace == true, "user can now place city on settlement");
+});
+
+test( "Can Place Robber", function() {
+  expect(3);
+
+  var map = new catan.models.Map(model.map.radius);
+  map.setInfo(model.map);
+
+  var canPlace = false;
+
+  // test a given empty hex
+  var hex = map.hexgrid.hexes[2][1];
+  canPlace = map.canPlaceRobber(hex);
+  ok(canPlace == true, "user can place robber on given hex");
+
+  // test the location the robber is on
+  hex = map.hexgrid.hexes[1][1];
+  canPlace = map.canPlaceRobber(hex);
+  ok(canPlace == false, "user cannot place robber on same hex");
+
+  // test a water hex
+  hex = map.hexgrid.hexes[0][0];
+  canPlace = map.canPlaceRobber(hex);
+  ok(canPlace == false, "user can place robber on water");
 });
 
 test( "Get best ratio", function() {

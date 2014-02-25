@@ -127,9 +127,8 @@ catan.map.Controller = (function catan_controller_namespace() {
 		*/
 		MapController.prototype.robPlayer = function(orderID){
 			var model = this.getClientModel();
-			var clientIndex = model.loadIndexByClientID(model.clientID);
-			console.log(model);
-			model.sendMove({type:"Soldier",playerIndex:clientIndex,victimIndex:orderID,robberSpot:model.map.getRobber()});
+			var clientIndex = model.loadIndexByClientID(model.loadIndexByClientID(model.clientID));
+			model.sendMove({type:"Soldier",playerIndex:clientIndex,victimIndex:orderID,robberSpot:"2"});
 			this.robView().closeModal();
 		}
         
@@ -168,7 +167,6 @@ catan.map.Controller = (function catan_controller_namespace() {
 		MapController.prototype.startMove = function (pieceType,free,disconnected){
 			var model = this.getClientModel();
 			this.getModalView().showModal(pieceType);
-			console.log(model);
 			var playerIndex = model.loadIndexByClientID(model.getClientID())
 			var color = model.loadPersonByIndex(playerIndex).color;
 			this.getView().startDrop(pieceType, color);
@@ -199,20 +197,27 @@ catan.map.Controller = (function catan_controller_namespace() {
 			loc.getY = function() {return loc.y};
 			var clientModel = this.getClientModel();
 			var hex = clientModel.getMap().hexgrid.getHex(loc);
+            var id = clientModel.loadIndexByClientID(clientModel.clientID)
 			if(hex) {
 				if(type.type == "road") {
 					var edge = hex.edges[this.getIndexOfEdge(loc.dir)];
-					return clientModel.canPlaceRoad(edge);
+					console.log('it"s a road');
+                    if (clientModel.turnTracker.status == "FirstRound" || clientModel.turnTracker.status == "SecondRound") {
+                      return clientModel.setupCanPlaceRoad(edge, id);
+                    }
+                    else {
+                      return clientModel.canPlaceRoad(edge, id);
+                    }
 				}
 				if(type.type == "settlement")
 				{
 					var vertex = hex.vertexes[this.getIndexOfVertex(loc.dir)];
-					return clientModel.canPlaceSettlement(vertex);
+					return clientModel.canPlaceSettlement(vertex, id);
 				}
 				if(type.type == "city")
 				{
 					var vertex = hex.vertexes[this.getIndexOfVertex(loc.dir)];
-					return clientModel.canPlaceCity(vertex);
+					return clientModel.canPlaceCity(vertex, id);
 				}
 				if(type.type == "robber")
 				{
@@ -273,6 +278,14 @@ catan.map.Controller = (function catan_controller_namespace() {
 				console.log(loc);
 				loc.direction = loc.dir;
 				model.sendMove({type:"buildSettlement",playerIndex:model.loadIndexByClientID(model.clientID),vertexLocation:loc,free:isfree});
+				if(isfree) {
+					model.sendMove({type:"finishTurn",playerIndex:model.loadIndexByClientID(model.clientID)});
+					for(var player in model.players)
+            		{
+					players[player].startedRoad = false;
+					players[player].startedSettlement = false;
+           			}
+				}
 			}
 			if(type.type == "city") {
 				loc.direction = loc.dir;

@@ -112,19 +112,29 @@ catan.models.ClientModel  = (function clientModelNameSpace()
 
 		//Queries
 		
-		ClientModel.prototype.canPlaceRoad = function (location) 
+		ClientModel.prototype.canPlaceRoad = function (location, id) 
 		{               
-			return this.getMap().canPlaceRoad(location);
+			return this.getMap().canPlaceRoad(location, id);
+		};
+
+		ClientModel.prototype.setupCanPlaceRoad = function (location, id) 
+		{               
+			return this.getMap().setupCanPlaceRoad(location, id);
+		};
+
+		ClientModel.prototype.canPlaceRobber = function (hex) 
+		{               
+			return this.getMap().canPlaceRobber(hex);
 		};
 		
-		ClientModel.prototype.canPlaceSettlement = function (location) 
+		ClientModel.prototype.canPlaceSettlement = function (location, id) 
 		{               
-			return this.getMap().canPlaceSettlement(location);
+			return this.getMap().canPlaceSettlement(location, id);
 		};
 		
-		ClientModel.prototype.canPlaceCity = function (location) 
+		ClientModel.prototype.canPlaceCity = function (location, id) 
 		{               
-			return this.getMap().canPlaceCity(location);
+			return this.getMap().canPlaceCity(location, id);
 		};
 		
 		ClientModel.prototype.needsToDiscard = function () 
@@ -170,7 +180,7 @@ catan.models.ClientModel  = (function clientModelNameSpace()
 					var partner = new Object();
 					partner.name = players[player].getName();
 					partner.color = players[player].getColor();
-					partner.index = players[player].getPlayerID();
+					partner.index = players[player].getOrderNumber();
 					partners.push(partner);
 				}				
 			}

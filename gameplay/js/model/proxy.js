@@ -43,11 +43,17 @@ catan.models.Proxy = (function() {
 	Proxy.prototype.getModel = function(clientmodel, success){
 		jQuery.get("/game/model", function(data){
 			clientmodel.init(data);
-			success(data);
+			if(success != undefined) {
+				success(data);
+			}
 		});
 	};
 
-
+	Proxy.prototype.updateModel = function(clientmodel) {
+		jQuery.get("/game/model", function(data){
+			clientmodel.update(data);
+		});
+	}
 	   	 /**
 		Resets the current game 
 		<pre>
