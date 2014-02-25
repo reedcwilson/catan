@@ -65,6 +65,11 @@ catan.devCards.Controller = (function()
 			view.setCardEnabled("monument", clientModel.canPlayDevCard("monument"));
 		}
 		
+		function capFirst(str)
+		{
+            return str[0].toUpperCase() + str.slice(1);
+        }
+		
 		/**
 		 * Called when the player buys a development card
 		 * @method buyCard
@@ -85,8 +90,9 @@ catan.devCards.Controller = (function()
 		 */
 		DevCardController.prototype.useYearOfPlenty = function(resource1, resource2)
 		{
-			var clientModel = this.getClientModel();			
-			clientModel.sendMove({type:'Year_of_Plenty', playerIndex: clientModel.getTurnTracker().getCurrentTurn(), resource1: resource1, resource2: resource2});
+			var client = this.getClientModel();
+			var index = client.loadIndexByClientID(client.clientID);
+			client.sendMove({type:'Year_of_Plenty', playerIndex: index, resource1: capFirst(resource1), resource2: capFirst(resource2)});
 			this.getView().closeModal();
 		}
         
@@ -98,10 +104,10 @@ catan.devCards.Controller = (function()
 		 */
 		DevCardController.prototype.useMonopoly= function(resource)
 		{
-			var clientModel = this.getClientModel();			
-			clientModel.sendMove({type:'Monopoly', resource: resource, playerIndex: clientModel.getTurnTracker().getCurrentTurn()});
+			var client = this.getClientModel();
+			var index = client.loadIndexByClientID(client.clientID);			
+			client.sendMove({type:'Monopoly', resource: capFirst(resource), playerIndex: index});
 			this.getView().closeModal();
-
 		}
         
 		/**

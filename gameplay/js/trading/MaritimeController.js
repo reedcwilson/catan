@@ -73,13 +73,16 @@ catan.trade.maritime.Controller = (function trade_namespace()
 
 		MaritimeController.prototype.setPortValues = function()
 		{
+			var client = this.getClientModel();
+			var map = client.map;
+			var clientID = client.clientID;
 			temp = [];
 			
-			temp["wood"] 	= 4;
-			temp["brick"] 	= 4;
-			temp["sheep"] 	= 4;
-			temp["wheat"] 	= 4;
-			temp["ore"] 	= 4;
+			temp["wood"] 	= map.getBestRatio("wood", clientID);
+			temp["brick"] 	= map.getBestRatio("brick", clientID);
+			temp["sheep"] 	= map.getBestRatio("sheep", clientID);
+			temp["wheat"] 	= map.getBestRatio("wheat", clientID);
+			temp["ore"] 	= map.getBestRatio("ore", clientID);
 			
 			return temp;
 		}; 
@@ -161,11 +164,9 @@ catan.trade.maritime.Controller = (function trade_namespace()
 		MaritimeController.prototype.makeTrade= function()
 		{
 			var client = this.getClientModel();
-			var player = client.players[this.loadIndexByClientID(client.clientID)];			
-			
-			trading = false;
-			//alert("Traded " + ports[resourceGive] + " " + resourceGive + " for 1 " + resourceGet);
-			client.sendMove({type:'maritimeTrade', playerIndex: player.playerID, ratio: ports[resourceGive], inputResource: resourceGive, outputResource: resourceGet});			
+			var turnOrder = client.loadIndexByClientID(client.clientID);			
+			trading = false;			
+			client.sendMove({type:'maritimeTrade', playerIndex: turnOrder, ratio: ports[resourceGive], inputResource: capFirst(resourceGive), outputResource: capFirst(resourceGet)});			
 		}
 		
        return MaritimeController;
