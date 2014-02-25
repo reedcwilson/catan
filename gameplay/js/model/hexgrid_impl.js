@@ -115,23 +115,36 @@ catan.models.Map = (function mapNameSpace(){
     Map.prototype.canPlaceRoad = function(edge, id) {
       var ownerId = false;
       var connectedEdge = false;
+      var land = false;
 
       // check current edge
       if (edge.isOccupied() == true) {
         return false;
       }
 
-      // check vertices for settlements
       var vertices = edge.location.getConnected();
       for (var key in vertices) {
         var v = vertices[key];
+
+        // get 3 associated hexes if one is land then valid
+        var equivVerts = v.getEquivalenceGroup();
+        for (var vKey in equivVerts) {
+          var eV = equivVerts[vKey];
+          var vHex = this.hexgrid.getHex(
+            new catan.models.hexgrid.HexLocation(eV.x, eV.y));
+ 
+          if (vHex.getIsLand()) {
+            land = true;
+            break;
+          }
+        }
+
+        // check vertices for settlements
         var hex = this.hexgrid.getHex(
             new catan.models.hexgrid.HexLocation(v.x, v.y));
 
-        if (hex.vertexes[v.direction].ownerID == id)
-        {
+        if (hex.vertexes[v.direction].ownerID == id) {
           ownerId = true;
-          break;
         }
       }
 
@@ -141,8 +154,7 @@ catan.models.Map = (function mapNameSpace(){
         var e = edges[key];
         var hex = this.hexgrid.getHex(
             new catan.models.hexgrid.HexLocation(e.x, e.y));
-        if(hex)
-        {
+        if(hex) {
         	if (hex.edges[e.direction].ownerID == id) {
          	 connectedEdge = true;
           	break;
@@ -150,7 +162,41 @@ catan.models.Map = (function mapNameSpace(){
         }
       }
 
-      return ownerId == true || connectedEdge == true;
+      return land && (ownerId == true || connectedEdge == true);
+    };
+
+    Map.prototype.setupCanPlaceRoad = function(edge, id) {
+      var land = false;
+      var validRoad = false;
+
+      // check current edge
+      if (edge.isOccupied() == true) {
+        return false;
+      }
+
+      var vertices = edge.location.getConnected();
+      for (var key in vertices) {
+        var v = vertices[key];
+
+        // get 3 associated hexes if one is land then valid
+        var equivVerts = v.getEquivalenceGroup();
+        for (var vKey in equivVerts) {
+          var eV = equivVerts[vKey];
+          var vHex = this.hexgrid.getHex(
+            new catan.models.hexgrid.HexLocation(eV.x, eV.y));
+
+          if (this.setupCanPlaceSettlement(vHex.vertexes[eV.direction], id)) {
+            validRoad = true;
+          }
+ 
+          if (vHex.getIsLand()) {
+            land = true;
+            break;
+          }
+        }
+      }
+
+      return land && validRoad;
     };
 
     /**
@@ -171,20 +217,17 @@ catan.models.Map = (function mapNameSpace(){
       if (loc.getOwnerID() != -1)
         return false;
 
-      var originHex = this.hexgrid.getHex(
-          new catan.models.hexgrid.HexLocation(loc.location.x, loc.location.y));
-
       // if there is no settlement within two vertices
       var edges = loc.location.getConnectedEdges();
       var occupied = false;
-      var land = false;
       for (var eKey in edges) {
+
         var edge = edges[eKey];
-        if (originHex.edges[edge.direction].isOccupied()) {
+        var originHex = this.hexgrid.getHex(
+            new catan.models.hexgrid.HexLocation(edge.x, edge.y));
+
+        if (originHex && originHex.edges[edge.direction].ownerID == id) {
           occupied = true;
-        }
-        if (originHex.getIsLand()) {
-          land = true;
         }
         var vertexes = edge.getConnected();
         for (var vKey in vertexes) {
@@ -198,7 +241,32 @@ catan.models.Map = (function mapNameSpace(){
           }
         }
       }
-      return occupied && land;
+      return occupied;
+    };
+
+    Map.prototype.setupCanPlaceSettlement = function(loc, id) {
+      if (loc.getOwnerID() != -1)
+        return false;
+
+      // if there is no settlement within two vertices
+      var edges = loc.location.getConnectedEdges();
+      var occupied = false;
+      for (var eKey in edges) {
+
+        var edge = edges[eKey];
+        var vertexes = edge.getConnected();
+        for (var vKey in vertexes) {
+          var vertex = vertexes[vKey];
+
+          var hex = this.hexgrid.getHex(
+              new catan.models.hexgrid.HexLocation(vertex.x, vertex.y));
+
+          if(hex && hex.vertexes[vertex.direction].isOccupied() == true) {
+              return false;
+          }
+        }
+      }
+      return true;// occupied;
     };
 
     /**

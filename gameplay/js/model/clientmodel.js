@@ -116,6 +116,11 @@ catan.models.ClientModel  = (function clientModelNameSpace()
 		{               
 			return this.getMap().canPlaceRoad(location, id);
 		};
+
+		ClientModel.prototype.setupCanPlaceRoad = function (location, id) 
+		{               
+			return this.getMap().setupCanPlaceRoad(location, id);
+		};
 		
 		ClientModel.prototype.canPlaceSettlement = function (location, id) 
 		{               

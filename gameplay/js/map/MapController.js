@@ -203,7 +203,12 @@ catan.map.Controller = (function catan_controller_namespace() {
 				if(type.type == "road") {
 					var edge = hex.edges[this.getIndexOfEdge(loc.dir)];
 					console.log('it"s a road');
-					return clientModel.canPlaceRoad(edge, id);
+                    if (clientModel.turnTracker.status == "FirstRound" || clientModel.turnTracker.status == "SecondRound") {
+                      return clientModel.setupCanPlaceRoad(edge, id);
+                    }
+                    else {
+                      return clientModel.canPlaceRoad(edge, id);
+                    }
 				}
 				if(type.type == "settlement")
 				{

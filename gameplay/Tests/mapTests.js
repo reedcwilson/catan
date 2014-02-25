@@ -171,7 +171,7 @@ test( "Can Place Settlement", function() {
   ok(canPlace == false, "user cannot place settlement without a connected road");
 
   // place a road on an edge
-  map.hexgrid.hexes[3][3].edges[5].ownerID = 1;
+  map.hexgrid.hexes[3][3].edges[3].ownerID = 1;
 
   // test empty vertex 
   canPlace = map.canPlaceSettlement(vertex, 1);
