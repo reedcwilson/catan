@@ -61,7 +61,7 @@ catan.turntracker.Controller = (function turntracker_namespace()
 		{
 			var self = this;
 			clientModel.players.map(function (player){
-				var myHighlight = clientModel.isCurrentTurn(player.getOrderNumber());
+				var myHighlight = clientModel.isCurrentTurn(player.playerID);
 				view.updatePlayer({playerIndex:player.getOrderNumber(),score:player.victoryPoints,highlight:myHighlight,army:player.largestArmy,road:player.longestRoad});
             });
 		}
