@@ -112,19 +112,19 @@ catan.models.ClientModel  = (function clientModelNameSpace()
 
 		//Queries
 		
-		ClientModel.prototype.canPlaceRoad = function (location) 
+		ClientModel.prototype.canPlaceRoad = function (location, id) 
 		{               
-			return this.getMap().canPlaceRoad(location);
+			return this.getMap().canPlaceRoad(location, id);
 		};
 		
-		ClientModel.prototype.canPlaceSettlement = function (location) 
+		ClientModel.prototype.canPlaceSettlement = function (location, id) 
 		{               
-			return this.getMap().canPlaceSettlement(location);
+			return this.getMap().canPlaceSettlement(location, id);
 		};
 		
-		ClientModel.prototype.canPlaceCity = function (location) 
+		ClientModel.prototype.canPlaceCity = function (location, id) 
 		{               
-			return this.getMap().canPlaceCity(location);
+			return this.getMap().canPlaceCity(location, id);
 		};
 		
 		ClientModel.prototype.needsToDiscard = function () 

@@ -168,29 +168,72 @@ catan.models.Map = (function mapNameSpace(){
      * @return {boolean} returns true if settlement can be placed
      */
     Map.prototype.canPlaceSettlement = function(loc, id) {
+      if (loc.getOwnerID() != -1)
+        return false;
+
+      var originHex = this.hexgrid.getHex(
+          new catan.models.hexgrid.HexLocation(loc.location.x, loc.location.y));
+
       // if there is no settlement within two vertices
       var edges = loc.location.getConnectedEdges();
+      var occupied = false;
+      var land = false;
       for (var eKey in edges) {
         var edge = edges[eKey];
+        if (originHex.edges[edge.direction].isOccupied()) {
+          occupied = true;
+        }
+        if (originHex.getIsLand()) {
+          land = true;
+        }
         var vertexes = edge.getConnected();
         for (var vKey in vertexes) {
           var vertex = vertexes[vKey];
 
           var hex = this.hexgrid.getHex(
               new catan.models.hexgrid.HexLocation(vertex.x, vertex.y));
-		if(hex)
-		{
-          if (hex.vertexes[vertex.direction].isOccupied() == true) {
-            return false;
+
+          if(hex && hex.vertexes[vertex.direction].isOccupied() == true) {
+              return false;
           }
-         }
         }
       }
+      return occupied && land;
+    };
+
+    /**
+     * Tests to see if the robber can be placed on given hex
+     *
+     * <pre>
+     *    INVARIANT: robber is valid
+     *    PRE: hex is valid
+     *    POST: all properties are the same
+     *    POST: validity of placement is enforced
+     * </pre>
+     *
+     * @method canPlaceRobber
+     * @param {CatanHex} hex the hex in question
+     * @return {boolean} returns true if robber can be placed
+     */
+    Map.prototype.canPlaceRobber = function(hex) {
+      if ((this.robber.x == hex.location.x && this.robber.y == hex.location.y) || !hex.getIsLand())
+        return false;
       return true;
     };
 
     /**
      * Returns best trade ratio for given resource per given playerId
+     *
+     * <pre>
+     *    PRE: resource is valid
+     *    PRE: playerId is valid
+     *    POST: all properties are the same
+     *    POST: best ratio is given
+     * </pre>
+     *
+     * @method getBestRatio 
+     * @param {string} resource the resource in question
+     * @return {number} returns the best numeric ratio
      */
     Map.prototype.getBestRatio = function(resource, playerId) {
       var bestRatio = 4;

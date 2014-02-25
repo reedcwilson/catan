@@ -198,21 +198,22 @@ catan.map.Controller = (function catan_controller_namespace() {
 			loc.getY = function() {return loc.y};
 			var clientModel = this.getClientModel();
 			var hex = clientModel.getMap().hexgrid.getHex(loc);
+            var id = clientModel.loadIndexByClientID(clientModel.clientID)
 			if(hex) {
 				if(type.type == "road") {
 					var edge = hex.edges[this.getIndexOfEdge(loc.dir)];
 					console.log('it"s a road');
-					return clientModel.canPlaceRoad(edge);
+					return clientModel.canPlaceRoad(edge, id);
 				}
 				if(type.type == "settlement")
 				{
 					var vertex = hex.vertexes[this.getIndexOfVertex(loc.dir)];
-					return clientModel.canPlaceSettlement(vertex);
+					return clientModel.canPlaceSettlement(vertex, id);
 				}
 				if(type.type == "city")
 				{
 					var vertex = hex.vertexes[this.getIndexOfVertex(loc.dir)];
-					return clientModel.canPlaceCity(vertex);
+					return clientModel.canPlaceCity(vertex, id);
 				}
 				if(type.type == "robber")
 				{
