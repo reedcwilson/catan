@@ -94,7 +94,7 @@ catan.trade.domestic.Controller= (function trade_namespace()
 			{
 				if(tradeOffer.receiver == player.orderNumber)
 				{				
-					var trader = client.loadPersonByIndex(tradeOffer.sender);
+					var trader = client.loadPersonByIndex(client.loadIndexByClientID(tradeOffer.sender));
 					this.acceptView.showModal();
 					this.acceptView.setPlayerName(trader.name);
 					this.displayOfferResources(this.acceptView);
@@ -288,7 +288,7 @@ catan.trade.domestic.Controller= (function trade_namespace()
 			var view = this.getView();	
 			var client = this.getClientModel();
 			var player = client.players[client.loadIndexByClientID(client.clientID)];
-			client.sendMove({type:'offerTrade', playerIndex: player.playerID, offer: this.generateOffer(), receiver: tradee});			
+			client.sendMove({type:'offerTrade', playerIndex: client.loadIndexByClientID(player.playerID), offer: this.generateOffer(), receiver: tradee});			
 			this.clearTrades();
 			view.clearTradeView();
 		};
@@ -306,7 +306,7 @@ catan.trade.domestic.Controller= (function trade_namespace()
 		{
 			var client = this.getClientModel();
 			var player = client.players[client.loadIndexByClientID(client.clientID)];
-			client.sendMove({type:'acceptTrade', playerIndex: player.playerID, willAccept:willAcceptBool});
+			client.sendMove({type:'acceptTrade', playerIndex: client.loadIndexByClientID(player.playerID), willAccept:willAcceptBool});
 			tradeAccepted = true;
 			this.acceptView.closeModal();
 		};

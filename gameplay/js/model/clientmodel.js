@@ -121,6 +121,11 @@ catan.models.ClientModel  = (function clientModelNameSpace()
 		{               
 			return this.getMap().setupCanPlaceRoad(location, id);
 		};
+
+		ClientModel.prototype.canPlaceRobber = function (hex) 
+		{               
+			return this.getMap().canPlaceRobber(hex);
+		};
 		
 		ClientModel.prototype.canPlaceSettlement = function (location, id) 
 		{               

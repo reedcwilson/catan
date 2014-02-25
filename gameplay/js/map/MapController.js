@@ -127,7 +127,7 @@ catan.map.Controller = (function catan_controller_namespace() {
 		*/
 		MapController.prototype.robPlayer = function(orderID){
 			var model = this.getClientModel();
-			var clientIndex = model.loadIndexByClientID(model.clientID);
+			var clientIndex = model.loadIndexByClientID(model.loadIndexByClientID(model.clientID));
 			model.sendMove({type:"Soldier",playerIndex:clientIndex,victimIndex:orderID,robberSpot:"2"});
 			this.robView().closeModal();
 		}
