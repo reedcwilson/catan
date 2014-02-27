@@ -76,6 +76,7 @@ catan.map.Controller = (function catan_controller_namespace() {
         MapController.prototype.updateFromModel = function(){
 			var model = this.getClientModel();
 			var view = this.getView();
+			view.clearPlaceables();
 			view.placeRobber(model.map.getRobber());
 			var hexes = model.map.hexgrid.getHexes();
 			var self = this;

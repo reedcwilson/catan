@@ -77,27 +77,27 @@ catan.resources.Controller = (function resources_namespace() {
 				view.updateAmount(resource, player.resources[resource]);
 			}
 			view.updateAmount("Roads", player.roads);
-			if(player.hasResources(this.roadResources) && clientModel.isCurrentTurn(player.playerID)) {
+			if(player.hasResources(this.roadResources) && clientModel.isCurrentTurn(player.playerID) && player.roads > 0) {
 				view.setActionEnabled("Roads", true);
 			}
 			else {
 				view.setActionEnabled("Roads", false);
 			}
 			view.updateAmount(SETTLEMENT, player.settlements);
-			if(player.hasResources(this.settlementResources) && clientModel.isCurrentTurn(player.playerID)) {
+			if(player.hasResources(this.settlementResources) && clientModel.isCurrentTurn(player.playerID) && player.settlements > 0) {
 				view.setActionEnabled("Settlements", true);
 			}
 			else {
 				view.setActionEnabled("Settlements", false);
 			}
 			view.updateAmount("Cities", player.cities);
-			if(player.hasResources(this.cityResources) && clientModel.isCurrentTurn(player.playerID)) {
+			if(player.hasResources(this.cityResources) && clientModel.isCurrentTurn(player.playerID) && player.cities > 0) {
 				view.setActionEnabled("Cities", true);
 			}
 			else {
 				view.setActionEnabled("Cities", false);
 			}
-			if(player.hasResources(this.devCardResources) && clientModel.isCurrentTurn(player.playerID)) {
+			if(player.hasResources(this.devCardResources) && clientModel.isCurrentTurn(player.playerID) && this.bankHasResources()) {
 				view.setActionEnabled("BuyCard", true);
 			}
 			else {
@@ -107,6 +107,18 @@ catan.resources.Controller = (function resources_namespace() {
 			
 			
 		};
+
+		ResourceBarController.prototype.bankHasResources = function() {
+			var bank = this.getClientModel().getDeck();
+			for(var item in bank)
+			{
+				if(bank[item] > 0)
+				{
+					return true;
+				}
+			}
+			return false;
+		}
 		
 		/**
 		 * The action to take on clicking the resource bar road button. Brings up the map 

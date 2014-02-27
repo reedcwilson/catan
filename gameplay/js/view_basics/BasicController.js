@@ -33,6 +33,9 @@ catan.core.BaseController = (function baseControllerClass(){
 		var id = this.getClientModel().clientID;
 		if(id == undefined) {
 			var mycookie = decodeURIComponent(document.cookie);
+			console.log(mycookie);
+			var x = mycookie.indexOf('catan.user={"');
+			mycookie = mycookie.substring(x);
 			var n = mycookie.indexOf(";");
 			var start = mycookie.indexOf("{");
 			mycookie = mycookie.substring(start,n);

@@ -71,7 +71,6 @@ catan.turntracker.View = (function turntracker_namespace(){
 		TurnTrackerView.prototype.initializePlayer = function(playerNumber, playerName, playerColor){
 			var displayElem = new DisplayElement.TurnTrackerPlayerElement(playerName, playerColor);
 			this.getDisplayElems()[playerNumber] = (displayElem);
-			
 		}
 
 		/**

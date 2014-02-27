@@ -94,6 +94,7 @@ catan.devCards.Controller = (function()
 			var index = client.loadIndexByClientID(client.clientID);
 			client.sendMove({type:'Year_of_Plenty', playerIndex: index, resource1: capFirst(resource1), resource2: capFirst(resource2)});
 			this.getView().closeModal();
+			this.getView().clearView();
 		}
         
 		/**
@@ -108,6 +109,7 @@ catan.devCards.Controller = (function()
 			var index = client.loadIndexByClientID(client.clientID);			
 			client.sendMove({type:'Monopoly', resource: capFirst(resource), playerIndex: index});
 			this.getView().closeModal();
+			this.getView().clearView();
 		}
         
 		/**
@@ -120,7 +122,7 @@ catan.devCards.Controller = (function()
 			var clientModel = this.getClientModel();			
 			clientModel.sendMove({type:'Monument', playerIndex: clientModel.getTurnTracker().getCurrentTurn()});
 			this.getView().closeModal();
-
+			this.getView().clearView();
 		}
         
 		/**
@@ -131,6 +133,7 @@ catan.devCards.Controller = (function()
 		DevCardController.prototype.useSoldier= function()
 		{
 			this.getSoldierAction()();
+			this.getView().clearView();
 		}
         
 		/**
@@ -141,6 +144,7 @@ catan.devCards.Controller = (function()
 		DevCardController.prototype.useRoadBuild = function(resource)
 		{
 			this.getRoadAction()();
+			this.getView().clearView();
 		}
 
 		return DevCardController;
