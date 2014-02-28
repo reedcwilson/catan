@@ -108,6 +108,16 @@ catan.turntracker.View = (function turntracker_namespace(){
 			else
 				stateElem.disable();
 		}
+
+		TurnTrackerView.prototype.refreshTrackers = function(){
+			var trackerArea = document.getElementById(Definitions.PageViewIDs.trackerArea);
+			trackerArea.innerHTML = "";
+			for(index in this.getDisplayElems()){
+				var displayElem = this.getDisplayElems()[index];
+				if(displayElem != undefined)
+					trackerArea.appendChild(displayElem.getView());
+			}
+		}
 		
 		var buildView = function(){
 			
