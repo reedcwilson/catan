@@ -21,12 +21,16 @@ catan.models.Proxy = (function() {
 		@return (JSON) the model of the game
 	*/
 
-	Proxy.prototype.send = function(CommandObject, update, observerNotify){
+	Proxy.prototype.send = function(CommandObject, update, observerNotify, model){
 			jQuery.post(CommandObject.url, JSON.stringify(CommandObject.type), function(data){
 				update(data);
 				if(observerNotify != undefined){
 					console.log("observerNotify", observerNotify);
 					observerNotify();
+				}
+				if(CommandObject.url == "/moves/Soldier" || CommandObject.url == "/moves/robPlayer")
+				{
+					model.robbing = true;
 				}
 		});			
 	};

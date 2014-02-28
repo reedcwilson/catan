@@ -34,12 +34,14 @@ catan.models.ClientModel  = (function clientModelNameSpace()
 		core.defineProperty(ClientModel.prototype, "turnTracker");
 		core.defineProperty(ClientModel.prototype, "winner");
 		core.defineProperty(ClientModel.prototype, "observers");
+		core.defineProperty(ClientModel.prototype, "robbing");
 		
 		
 		function ClientModel(clientID)
 		{
 			this.setClientID(clientID);
 			this.setProxy(new catan.models.Proxy());
+			this.setRobbing(true);
 		}      
 		
         
@@ -91,7 +93,6 @@ catan.models.ClientModel  = (function clientModelNameSpace()
          * */
 		ClientModel.prototype.update = function (model) 
 		{   
-		            
 			self.setBank(model.bank);
 			self.setBiggestArmy(model.biggestArmy);
 			self.getChat().setInfo(model.chat);
@@ -191,7 +192,7 @@ catan.models.ClientModel  = (function clientModelNameSpace()
 		
 		ClientModel.prototype.sendMove = function (data, observerNotify) 
 		{    
-			this.getProxy().send(new catan.models.CommandObject(data), this.update, this.observers.notify(null, this.observers.observers));
+			this.getProxy().send(new catan.models.CommandObject(data), this.update, this.observers.notify(null, this.observers.observers), this);
 		};	
 
 		ClientModel.prototype.loadIndexByClientID = function(clientID) {

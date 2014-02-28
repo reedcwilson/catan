@@ -26,7 +26,8 @@ catan.map.Controller = (function catan_controller_namespace() {
         
 		core.defineProperty(MapController.prototype,"robView");
 		core.defineProperty(MapController.prototype,"modalView");
-        core.defineProperty(MapController.prototype,"printed");
+        core.defineProperty(MapController.prototype,"robLoc");
+        core.defineProperty(MapController.prototype,"stealing");
         /**
 		 * @class MapController
 		 * @constructor
@@ -39,8 +40,8 @@ catan.map.Controller = (function catan_controller_namespace() {
 			catan.core.BaseController.call(this,view,model);
 			this.setModalView(modalView);
 			this.setRobView(robView);
+			this.setStealing(false);
 			view.setController(this);
-			this.setPrinted(false);
 		}
 		MapController.prototype.initFromModel = function(){
 			view = this.getView();
@@ -80,6 +81,16 @@ catan.map.Controller = (function catan_controller_namespace() {
 			view.placeRobber(model.map.getRobber());
 			var hexes = model.map.hexgrid.getHexes();
 			var self = this;
+			if(model.robbing)
+			{
+				if(model.turnTracker.status == "Robbing" && model.isCurrentTurn(this.getClientID()) && this.getModalView() != undefined)
+				{
+					model.setRobbing(false);
+					this.setStealing(true);
+					this.getModalView().showModal("Robber");
+					this.getView().startDrop("robber");
+				}
+			}
 			hexes.map(function (hex){
 				//load roads
 				hex.edges.map(function (edge) {
@@ -87,9 +98,8 @@ catan.map.Controller = (function catan_controller_namespace() {
 					if(owner != -1) {
 						var player = model.loadPersonByIndex(owner);
 						var dir = edge.location.getDir();
-						var noDraw = dir !== "S" && dir !== "SE" && dir !== "SW";
-						if(!noDraw){
-							view.placeRoad(edge.location,player.color,noDraw);
+						if(dir === "S" || dir === "SE" || dir === "SW"){
+							view.placeRoad(edge.location,player.color,false);
 						}
 					}
 				});
@@ -111,14 +121,6 @@ catan.map.Controller = (function catan_controller_namespace() {
 					}
 				});
 			});
-			
-			if(model.getTurnTracker().status == "Robbing"){
-				if(this.getModalView() && this.getPrinted() == false)
-				{
-					this.setPrinted(true);
-					//this.getModalView().showModal("Robber");
-				}
-			}
         }
 
         /**
@@ -128,9 +130,17 @@ catan.map.Controller = (function catan_controller_namespace() {
 		*/
 		MapController.prototype.robPlayer = function(orderID){
 			var model = this.getClientModel();
-			var clientIndex = model.loadIndexByClientID(model.loadIndexByClientID(model.clientID));
-			model.sendMove({type:"Soldier",playerIndex:clientIndex,victimIndex:orderID,robberSpot:"2"});
-			this.robView().closeModal();
+			var clientIndex = model.loadIndexByClientID(model.clientID);
+			if(this.getStealing() == true) 
+			{
+				this.setStealing(false);
+				model.sendMove({type:"robPlayer",playerIndex:clientIndex,victimIndex:orderID,location:this.robLoc});
+			}
+			else 
+			{
+				model.sendMove({type:"Soldier",playerIndex:clientIndex,victimIndex:orderID,location:this.robLoc});
+			}
+			this.getRobView().closeModal();
 		}
         
         /**
@@ -305,7 +315,7 @@ catan.map.Controller = (function catan_controller_namespace() {
 						if(playerToAdd !== model.loadPersonByIndex(model.loadIndexByClientID(model.clientID))) {
 							playerInfo.color = playerToAdd.color;
 							playerInfo.name = playerToAdd.name;
-							playerInfo.playerNum = vertexLoc;
+							playerInfo.playerNum = hex.vertexes[vertexLoc].ownerID;
 							playerInfo.cards = playerToAdd.getNumOfCards();
 							var exsists = false;
 							for(var item in playersToRob)
@@ -314,7 +324,7 @@ catan.map.Controller = (function catan_controller_namespace() {
 									exsists = true;
 								}
 							}
-							if(playersToRob.count == 0 || !exsists)
+							if((playersToRob.count == 0 || !exsists) && playerInfo.cards > 0)
 							{
 								playersToRob.push(playerInfo);
 							}
@@ -325,7 +335,7 @@ catan.map.Controller = (function catan_controller_namespace() {
 					this.getRobView().setPlayerInfo(playersToRob);
 					this.getRobView().showModal(playersToRob);
 				}
-				console.log(hex);
+				this.setRobLoc(hex.location);
 				
 			}
 			this.getModalView().closeModal();

@@ -1178,7 +1178,7 @@ catan.map.View = (function makeMapView(){
 			var colors = new Colors(playerColor);
 			var color = colors.color;
 			var outline = colors.outline;
-			if (!getPieceAt(this.getEdgeLayer(),loc))
+			//if (!getPieceAt(this.getEdgeLayer(),loc))
 				placeObject.call(this,this.getEdgeLayer(),this.getEdgeDefinition(),"makeRoad",loc,color,outline,noDraw);
 		}
 		

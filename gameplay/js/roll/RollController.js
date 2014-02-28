@@ -25,38 +25,47 @@ catan.roll.Controller = (function roll_namespace(){
 		core.forceClassInherit(RollController,Controller);
  
 		core.defineProperty(RollController.prototype,"rollResultView");
+		core.defineProperty(RollController.prototype,"rollStupid");
 		
 		function RollController(view, resultView, clientModel){
 			this.setRollResultView(resultView);
 			Controller.call(this,view,clientModel);
 			this.rollInterval = false;
 			this.showRollResult = false;
+			this.rollStupid = "NoRoll";
 		};
 
 		var counter;
         RollController.prototype.updateFromModel = function() {
           var model = this.getClientModel();
           var turnTracker = model.getTurnTracker();
-          if (turnTracker.getStatus() == 'Rolling' && turnTracker.rollStatus == "NeedsRoll") {
+          if(this.rollStupid === "NoRoll" && model.isCurrentTurn(this.getClientID()))
+          {
+			this.rollStupid = "Roll!";
+          }
+          if (turnTracker.getStatus() == 'Rolling' && this.rollStupid === "Roll!" && model.isCurrentTurn(this.getClientID())) {
             turnTracker.rollStatus = "Rolling";
+            this.rollStupid = "Rolling!";
             var person = model.loadPersonByIndex(model.getTurnTracker().getCurrentTurn());
+			var view = this.getView()
+            view.showModal();
 
-            if (person.getPlayerID() == model.getClientID()) {
-              var view = this.getView()
-                view.showModal();
-
-              var tick = function() {
-                this.changeMessage('Rolling automatically in ' + timeout + "...");
+			var tick = function() 
+			{
+				this.changeMessage('Rolling automatically in ' + timeout + "...");
                 timeout = timeout - 1;
                 if (timeout == -1) {
                   clearInterval(counter);
                   this.rollDice();
                 }
-              }
-
-              var timeout = 5;
-              counter = setInterval(core.makeAnonymousAction(view, tick), 1000);
             }
+
+            var timeout = 5;
+            counter = setInterval(core.makeAnonymousAction(view, tick), 1000);
+            
+          }
+          if(!model.isCurrentTurn(this.getClientID())) {
+				this.rollStupid = "NoRoll";
           }
         };
         
