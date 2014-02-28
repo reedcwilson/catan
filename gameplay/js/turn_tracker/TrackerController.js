@@ -73,7 +73,11 @@ catan.turntracker.Controller = (function turntracker_namespace()
 			var playerID = clientModel.loadIndexByClientID(clientModel.getClientID());
 			
             if(view.getStateElem() != undefined){
-            	if(clientModel.isCurrentTurn(clientModel.clientID) && clientModel.turnTracker.status != "Rolling") 
+            	if(clientModel.turnTracker.status == "FirstRound" || clientModel.turnTracker.status == "SecondRound")
+            	{
+					view.updateStateView(false, "Setup");
+            	}
+            	else if(clientModel.isCurrentTurn(clientModel.clientID) && clientModel.turnTracker.status != "Rolling") 
             	{
             		view.updateStateView(true, "End Turn");
             	}

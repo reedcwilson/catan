@@ -56,15 +56,7 @@ catan.setup.Controller = (function Setup_Class(){
 		this.setState(state);
 	}
 
-	SetupRoundController.prototype.getClientFromCookie = function() {
-		var mycookie = decodeURIComponent(document.cookie);
-		var n = mycookie.indexOf(";");
-		var start = mycookie.indexOf("{");
-		mycookie = mycookie.substring(start,n);
-		var myjson = JSON.parse(mycookie);
-		console.log(myjson.playerID);
-		return myjson.playerID;
-	}
+
 	var myCount = 0;
 	SetupRoundController.prototype.updateFromModel = function() {
 		var model = this.getClientModel();
@@ -74,8 +66,6 @@ catan.setup.Controller = (function Setup_Class(){
 		var clientID = this.getClientID();
 		model.clientID = clientID;
 
-
-		
 		var player = model.loadPersonByIndex(model.loadIndexByClientID(model.clientID));
 		
 		if(model.turnTracker.status == "SecondRound")
