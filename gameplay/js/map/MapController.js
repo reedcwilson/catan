@@ -293,8 +293,12 @@ catan.map.Controller = (function catan_controller_namespace() {
 					model.sendMove({type:"finishTurn",playerIndex:model.loadIndexByClientID(model.clientID)});
 					for(var player in model.players)
             		{
-					players[player].startedRoad = false;
-					players[player].startedSettlement = false;
+            			
+							model.players[player].startedRoad = false;
+							model.players[player].startedSettlement = false;
+						
+					player.startedRoad = false;
+					player.startedSettlement= false;
            			}
 				}
 			}
