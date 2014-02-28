@@ -303,20 +303,43 @@ catan.models.Map = (function mapNameSpace(){
      * @param {string} resource the resource in question
      * @return {number} returns the best numeric ratio
      */
-    Map.prototype.getBestRatio = function(resource, playerId) {
+    Map.prototype.getBestRatio = function(resource, playerID) 
+	{
       var bestRatio = 4;
-      for (var pKey in this.ports) {
-        var port = this.ports[pKey];
-        if (port.validVertex1.ownerID == playerId || port.validVertex1.ownerID == playerId) {
+      for (var pKey in this.ports) 
+	  {
+        var port = this.ports[pKey];				
+        if (this.ownsPort(port.validVertex1.location, playerID) || this.ownsPort(port.validVertex2.location, playerID)) 
+		{
           if (port.tradeRatio == 3)
             bestRatio = 3;
-          else if (port.inputResource.toLowerCase() == resource.toLowerCase()) {
-            return 2;
-          }
+          else if (port.inputResource.toLowerCase() == resource.toLowerCase())
+		    return 2;          
         }
       }
       return bestRatio;
-    }
+    }	
+	
+	/**
+     * Test to see if a port vertex is owned by the player
+     *
+     * <pre>
+     *    PRE: it is the player's turn
+     *    PRE: a valid location is given
+     *    POST: validity of placement is enforced
+     * </pre>
+     *
+     * @method ownsPort
+     * @param {CatanVertex} vertex the port vertex in question
+     * @param {number} playerId the id of the player in question
+     * @return {boolean} returns true if the port vertex is owned by the player
+     */
+	Map.prototype.ownsPort = function(loc, id)
+	{
+		var hex = this.hexgrid.getHex(
+          new catan.models.hexgrid.HexLocation(loc.x, loc.y));	  
+      return hex.vertexes[loc.direction].ownerID == id;
+	}
 
     /**
      * Test to see if a city can be placed
