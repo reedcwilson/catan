@@ -35,6 +35,7 @@ catan.models.ClientModel  = (function clientModelNameSpace()
 		core.defineProperty(ClientModel.prototype, "winner");
 		core.defineProperty(ClientModel.prototype, "observers");
 		core.defineProperty(ClientModel.prototype, "robbing");
+		core.defineProperty(ClientModel.prototype,"rollStupid");
 		
 		
 		function ClientModel(clientID)

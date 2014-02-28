@@ -95,6 +95,7 @@ catan.turntracker.Controller = (function turntracker_namespace()
 			model.sendMove({type:"finishTurn",playerIndex:myPlayerIndex});
             model.getTurnTracker().rollStatus = "NeedsRoll";
             players = model.players;
+            model.rollStupid = "NoRoll";
 		}
 		
 		return TurnTrackerController;
