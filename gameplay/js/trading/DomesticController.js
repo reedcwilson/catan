@@ -94,7 +94,7 @@ catan.trade.domestic.Controller= (function trade_namespace()
 			{
 				if(tradeOffer.receiver == player.orderNumber)
 				{				
-					var trader = client.loadPersonByIndex(client.loadIndexByClientID(tradeOffer.sender));
+					var trader = client.loadPersonByIndex(tradeOffer.sender);
 					this.acceptView.showModal();
 					this.acceptView.setPlayerName(trader.name);
 					this.displayOfferResources(this.acceptView);

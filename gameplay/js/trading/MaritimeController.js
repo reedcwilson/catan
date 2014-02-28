@@ -42,6 +42,7 @@ catan.trade.maritime.Controller = (function trade_namespace()
 		
 		MaritimeController.prototype.updateFromModel = function()
 		{
+			
 			var view = this.getView();
 			var client = this.getClientModel();
 			var player = client.players[client.loadIndexByClientID(client.clientID)];
@@ -75,14 +76,14 @@ catan.trade.maritime.Controller = (function trade_namespace()
 		{
 			var client = this.getClientModel();
 			var map = client.map;
-			var clientID = client.clientID;
+			var index = client.loadIndexByClientID(client.clientID);
 			temp = [];
 			
-			temp["wood"] 	= map.getBestRatio("wood", clientID);
-			temp["brick"] 	= map.getBestRatio("brick", clientID);
-			temp["sheep"] 	= map.getBestRatio("sheep", clientID);
-			temp["wheat"] 	= map.getBestRatio("wheat", clientID);
-			temp["ore"] 	= map.getBestRatio("ore", clientID);
+			temp["wood"] 	= map.getBestRatio("wood", index);
+			temp["brick"] 	= map.getBestRatio("brick", index);
+			temp["sheep"] 	= map.getBestRatio("sheep", index);
+			temp["wheat"] 	= map.getBestRatio("wheat", index);
+			temp["ore"] 	= map.getBestRatio("ore", index);
 			
 			return temp;
 		}; 
