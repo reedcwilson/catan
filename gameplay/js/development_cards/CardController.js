@@ -61,7 +61,7 @@ catan.devCards.Controller = (function()
 			view.setCardEnabled("soldier", clientModel.canPlayDevCard("soldier"));
 			view.setCardEnabled("yearOfPlenty", clientModel.canPlayDevCard("yearOfPlenty"));
 			view.setCardEnabled("monopoly", clientModel.canPlayDevCard("monopoly"));
-			view.setCardEnabled("roadBuilding", clientModel.canPlayDevCard("roadBuilding"));
+			view.setCardEnabled("roadBuilding", clientModel.canPlayDevCard("roadBuilding") && player.roads >=2);
 			view.setCardEnabled("monument", clientModel.canPlayDevCard("monument"));
 		}
 		

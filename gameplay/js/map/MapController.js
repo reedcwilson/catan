@@ -162,7 +162,6 @@ catan.map.Controller = (function catan_controller_namespace() {
 		 * @return void
 		**/	
 		MapController.prototype.startDoubleRoadBuilding = function(){
-			this.getModalView().showModal("Road");
 			this.startMove("road", true, false);
 		}
 		
