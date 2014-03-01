@@ -63,19 +63,23 @@ catan.discard.Controller = (function discard_namespace(){
 			var playerID = clientModel.clientID;
 
 			var player = clientModel.players[clientModel.loadIndexByClientID(playerID)];
-			//console.log("new c",this.getObserverSubject());
+			console.log("its updating model", clientModel);
 
 			if(clientModel.turnTracker.status != "Discarding")
 				{
+					console.log("status is not discarding")
 					if(this.getWaitingView())
 					this.getWaitingView().closeModal();
+					this.startDiscarding = true;
 				}
 			
-			if(this.startDiscarding)
+			else if(this.startDiscarding)
 			{
+				console.log("startDiscarding not failed")
 				
 				if(clientModel.turnTracker.status == "Discarding")
 				{
+					console.log("turntracker not failed")
 					this.startDiscarding=false;
 					var res = player.resources;
 					var totalRes = res.brick + res.ore + res.sheep + res.wheat + res.wood;
@@ -84,10 +88,12 @@ catan.discard.Controller = (function discard_namespace(){
 					if(totalRes < 8)
 					{
 						this.getWaitingView().showModal();
+						console.log("totalRes < 8")
 					}
 					else
 					{
-
+						console.log("should show modal")
+						this.totalcardsgivenup=0;
 						this.getView().showModal();
 						this.getView().setResourceMaxAmount(ResourceTypes[0],res.wood);
 						this.getView().setResourceMaxAmount(ResourceTypes[1],res.brick);
@@ -157,7 +163,9 @@ catan.discard.Controller = (function discard_namespace(){
 			var myPlayerIndex = this.getClientModel().loadIndexByClientID(this.getClientModel().getClientID());
 			var resourceList = {brick:this.playerResources["brick"][1],ore:this.playerResources["ore"][1],sheep:this.playerResources["sheep"][1],wheat:this.playerResources["wheat"][1],wood:this.playerResources["wood"][1]};
 			this.getClientModel().sendMove({type:"discardCards",playerIndex:myPlayerIndex,discardedCards:resourceList});
+			console.log("discarded model", this.getClientModel());
 			this.getView().closeModal();
+			this.getWaitingView().showModal();
 		}
         
 		/**
