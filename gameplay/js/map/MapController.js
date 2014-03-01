@@ -28,6 +28,10 @@ catan.map.Controller = (function catan_controller_namespace() {
 		core.defineProperty(MapController.prototype,"modalView");
         core.defineProperty(MapController.prototype,"robLoc");
         core.defineProperty(MapController.prototype,"stealing");
+        core.defineProperty(MapController.prototype,"roadBuild");
+        core.defineProperty(MapController.prototype,"currentRoads");
+        core.defineProperty(MapController.prototype,"spot1");
+        core.defineProperty(MapController.prototype,"spot2");
         /**
 		 * @class MapController
 		 * @constructor
@@ -42,6 +46,7 @@ catan.map.Controller = (function catan_controller_namespace() {
 			this.setRobView(robView);
 			this.setStealing(false);
 			view.setController(this);
+			this.setRoadBuild("no");
 		}
 		MapController.prototype.initFromModel = function(){
 			view = this.getView();
@@ -81,6 +86,27 @@ catan.map.Controller = (function catan_controller_namespace() {
 			view.placeRobber(model.map.getRobber());
 			var hexes = model.map.hexgrid.getHexes();
 			var self = this;
+
+			var playerIndex = model.loadIndexByClientID(model.getClientID());
+			var player = model.loadPersonByIndex(playerIndex);
+			if(this.getRoadBuild() == "first")
+			{
+				this.startMove("road", true, false);
+				this.setRoadBuild("second");
+			}
+			if(this.getRoadBuild() == "second" && this.getSpot1() != undefined && this.getSpot2() == undefined)
+			{
+				this.startMove("road", true, false);
+				this.setRoadBuild("roadBuild");
+			}
+			if(this.getRoadBuild() == "roadBuild" && this.getSpot1() != undefined && this.getSpot2() != undefined)
+			{
+				this.setRoadBuild("no");
+				this.spot1.direction = this.spot1.getDir();
+				this.spot2.direction = this.spot2.getDir();
+				model.sendMove({type:"Road_Building",playerIndex:model.loadIndexByClientID(this.getClientID()),spot1:this.getSpot1(),spot2:this.getSpot2()});
+				
+			}
 			if(model.robbing)
 			{
 				if(model.turnTracker.status == "Robbing" && model.isCurrentTurn(this.getClientID()) && this.getModalView() != undefined)
@@ -162,7 +188,12 @@ catan.map.Controller = (function catan_controller_namespace() {
 		 * @return void
 		**/	
 		MapController.prototype.startDoubleRoadBuilding = function(){
-			this.startMove("road", true, false);
+			//this.startMove("road", true, false);
+			this.setRoadBuild("first");
+			var model = this.getClientModel();
+			var playerIndex = model.loadIndexByClientID(model.getClientID());
+			var player = model.loadPersonByIndex(playerIndex);
+			this.setCurrentRoads(parseInt(player.roads));
 		}
 		
         
@@ -211,7 +242,6 @@ catan.map.Controller = (function catan_controller_namespace() {
 			if(hex) {
 				if(type.type == "road") {
 					var edge = hex.edges[this.getIndexOfEdge(loc.dir)];
-					console.log('it"s a road');
                     if (clientModel.turnTracker.status == "FirstRound" || clientModel.turnTracker.status == "SecondRound") {
                       return clientModel.setupCanPlaceRoad(edge, id);
                     }
@@ -277,15 +307,24 @@ catan.map.Controller = (function catan_controller_namespace() {
 		MapController.prototype.onDrop = function (loc, type) {
 			loc.getX = function() {return loc.x};
 			loc.getY = function() {return loc.y};
-			console.log(type.type);
 			var model = this.getClientModel();
 			var isfree = model.turnTracker.status == "FirstRound" || model.turnTracker.status == "SecondRound";
-			if(type.type == "road") {
+			if(type.type == "road" && (this.getRoadBuild() == "second" || this.getRoadBuild() == "roadBuild"))
+			{	
+				if(this.getSpot1() == undefined)
+				{
+					this.setSpot1(loc);
+				}
+				else
+				{
+					this.setSpot2(loc);
+				}
+			}
+			else if(type.type == "road") {
 				loc.direction = loc.dir;
 				model.sendMove({type:"buildRoad",playerIndex:model.loadIndexByClientID(model.clientID),roadLocation:loc,free:isfree});
 			}
-			if(type.type == "settlement"){
-				console.log(loc);
+			else if(type.type == "settlement"){
 				loc.direction = loc.dir;
 				model.sendMove({type:"buildSettlement",playerIndex:model.loadIndexByClientID(model.clientID),vertexLocation:loc,free:isfree});
 				if(isfree) {
@@ -301,11 +340,11 @@ catan.map.Controller = (function catan_controller_namespace() {
            			}
 				}
 			}
-			if(type.type == "city") {
+			else if(type.type == "city") {
 				loc.direction = loc.dir;
 				model.sendMove({type:"buildCity",playerIndex:model.loadIndexByClientID(model.clientID),vertexLocation:loc,free:false});
 			}
-			if(type.type == "robber") {
+			else if(type.type == "robber") {
 				var hex = model.getMap().hexgrid.getHex(loc);
 				var playersToRob = new Array();
 				for(var vertexLoc in hex.vertexes)
