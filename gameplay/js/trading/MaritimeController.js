@@ -45,7 +45,7 @@ catan.trade.maritime.Controller = (function trade_namespace()
 			
 			var view = this.getView();
 			var client = this.getClientModel();
-			var player = client.players[client.loadIndexByClientID(client.clientID)];
+			var player = client.players[client.getPlayerIndex()];
 			ports = this.setPortValues();
 			var hand = [];
 			this.setHandValues(hand, player);
@@ -76,7 +76,7 @@ catan.trade.maritime.Controller = (function trade_namespace()
 		{
 			var client = this.getClientModel();
 			var map = client.map;
-			var index = client.loadIndexByClientID(client.clientID);
+			var index = client.getPlayerIndex();
 			temp = [];
 			
 			temp["wood"] 	= map.getBestRatio("wood", index);
@@ -165,7 +165,7 @@ catan.trade.maritime.Controller = (function trade_namespace()
 		MaritimeController.prototype.makeTrade= function()
 		{
 			var client = this.getClientModel();
-			var turnOrder = client.loadIndexByClientID(client.clientID);			
+			var turnOrder = client.getPlayerIndex();			
 			trading = false;			
 			client.sendMove({type:'maritimeTrade', playerIndex: turnOrder, ratio: ports[resourceGive], inputResource: capFirst(resourceGive), outputResource: capFirst(resourceGet)});			
 		}

@@ -29,22 +29,41 @@ catan.models.ClientModel  = (function clientModelNameSpace()
 		core.defineProperty(ClientModel.prototype, "map");
 		core.defineProperty(ClientModel.prototype, "players");
 		core.defineProperty(ClientModel.prototype, "clientID");
+		core.defineProperty(ClientModel.prototype, "playerIndex");
 		core.defineProperty(ClientModel.prototype, "proxy");
 		core.defineProperty(ClientModel.prototype, "tradeOffer");
 		core.defineProperty(ClientModel.prototype, "turnTracker");
 		core.defineProperty(ClientModel.prototype, "winner");
 		core.defineProperty(ClientModel.prototype, "observers");
 		core.defineProperty(ClientModel.prototype, "robbing");
-		core.defineProperty(ClientModel.prototype,"rollStupid");
+		core.defineProperty(ClientModel.prototype, "rollStupid");
 		
 		
 		function ClientModel(clientID)
 		{
-			this.setClientID(clientID);
+			var id = clientID;
+			if(id == undefined) {
+				id = this.loadByCookie();
+			}
+			this.setClientID(id);
 			this.setProxy(new catan.models.Proxy());
 			this.setRobbing(true);
+			this.setPlayerIndex(-1);
 		}      
 		
+
+		ClientModel.prototype.loadByCookie = function() 
+		{
+				var mycookie = decodeURIComponent(document.cookie);
+				var x = mycookie.indexOf('catan.user={"');
+				mycookie = mycookie.substring(x);
+				var n = mycookie.indexOf("}");
+				var start = mycookie.indexOf("{");
+				mycookie = mycookie.substring(start,n+1);
+				var myjson = JSON.parse(mycookie);
+				var id = myjson.playerID;
+				return id;
+		}
         
         /**
          * This is called to fetch the game state from the server the very first time.
@@ -108,7 +127,7 @@ catan.models.ClientModel  = (function clientModelNameSpace()
 			for(var i = 0; i < model.players.length; i++)
 				self.getPlayers()[model.players[i].orderNumber].setInfo(model.players[i]);	
 
-
+			self.setPlayerIndex(self.loadIndexByClient(self.clientID));
 				
 		};	
 
@@ -151,8 +170,7 @@ catan.models.ClientModel  = (function clientModelNameSpace()
 		
 		ClientModel.prototype.canPlayDevCard = function (devCard) 
 		{               
-			var playerIndex = this.loadIndexByClientID(this.clientID);
-			return this.getPlayers()[playerIndex].canPlayDevCard(devCard) && this.isCurrentTurn(this.clientID);
+			return this.getPlayers()[this.playerIndex].canPlayDevCard(devCard) && this.isCurrentTurn(this.clientID);
 		};
 		
 		ClientModel.prototype.getResources = function () 
@@ -196,7 +214,7 @@ catan.models.ClientModel  = (function clientModelNameSpace()
 			this.getProxy().send(new catan.models.CommandObject(data), this.update, this.observers.notify(null, this.observers.observers), this);
 		};	
 
-		ClientModel.prototype.loadIndexByClientID = function(clientID) {
+		ClientModel.prototype.loadIndexByClient = function(clientID) {
 			var myint = -1;
 			for(var player in this.players)
 			{

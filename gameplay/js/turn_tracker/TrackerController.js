@@ -36,7 +36,7 @@ catan.turntracker.Controller = (function turntracker_namespace()
 		{
 			var clientModel = this.getClientModel();
 			var view = this.getView();
-			var playerID = this.getClientID();
+			var playerID = clientModel.getClientID();
 			clientModel.players.map(function (player) {
 				if(player.getPlayerID() == playerID) 
 				{
@@ -71,7 +71,7 @@ catan.turntracker.Controller = (function turntracker_namespace()
 
 		TurnTrackerController.prototype.updateTurnButton = function(view, clientModel)
 		{
-			var playerID = clientModel.loadIndexByClientID(clientModel.getClientID());
+			var playerID = clientModel.getPlayerIndex();
 			
             if(view.getStateElem() != undefined){
             	if(clientModel.turnTracker.status == "FirstRound" || clientModel.turnTracker.status == "SecondRound")
@@ -82,7 +82,8 @@ catan.turntracker.Controller = (function turntracker_namespace()
             	{
             		view.updateStateView(true, "End Turn");
             	}
-            	else{
+            	else
+            	{
 					view.updateStateView(false, "Waiting for other players...");
             	}
             }
@@ -93,9 +94,10 @@ catan.turntracker.Controller = (function turntracker_namespace()
 		 * @method endTurn
 		 * @return void
 		 */
-		TurnTrackerController.prototype.endTurn = function(){
+		TurnTrackerController.prototype.endTurn = function()
+		{
             var model = this.getClientModel();	
-			var myPlayerIndex = model.loadIndexByClientID(this.getClientModel().getClientID());
+			var myPlayerIndex = model.getPlayerIndex();
 			this.getView().updateStateView(false, "Waiting for other Players...");
 			model.sendMove({type:"finishTurn",playerIndex:myPlayerIndex});
             model.getTurnTracker().rollStatus = "NeedsRoll";

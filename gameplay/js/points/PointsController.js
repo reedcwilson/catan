@@ -34,13 +34,14 @@ catan.points.Controller = (function VPController_Class(){
 	PointController.prototype.updateFromModel = function(){
 		var clientModel = this.getClientModel();
 		var playerID = clientModel.clientID;
-		var player = clientModel.players[clientModel.loadIndexByClientID(playerID)];
+		var player = clientModel.players[clientModel.getPlayerIndex()];
 		if(player == undefined) {
 			player = clientModel.players[0];
 		}
 		this.getView().setPoints(player.victoryPoints);
 		if(clientModel.winner != -1) {
-			this.getGameFinishedView().setWinner(clientModel.players[clientModel.loadIndexByClientID(clientModel.winner)].name, clientModel.clientID == clientModel.winner);
+			var isWinner = clientModel.clientID == clientModel.winner;
+			this.getGameFinishedView().setWinner(clientModel.players[clientModel.loadIndexByClient(clientModel.winner)].name, isWinner);
 			this.getGameFinishedView().showModal();
 		}
 

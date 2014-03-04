@@ -68,8 +68,8 @@ catan.resources.Controller = (function resources_namespace() {
 		ResourceBarController.prototype.updateFromModel = function() {
 			var clientModel = this.getClientModel();
 			var view = this.getView();
-			var playerID = this.getClientID();
-			var player = clientModel.players[clientModel.loadIndexByClientID(playerID)];
+			var playerID = clientModel.getClientID();
+			var player = clientModel.players[clientModel.getPlayerIndex()];
 			if(player == undefined) {
 				player = clientModel.players[0];
 			}

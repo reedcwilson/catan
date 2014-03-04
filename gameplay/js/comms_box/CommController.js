@@ -112,7 +112,7 @@ catan.comm.Controller = (function () {
 		**/
 		ChatController.prototype.addLine = function(lineContents){
 			var clientModel = this.getClientModel();
-			var myPlayerIndex = clientModel.loadIndexByClientID(clientModel.getClientID());;
+			var myPlayerIndex = clientModel.getPlayerIndex();
 			clientModel.sendMove({type:"sendChat",playerIndex:myPlayerIndex, content:lineContents});		
 		};
 		
