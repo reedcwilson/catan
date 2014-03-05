@@ -125,7 +125,7 @@ catan.models.Player = (function playerNameSpace() {
 				POST: None
 			</pre>
 			@method canPlayDevCard
-			@param {string} devCard - the Dev card to play. "yearOfPlenty"
+			@param {string} devCard - the Dev card to play. Ex: "yearOfPlenty"
 			@return {bool} whether he can play a dev card
 		*/
   		Player.prototype.canPlayDevCard = function(devCard){

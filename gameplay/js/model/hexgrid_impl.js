@@ -37,8 +37,18 @@ catan.models.Map = (function mapNameSpace(){
     Map.prototype.setInfo = function(json) {
 
       this.setRadius(json.radius);
+      this.loadHexes(json);
+      this.loadPorts(json);
+      this.loadRobber(json);
+	  this.loadNumbers(json);
+    };
 
-      // load hexes
+	/**
+	 Loads the Hexes information into the model based on the JSON
+	 @param {json} json The complete JSON given to the map.
+	 @method loadHexes
+	*/
+	Map.prototype.loadHexes = function(json) {
       for(var x in json.hexGrid.hexes) {
         for(var y in json.hexGrid.hexes[x]) {
           var hexJson = json.hexGrid.hexes[x][y];
@@ -49,10 +59,15 @@ catan.models.Map = (function mapNameSpace(){
 
           hexPiece.setInfo(hexJson);
         }
-        // TODO: initialize offsets -- whatever that means
       }
+	}
 
-      // load ports
+	/**
+	 Loads the ports information into the model based on the JSON
+	 @param {json} json The complete JSON given to the map.
+	 @method loadPorts
+	*/
+	Map.prototype.loadPorts = function(json) {
       var ports = [];
       for(var pos in json.ports){
         portJson = json.ports[pos];
@@ -65,10 +80,14 @@ catan.models.Map = (function mapNameSpace(){
         ports[pos] = hex;
       }
       this.setPorts(ports);
-
-      this.loadRobber(json);
-
-      // load numbers
+	}
+	
+	/**
+	 Loads the number information into the model based on the JSON
+	 @param {json} json The complete JSON given to the map.
+	 @method loadNumbers
+	*/
+	Map.prototype.loadNumbers = function(json) {
       var numbers = [];
       var i = 0;
       for (var num in json.numbers) {
@@ -85,10 +104,14 @@ catan.models.Map = (function mapNameSpace(){
         }
       }
       this.setNumbers(numbers);
-    };
+	}
 
+	/**
+	 Loads the robbber information into the model based on the JSON
+	 @param {json} json The complete JSON given to the map.
+	 @method loadRobber
+	*/
     Map.prototype.loadRobber = function(json) {
-	  // load robber
       var robberJson = json.robber;
       var robber = new catan.models.hexgrid.HexLocation(
           robberJson.x, robberJson.y);

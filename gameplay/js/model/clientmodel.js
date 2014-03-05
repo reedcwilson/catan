@@ -37,7 +37,7 @@ catan.models.ClientModel  = (function clientModelNameSpace()
 		core.defineProperty(ClientModel.prototype, "observers");
 		core.defineProperty(ClientModel.prototype, "robbing");
 		core.defineProperty(ClientModel.prototype, "rollStupid");
-		
+
 		function ClientModel(clientID)
 		{
 			var id = clientID;
@@ -49,7 +49,29 @@ catan.models.ClientModel  = (function clientModelNameSpace()
 			this.setRobbing(true);
 			this.setPlayerIndex(-1);
 		}      
-		
+
+		var DevCardResources = {
+			sheep: 1,
+			wheat: 1,
+			ore: 1,
+		}	
+
+		var RoadResources = {
+			wood: 1,
+			brick: 1,
+		}
+
+		var CityResources = {
+			wheat: 2,
+			ore: 3,
+		}
+
+		var SettlementResources = {
+			wood: 1,
+			brick: 1,
+			sheep: 1,
+			wheat: 1,
+		}
 
 		ClientModel.prototype.loadByCookie = function() 
 		{
@@ -171,6 +193,37 @@ catan.models.ClientModel  = (function clientModelNameSpace()
 			return this.getPlayers()[this.playerIndex].canPlayDevCard(devCard) && this.isCurrentTurn(this.clientID);
 		};
 
+		ClientModel.prototype.canBuyDevCard = function(player)
+		{	
+			return player.hasResources(DevCardResources) && this.isCurrentTurn(player.playerID) && this.bankHasResources();
+		};
+
+		ClientModel.prototype.canBuyRoad = function(player)
+		{	
+			return player.hasResources(RoadResources) && this.isCurrentTurn(player.playerID) && player.roads > 0;
+		};
+
+		ClientModel.prototype.canBuySettlement = function(player)
+		{	
+			return player.hasResources(SettlementResources) && this.isCurrentTurn(player.playerID) && player.settlements > 0;
+		};
+
+		ClientModel.prototype.canBuyCity = function(player)
+		{	
+			return player.hasResources(CityResources) && this.isCurrentTurn(player.playerID) && player.cities > 0;
+		};				
+
+		ClientModel.prototype.bankHasResources = function() {
+			var bank = this.getDeck();
+			for(var item in bank)
+			{
+				if(bank[item] > 0)
+				{
+					return true;
+				}
+			}
+			return false;
+		}
 		ClientModel.prototype.canRoll = function()
 		{
 			return this.turnTracker.getStatus() == 'Rolling' && this.rollStupid === "Roll!" && this.isCurrentTurn(this.getClientID());
