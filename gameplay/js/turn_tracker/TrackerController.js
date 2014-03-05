@@ -78,7 +78,7 @@ catan.turntracker.Controller = (function turntracker_namespace()
             	{
 					view.updateStateView(false, "Setup");
             	}
-            	else if(clientModel.isCurrentTurn(clientModel.clientID) && clientModel.turnTracker.status != "Rolling") 
+            	else if(clientModel.canEndTurn()) 
             	{
             		view.updateStateView(true, "End Turn");
             	}

@@ -42,7 +42,7 @@ catan.roll.Controller = (function roll_namespace(){
           {
 			model.rollStupid = "Roll!";
           }
-          if (turnTracker.getStatus() == 'Rolling' && model.rollStupid === "Roll!" && model.isCurrentTurn(model.getClientID())) {
+          if (model.canRoll()) {
             turnTracker.rollStatus = "Rolling";
             model.rollStupid = "Rolling!";
             var person = model.loadPersonByIndex(model.getTurnTracker().getCurrentTurn());

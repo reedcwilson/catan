@@ -38,7 +38,6 @@ catan.models.ClientModel  = (function clientModelNameSpace()
 		core.defineProperty(ClientModel.prototype, "robbing");
 		core.defineProperty(ClientModel.prototype, "rollStupid");
 		
-		
 		function ClientModel(clientID)
 		{
 			var id = clientID;
@@ -77,7 +76,6 @@ catan.models.ClientModel  = (function clientModelNameSpace()
 		ClientModel.prototype.initFromServer = function(success)
 		{
             // TODO: 1) fetch the game state from the server, 2) update the client model, 3) call the "success" function.
-			
 			this.getProxy().getModel(this, success);
 			self = this;
 		}
@@ -171,6 +169,16 @@ catan.models.ClientModel  = (function clientModelNameSpace()
 		ClientModel.prototype.canPlayDevCard = function (devCard) 
 		{               
 			return this.getPlayers()[this.playerIndex].canPlayDevCard(devCard) && this.isCurrentTurn(this.clientID);
+		};
+
+		ClientModel.prototype.canRoll = function()
+		{
+			return this.turnTracker.getStatus() == 'Rolling' && this.rollStupid === "Roll!" && this.isCurrentTurn(this.getClientID());
+		};
+
+		ClientModel.prototype.canEndTurn = function()
+		{
+			return this.isCurrentTurn(this.clientID) && this.turnTracker.status != "Rolling";
 		};
 		
 		ClientModel.prototype.getResources = function () 

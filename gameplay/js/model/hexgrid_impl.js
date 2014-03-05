@@ -66,15 +66,7 @@ catan.models.Map = (function mapNameSpace(){
       }
       this.setPorts(ports);
 
-      // load robber
-      var robberJson = json.robber;
-      var robber = new catan.models.hexgrid.HexLocation(
-          robberJson.x, robberJson.y);
-      var robberHex = this.hexgrid.getHex(robber);
-      if (robberHex) {
-        robberHex.setHasRobber(true);
-      }
-      this.setRobber(robber);
+      this.loadRobber(json);
 
       // load numbers
       var numbers = [];
@@ -94,6 +86,18 @@ catan.models.Map = (function mapNameSpace(){
       }
       this.setNumbers(numbers);
     };
+
+    Map.prototype.loadRobber = function(json) {
+	  // load robber
+      var robberJson = json.robber;
+      var robber = new catan.models.hexgrid.HexLocation(
+          robberJson.x, robberJson.y);
+      var robberHex = this.hexgrid.getHex(robber);
+      if (robberHex) {
+        robberHex.setHasRobber(true);
+      }
+      this.setRobber(robber);
+    }
 
     // I am going to assume that the 'canPlace' methods for the map will only
     // need to worry about the map aspect of placing these objects and not
