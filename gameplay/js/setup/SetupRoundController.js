@@ -63,10 +63,10 @@ catan.setup.Controller = (function Setup_Class(){
 		if(model.turnTracker.status != "FirstRound" && model.turnTracker.status != "SecondRound") {
 				window.location = "catan.html"
 		}
-		var clientID = this.getClientID();
+		var clientID = model.getClientID();
 		model.clientID = clientID;
 
-		var player = model.loadPersonByIndex(model.loadIndexByClientID(model.clientID));
+		var player = model.loadPersonByIndex(model.getPlayerIndex());
 		
 		if(model.turnTracker.status == "SecondRound")
 		{

@@ -50,7 +50,7 @@ catan.devCards.Controller = (function()
 			var clientModel = this.getClientModel();
 			var view = this.getView();	
 					
-			var player = clientModel.players[clientModel.loadIndexByClientID(clientModel.clientID)];
+			var player = clientModel.players[clientModel.getPlayerIndex()];
 			
 			view.updateAmount("soldier", player.newDevCards.soldier + player.oldDevCards.soldier);
 			view.updateAmount("yearOfPlenty", player.newDevCards.yearOfPlenty + player.oldDevCards.yearOfPlenty);
@@ -91,7 +91,7 @@ catan.devCards.Controller = (function()
 		DevCardController.prototype.useYearOfPlenty = function(resource1, resource2)
 		{
 			var client = this.getClientModel();
-			var index = client.loadIndexByClientID(client.clientID);
+			var index = client.getPlayerIndex();
 			client.sendMove({type:'Year_of_Plenty', playerIndex: index, resource1: capFirst(resource1), resource2: capFirst(resource2)});
 			this.getView().closeModal();
 			this.getView().clearView();
@@ -106,7 +106,7 @@ catan.devCards.Controller = (function()
 		DevCardController.prototype.useMonopoly= function(resource)
 		{
 			var client = this.getClientModel();
-			var index = client.loadIndexByClientID(client.clientID);			
+			var index = client.getPlayerIndex();			
 			client.sendMove({type:'Monopoly', resource: capFirst(resource), playerIndex: index});
 			this.getView().closeModal();
 			this.getView().clearView();

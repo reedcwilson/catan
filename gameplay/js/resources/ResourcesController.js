@@ -37,22 +37,6 @@ catan.resources.Controller = (function resources_namespace() {
 		function ResourceBarController(view,clientModel,actions){
 			this.setActions(actions);
 			Controller.call(this,view,clientModel);
-			this.settlementResources = new Array();
-			this.settlementResources['wood'] = 1;
-			this.settlementResources['brick'] = 1;
-			this.settlementResources['sheep'] = 1;
-			this.settlementResources['wheat'] = 1;
-			this.roadResources = new Array();
-			this.roadResources['brick'] = 1;
-			this.roadResources['wood'] = 1;
-			this.cityResources = new Array();
-			this.cityResources['wheat'] = 2;
-			this.cityResources['ore'] = 3;
-			this.devCardResources = new Array();
-			this.devCardResources['sheep'] = 1;
-			this.devCardResources['wheat'] = 1;
-			this.devCardResources['ore'] = 1;
-
 		};
 
 		core.forceClassInherit(ResourceBarController,Controller);
@@ -68,8 +52,8 @@ catan.resources.Controller = (function resources_namespace() {
 		ResourceBarController.prototype.updateFromModel = function() {
 			var clientModel = this.getClientModel();
 			var view = this.getView();
-			var playerID = this.getClientID();
-			var player = clientModel.players[clientModel.loadIndexByClientID(playerID)];
+			var playerID = clientModel.getClientID();
+			var player = clientModel.players[clientModel.getPlayerIndex()];
 			if(player == undefined) {
 				player = clientModel.players[0];
 			}
@@ -77,27 +61,27 @@ catan.resources.Controller = (function resources_namespace() {
 				view.updateAmount(resource, player.resources[resource]);
 			}
 			view.updateAmount("Roads", player.roads);
-			if(player.hasResources(this.roadResources) && clientModel.isCurrentTurn(player.playerID) && player.roads > 0) {
+			if(clientModel.canBuyRoad(player)) {
 				view.setActionEnabled("Roads", true);
 			}
 			else {
 				view.setActionEnabled("Roads", false);
 			}
 			view.updateAmount(SETTLEMENT, player.settlements);
-			if(player.hasResources(this.settlementResources) && clientModel.isCurrentTurn(player.playerID) && player.settlements > 0) {
+			if(clientModel.canBuySettlement(player)) {
 				view.setActionEnabled("Settlements", true);
 			}
 			else {
 				view.setActionEnabled("Settlements", false);
 			}
 			view.updateAmount("Cities", player.cities);
-			if(player.hasResources(this.cityResources) && clientModel.isCurrentTurn(player.playerID) && player.cities > 0) {
+			if(clientModel.canBuyCity(player)) {
 				view.setActionEnabled("Cities", true);
 			}
 			else {
 				view.setActionEnabled("Cities", false);
 			}
-			if(player.hasResources(this.devCardResources) && clientModel.isCurrentTurn(player.playerID) && this.bankHasResources()) {
+			if(clientModel.canBuyDevCard(player)){
 				view.setActionEnabled("BuyCard", true);
 			}
 			else {
@@ -107,18 +91,6 @@ catan.resources.Controller = (function resources_namespace() {
 			
 			
 		};
-
-		ResourceBarController.prototype.bankHasResources = function() {
-			var bank = this.getClientModel().getDeck();
-			for(var item in bank)
-			{
-				if(bank[item] > 0)
-				{
-					return true;
-				}
-			}
-			return false;
-		}
 		
 		/**
 		 * The action to take on clicking the resource bar road button. Brings up the map 

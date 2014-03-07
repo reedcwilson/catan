@@ -38,11 +38,11 @@ catan.roll.Controller = (function roll_namespace(){
         RollController.prototype.updateFromModel = function() {
           var model = this.getClientModel();
           var turnTracker = model.getTurnTracker();
-          if(model.rollStupid === "NoRoll" && model.isCurrentTurn(this.getClientID()))
+          if(model.rollStupid === "NoRoll" && model.isCurrentTurn(model.getClientID()))
           {
 			model.rollStupid = "Roll!";
           }
-          if (turnTracker.getStatus() == 'Rolling' && model.rollStupid === "Roll!" && model.isCurrentTurn(this.getClientID())) {
+          if (model.canRoll()) {
             turnTracker.rollStatus = "Rolling";
             model.rollStupid = "Rolling!";
             var person = model.loadPersonByIndex(model.getTurnTracker().getCurrentTurn());
@@ -63,7 +63,7 @@ catan.roll.Controller = (function roll_namespace(){
             counter = setInterval(core.makeAnonymousAction(view, tick), 1000);
             
           }
-          if(!model.isCurrentTurn(this.getClientID())) {
+          if(!model.isCurrentTurn(model.getClientID())) {
 				model.rollStupid = "NoRoll";
           }
         };

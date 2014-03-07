@@ -48,47 +48,41 @@ catan.map.Controller = (function catan_controller_namespace() {
 			view.setController(this);
 			this.setRoadBuild("no");
 		}
+		
 		MapController.prototype.initFromModel = function(){
-			view = this.getView();
 			var map = this.getClientModel().getMap();
-			var hexes = map.hexgrid.getHexes();
-			var ports = map.getPorts();
-			var numbers = map.getNumbers();
-			//Load Hexes
-			hexes.map(function (hex) {
-				var hexType = hex.getLandType();
-				hexType = hexType.toLowerCase();
-				view.addHex(hex.getLocation(), hexType);
-			});
-			//Load Ports
-			ports.map(function (port) {
-				var inputResource = port.inputResource;
-				if(inputResource == undefined) {
-					inputResource = "three";
-				}
-				inputResource = inputResource.toLowerCase();
-				var portLoc = new catan.map.View.PortLoc(port.location.x,port.location.y,port.validVertex1.location.getDirection());
-				view.addPort(portLoc,inputResource, true);
-			});
-			//Load Numbers
-			for(var number in numbers) {
-				numbers[number].map(function (newNumber) {
-					view.addNumber(newNumber, number, true);
-				});
-			}
+			this.loadHexes(map.hexgrid.getHexes());
+			this.loadPorts(map.getPorts());
+			this.loadNumbers(map.getNumbers());
 			this.updateFromModel();
         }
 
         MapController.prototype.updateFromModel = function(){
 			var model = this.getClientModel();
 			var view = this.getView();
-			view.clearPlaceables();
-			view.placeRobber(model.map.getRobber());
 			var hexes = model.map.hexgrid.getHexes();
 			var self = this;
-
-			var playerIndex = model.loadIndexByClientID(model.getClientID());
+			var playerIndex = model.getPlayerIndex();
 			var player = model.loadPersonByIndex(playerIndex);
+
+			view.clearPlaceables();
+			view.placeRobber(model.map.getRobber());
+
+			this.checkDoubleRoadBuild();
+			this.checkRobbing(model);
+
+			hexes.map(function (hex){
+				self.loadRoads(model, view, hex);
+				self.loadCitiesAndSettlements(model, view, hex);
+			});
+        }
+
+        /**
+		 This method is used with the double road building card. It checks certain conditions and then executes accordingly.
+		 @method checkDoubleRoadBuild
+		*/
+		MapController.prototype.checkDoubleRoadBuild = function(){
+			var model = this.getClientModel();
 			if(this.getRoadBuild() == "first")
 			{
 				this.startMove("road", true, false);
@@ -104,12 +98,15 @@ catan.map.Controller = (function catan_controller_namespace() {
 				this.setRoadBuild("no");
 				this.spot1.direction = this.spot1.getDir();
 				this.spot2.direction = this.spot2.getDir();
-				model.sendMove({type:"Road_Building",playerIndex:model.loadIndexByClientID(this.getClientID()),spot1:this.getSpot1(),spot2:this.getSpot2()});
+				model.sendMove({type:"Road_Building",playerIndex:model.getPlayerIndex(),spot1:this.getSpot1(),spot2:this.getSpot2()});
 				
 			}
+		}
+
+		MapController.prototype.checkRobbing = function(model){
 			if(model.robbing)
 			{
-				if(model.turnTracker.status == "Robbing" && model.isCurrentTurn(this.getClientID()) && this.getModalView() != undefined)
+				if(model.turnTracker.status == "Robbing" && model.isCurrentTurn(model.getClientID()) && this.getModalView() != undefined)
 				{
 					model.setRobbing(false);
 					this.setStealing(true);
@@ -117,38 +114,100 @@ catan.map.Controller = (function catan_controller_namespace() {
 					this.getView().startDrop("robber");
 				}
 			}
-			hexes.map(function (hex){
-				//load roads
-				hex.edges.map(function (edge) {
-					var owner = edge.ownerID;
-					if(owner != -1) {
+		}
+
+        /**
+		 This method is called update from model to place all of the cities and settlements on the map
+		 @param {ClientModel} model The client model of the game
+		 @param {View} view The view to add the roads to
+		 @param {CatanHex} hex The Hex to load the roads from.
+		 @method loadCitiesAndSettlements
+		*/
+		MapController.prototype.loadCitiesAndSettlements = function(model, view, hex){
+			hex.vertexes.map(function (vertex){
+				var owner = vertex.ownerID;
+				if(owner != -1){
+					if(vertex.location.getDir() === "W" || vertex.location.getDir() === "E")
+					{
 						var player = model.loadPersonByIndex(owner);
-						var dir = edge.location.getDir();
-						if(dir === "S" || dir === "SE" || dir === "SW"){
-							view.placeRoad(edge.location,player.color,false);
+						vertex.location.equals = VertexLoc.prototype.equals;
+						if(vertex.worth == 1){
+							view.placeSettlement(vertex.location,player.color,false);
+						}
+						else if(vertex.worth == 2){
+							view.placeCity(vertex.location,player.color,false);
 						}
 					}
-				});
-				//load cities and settlements
-				hex.vertexes.map(function (vertex){
-					var owner = vertex.ownerID;
-					if(owner != -1){
-						if(vertex.location.getDir() === "W" || vertex.location.getDir() === "E")
-						{
-							var player = model.loadPersonByIndex(owner);
-							vertex.location.equals = VertexLoc.prototype.equals;
-							if(vertex.worth == 1){
-								view.placeSettlement(vertex.location,player.color,false);
-							}
-							else if(vertex.worth == 2){
-								view.placeCity(vertex.location,player.color,false);
-							}
-						}
-					}
-				});
+				}
+			});
+		}
+
+	 	/**
+		 This method is called init from model to place all of the hexes on the map
+		 @param {List} hexes The Hexes to load onto the map
+		 @method loadHexes
+		*/
+        MapController.prototype.loadHexes = function(hexes){
+			var view = this.getView();
+			hexes.map(function (hex) {
+				var hexType = hex.getLandType();
+				hexType = hexType.toLowerCase();
+				view.addHex(hex.getLocation(), hexType);
 			});
         }
 
+        /**
+		 This method is called init from model to place all of the numbers on the map
+		 @param {List} numbers The list of numbers to load onto the hexes
+		 @method loadNumbers
+		*/
+        MapController.prototype.loadNumbers = function(numbers){
+        	var view = this.getView();
+			for(var number in numbers) {
+				numbers[number].map(function (newNumber) {
+					view.addNumber(newNumber, number, true);
+				});
+			}
+        }
+
+        /**
+		 This method is called init from model to place all of the ports on the map
+		 @param {List} ports The list of ports to load
+		 @method loadPorts
+		*/
+        MapController.prototype.loadPorts = function(ports){
+        	var view = this.getView();
+			ports.map(function (port) {
+				var inputResource = port.inputResource;
+				if(inputResource == undefined) {
+					inputResource = "three";
+				}
+				inputResource = inputResource.toLowerCase();
+				var portLoc = new catan.map.View.PortLoc(port.location.x,port.location.y,port.validVertex1.location.getDirection());
+				view.addPort(portLoc,inputResource, true);
+			});
+        }
+
+        /**
+		 This method is called update from model to place all of the roads on the map
+		 @param {ClientModel} model The client model of the game
+		 @param {View} view The view to add the roads to
+		 @param {CatanHex} hex The Hex to load the roads from.
+		 @method loadRoads
+		*/
+       MapController.prototype.loadRoads = function(model, view, hex){
+			hex.edges.map(function (edge) {
+				var owner = edge.ownerID;
+				if(owner != -1) {
+					var player = model.loadPersonByIndex(owner);
+					var dir = edge.location.getDir();
+					if(dir === "S" || dir === "SE" || dir === "SW"){
+						view.placeRoad(edge.location,player.color,false);
+					}
+				}
+			});
+		}
+        
         /**
 		 This method is called by the Rob View when a player to rob is selected via a button click.
 		 @param {Integer} orderID The index (0-3) of the player who is to be robbed
@@ -156,7 +215,7 @@ catan.map.Controller = (function catan_controller_namespace() {
 		*/
 		MapController.prototype.robPlayer = function(orderID){
 			var model = this.getClientModel();
-			var clientIndex = model.loadIndexByClientID(model.clientID);
+			var clientIndex = model.getPlayerIndex();
 			if(this.getStealing() == true) 
 			{
 				this.setStealing(false);
@@ -191,7 +250,7 @@ catan.map.Controller = (function catan_controller_namespace() {
 			//this.startMove("road", true, false);
 			this.setRoadBuild("first");
 			var model = this.getClientModel();
-			var playerIndex = model.loadIndexByClientID(model.getClientID());
+			var playerIndex = model.getPlayerIndex();
 			var player = model.loadPersonByIndex(playerIndex);
 			this.setCurrentRoads(parseInt(player.roads));
 		}
@@ -208,7 +267,7 @@ catan.map.Controller = (function catan_controller_namespace() {
 		MapController.prototype.startMove = function (pieceType,free,disconnected){
 			var model = this.getClientModel();
 			this.getModalView().showModal(pieceType);
-			var playerIndex = model.loadIndexByClientID(model.getClientID())
+			var playerIndex = model.getPlayerIndex();
 			var color = model.loadPersonByIndex(playerIndex).color;
 			this.getView().startDrop(pieceType, color);
 		};
@@ -238,7 +297,7 @@ catan.map.Controller = (function catan_controller_namespace() {
 			loc.getY = function() {return loc.y};
 			var clientModel = this.getClientModel();
 			var hex = clientModel.getMap().hexgrid.getHex(loc);
-            var id = clientModel.loadIndexByClientID(clientModel.clientID)
+            var id = clientModel.getPlayerIndex();
 			if(hex) {
 				if(type.type == "road") {
 					var edge = hex.edges[this.getIndexOfEdge(loc.dir)];
@@ -267,6 +326,8 @@ catan.map.Controller = (function catan_controller_namespace() {
 			}
 		};
 
+   	 	var edLookup = ["NW","N","NE","SE","S","SW"]
+    	var vdLookup = ["W","NW","NE","E","SE","SW"]
 		MapController.prototype.getIndexOfVertex = function(dir) {
 			var index = -1;
 			for (var val in vdLookup)
@@ -291,11 +352,6 @@ catan.map.Controller = (function catan_controller_namespace() {
 			return -1;
 		}
 
-    var edLookup = ["NW","N","NE","SE","S","SW"]
-	var EdgeDirection = core.numberEnumeration(edLookup);
-
-    var vdLookup = ["W","NW","NE","E","SE","SW"]
-	var VertexDirection = core.numberEnumeration(vdLookup);
 		/**
 		 This method is called when the user clicks the mouse to place a piece.
          This method should close the modal and possibly trigger the Rob View.
@@ -321,73 +377,78 @@ catan.map.Controller = (function catan_controller_namespace() {
 				}
 			}
 			else if(type.type == "road") {
-				loc.direction = loc.dir;
-				model.sendMove({type:"buildRoad",playerIndex:model.loadIndexByClientID(model.clientID),roadLocation:loc,free:isfree});
+				this.dropObject(loc, "Road", isfree);
 			}
 			else if(type.type == "settlement"){
-				loc.direction = loc.dir;
-				model.sendMove({type:"buildSettlement",playerIndex:model.loadIndexByClientID(model.clientID),vertexLocation:loc,free:isfree});
+				this.dropObject(loc, "Settlement", isfree);
 				if(isfree) {
-					model.sendMove({type:"finishTurn",playerIndex:model.loadIndexByClientID(model.clientID)});
+					model.sendMove({type:"finishTurn",playerIndex:model.getPlayerIndex()});
 					for(var player in model.players)
             		{
-            			
-							model.players[player].startedRoad = false;
-							model.players[player].startedSettlement = false;
-						
-					player.startedRoad = false;
-					player.startedSettlement= false;
+						model.players[player].startedRoad = false;
+						model.players[player].startedSettlement = false;
+						player.startedRoad = false;
+						player.startedSettlement= false;
            			}
 				}
 			}
 			else if(type.type == "city") {
-				loc.direction = loc.dir;
-				model.sendMove({type:"buildCity",playerIndex:model.loadIndexByClientID(model.clientID),vertexLocation:loc,free:false});
+				this.dropObject(loc, "City", false);
 			}
 			else if(type.type == "robber") {
-				var hex = model.getMap().hexgrid.getHex(loc);
-				var playersToRob = new Array();
-				for(var vertexLoc in hex.vertexes)
-				{
-					var playerToAdd;
-					var playerInfo = new Array();;
-					if(hex.vertexes[vertexLoc].ownerID != -1)
-					{
-						playerToAdd = model.loadPersonByIndex(hex.vertexes[vertexLoc].ownerID);
-						if(playerToAdd !== model.loadPersonByIndex(model.loadIndexByClientID(model.clientID))) {
-							playerInfo.color = playerToAdd.color;
-							playerInfo.name = playerToAdd.name;
-							playerInfo.playerNum = hex.vertexes[vertexLoc].ownerID;
-							playerInfo.cards = playerToAdd.getNumOfCards();
-							var exsists = false;
-							for(var item in playersToRob)
-							{
-								if(playersToRob[item].name == playerInfo.name){
-									exsists = true;
-								}
-							}
-							if((playersToRob.count == 0 || !exsists) && playerInfo.cards > 0)
-							{
-								playersToRob.push(playerInfo);
-							}
-						}
-					}
-				}
-				if(playersToRob.count != 0) {
-					this.getRobView().setPlayerInfo(playersToRob);
-					this.getRobView().showModal(playersToRob);
-				}
-				this.setRobLoc(hex.location);
-				
+				this.dropRobber(loc);
 			}
 			this.getModalView().closeModal();
 		};
 
-/**		var MapState = function() {
+		MapController.prototype.dropObject = function(loc, type, isfree){
+			loc.direction = loc.dir;
+			var command = new Object;
+			command.type = "build"+type;
+			command.playerIndex = this.getClientModel().getPlayerIndex();
+			command.vertexLocation = loc;
+			command.roadLocation = loc;
+			command.free = isfree;
+			this.getClientModel().sendMove(command);
+		}
 
-			return MapState;
-		} ());
-        */
+		MapController.prototype.dropRobber = function(loc){
+			var model = this.getClientModel();
+			var hex = model.getMap().hexgrid.getHex(loc);
+			var playersToRob = new Array();
+			for(var vertexLoc in hex.vertexes)
+			{
+				var playerToAdd;
+				var playerInfo = new Array();;
+				if(hex.vertexes[vertexLoc].ownerID != -1)
+				{
+					playerToAdd = model.loadPersonByIndex(hex.vertexes[vertexLoc].ownerID);
+					if(playerToAdd !== model.loadPersonByIndex(model.getPlayerIndex())) {
+						playerInfo.color = playerToAdd.color;
+						playerInfo.name = playerToAdd.name;
+						playerInfo.playerNum = hex.vertexes[vertexLoc].ownerID;
+						playerInfo.cards = playerToAdd.getNumOfCards();
+						var exsists = false;
+						for(var item in playersToRob)
+						{
+							if(playersToRob[item].name == playerInfo.name){
+								exsists = true;
+							}
+						}
+						if((playersToRob.count == 0 || !exsists) && playerInfo.cards > 0)
+						{
+							playersToRob.push(playerInfo);
+						}
+					}
+				}
+			}
+			if(playersToRob.count != 0) {
+				this.getRobView().setPlayerInfo(playersToRob);
+				this.getRobView().showModal(playersToRob);
+			}
+			this.setRobLoc(hex.location);
+		}
+
 		return MapController;
 	} ());
 
