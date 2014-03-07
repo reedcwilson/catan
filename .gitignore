@@ -13,8 +13,8 @@
 # Ignore README.txt
 README.txt
 
-# Ignore server.jar
-server.jar
+# Ignore server.jar files
+*server.jar
 
 # Ignore all logfiles and tempfiles.
 /log/*.log
@@ -33,3 +33,7 @@ Desktop.ini
 
 # ignore special files with double underscore __
 __*
+
+# ignore bin and build
+/bin
+/build
