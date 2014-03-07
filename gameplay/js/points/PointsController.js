@@ -41,7 +41,8 @@ catan.points.Controller = (function VPController_Class(){
 		this.getView().setPoints(player.victoryPoints);
 		if(clientModel.winner != -1) {
 			var isWinner = clientModel.clientID == clientModel.winner;
-			this.getGameFinishedView().setWinner(clientModel.players[clientModel.loadIndexByClient(clientModel.winner)].name, isWinner);
+            var winner = clientModel.players[clientModel.loadIndexByClient(clientModel.winner)];
+			this.getGameFinishedView().setWinner(winner.name, isWinner);
 			this.getGameFinishedView().showModal();
 		}
 

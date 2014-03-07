@@ -64,8 +64,19 @@ catan.turntracker.Controller = (function turntracker_namespace()
 				var myHighlight = clientModel.isCurrentTurn(player.playerID);
 				var displayElem = new catan.definitions.DisplayElement.TurnTrackerPlayerElement(player.name, player.color);
 				view.getDisplayElems()[player.getOrderNumber()] = (displayElem);
-				view.updatePlayer({playerIndex:player.getOrderNumber(),score:player.victoryPoints,highlight:myHighlight,army:player.largestArmy,road:player.longestRoad});
-				view.refreshTrackers();
+
+                var commandObj = {
+                  playerIndex:player.getOrderNumber(),
+                  score:player.victoryPoints,
+                  highlight:myHighlight,
+                  army:player.largestArmy,
+                  road:player.longestRoad
+                }
+
+				view.updatePlayer(commandObj);
+                if (!$(".tracker-player-box:eq(" + player.getOrderNumber() + ")").hasClass(player.color)) {
+                  view.refreshTrackers();
+                }
             });
 		}
 
