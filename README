@@ -1,8 +1,11 @@
-BYU CS340 SETTLERS OF CATAN
+# BYU CS340 Settlers of Catan
 
 This is a web game that allows four players to play the Settlers of Catan game.
 
-The game server is not part of this repo because it is very large. I think that
-we should just individually manage this. Dr. Snell said that it should be
-locked in anyway.
-blah
+## Run
+Run the server using the ant target 'server'
+
+`ant server`
+
+## Play
+Locate the dashboard at `http://localhost:8081/index.html`, register, create a game, and have fun
