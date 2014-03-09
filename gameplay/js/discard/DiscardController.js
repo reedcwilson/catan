@@ -11,7 +11,6 @@ catan.discard = catan.discard || {};
 catan.discard.Controller = (function discard_namespace(){
 
 	var Controller = catan.core.BaseController;
-    
 	var Definitions = catan.definitions;
 	var ResourceTypes = catan.definitions.ResourceTypes;
 	
@@ -24,78 +23,63 @@ catan.discard.Controller = (function discard_namespace(){
      * @param{models.ClientModel} clientModel
      */
 	var DiscardController = (function DiscardController_Class(){
-
-
-			
+	
 		function DiscardController(view, waitingView, clientModel){
         
             Controller.call(this,view,clientModel);
             this.setView(view);
-			
             view.setController(this);
             waitingView.setController(this);
             this.setWaitingView(waitingView);
-
 			this.playerResources = {};	
 			this.startDiscarding = true;
-			this.totalCards; //total cards to discard
-			this.totalcardsgivenup=0; //totalcardsremaining
+			this.totalCards; 
+			this.totalcardsgivenup=0; 
 		
          }
 
 		core.forceClassInherit(DiscardController,Controller);
-
 		core.defineProperty(DiscardController.prototype,"waitingView");
-
-
 
 		DiscardController.prototype.initFromModel = function() {
 			this.updateFromModel();
-
 		}
+	
 
 		DiscardController.prototype.updateFromModel = function() {
 			var clientModel = this.getClientModel();
 			var playerID = clientModel.clientID;
-
+			var discardView = this.getView();
 			var player = clientModel.players[clientModel.getPlayerIndex()];
-			console.log("its updating model", clientModel);
-
-			if(clientModel.turnTracker.status != "Discarding")
-				{
-					console.log("status is not discarding")
+			var currentStatus = clientModel.turnTracker.status;
+		
+			if(currentStatus != "Discarding"){
 					if(this.getWaitingView())
 					this.getWaitingView().closeModal();
 					this.startDiscarding = true;
 				}
-			
-			else if(this.startDiscarding)
-			{
-				console.log("startDiscarding not failed")
-				
-				if(clientModel.turnTracker.status == "Discarding")
-				{
-					console.log("turntracker not failed")
+			else if(this.startDiscarding){
+				if(currentStatus == "Discarding"){
+					
 					this.startDiscarding=false;
 					var res = player.resources;
 					var totalRes = res.brick + res.ore + res.sheep + res.wheat + res.wood;
 					this.playerResources = {"wood":[res.wood,0],"brick":[res.brick,0],"sheep":[res.sheep,0],"wheat":[res.wheat,0],"ore":[res.ore,0]};
-					console.log(this.playerResources);
+					
 					if(totalRes < 8)
 					{
 						this.getWaitingView().showModal();
-						console.log("totalRes < 8")
 					}
 					else
 					{
-						console.log("should show modal")
+						
 						this.totalcardsgivenup=0;
-						this.getView().showModal();
-						this.getView().setResourceMaxAmount(ResourceTypes[0],res.wood);
-						this.getView().setResourceMaxAmount(ResourceTypes[1],res.brick);
-						this.getView().setResourceMaxAmount(ResourceTypes[2],res.sheep);
-						this.getView().setResourceMaxAmount(ResourceTypes[3],res.wheat);
-						this.getView().setResourceMaxAmount(ResourceTypes[4],res.ore);
+						discardView.showModal();
+						discardView.setResourceMaxAmount(ResourceTypes[0],res.wood);
+						discardView.setResourceMaxAmount(ResourceTypes[1],res.brick);
+						discardView.setResourceMaxAmount(ResourceTypes[2],res.sheep);
+						discardView.setResourceMaxAmount(ResourceTypes[3],res.wheat);
+						discardView.setResourceMaxAmount(ResourceTypes[4],res.ore);
 						this.enableResource(ResourceTypes[0],0,res.wood);
 						this.enableResource(ResourceTypes[1],0,res.brick);
 						this.enableResource(ResourceTypes[2],0,res.sheep);
@@ -104,14 +88,14 @@ catan.discard.Controller = (function discard_namespace(){
 
 						for(var i = 0; i < ResourceTypes.length; i++)
 						{
-							this.getView().setResourceAmount(ResourceTypes[i],0);
+							discardView.setResourceAmount(ResourceTypes[i],0);
 						}
 						this.totalCards = Math.floor(totalRes/2);
 						var statemessage = "0/" + this.totalCards;
 						
-						this.getView().setStateMessage(statemessage);
+						discardView.setStateMessage(statemessage);
 						
-						this.getView().setDiscardButtonEnabled(false);
+						discardView.setDiscardButtonEnabled(false);
 						
 					}
 				}
@@ -120,28 +104,36 @@ catan.discard.Controller = (function discard_namespace(){
 
 		DiscardController.prototype.enableResource= function(resource, amount, total)
 		{
+			var discardView = this.getView();
 			if(amount < total)
 			{
-				this.getView().setResourceAmountChangeEnabled(resource, true, false);
-				if(amount > 0)
-				{
-					this.getView().setResourceAmountChangeEnabled(resource, true, true);
-				}
-				if(this.totalcardsgivenup ==this.totalCards)
-				{
-					this.getView().setResourceAmountChangeEnabled(resource, false, true);
-					if(amount ==0)
-					{
-						this.getView().setResourceAmountChangeEnabled(resource, false, false);
-					}
-				}
+				this.setResource(resource, amount, total);
 			}
 			else if(amount == total && total != 0)
 			{
-				this.getView().setResourceAmountChangeEnabled(resource, false, true);
+				discardView.setResourceAmountChangeEnabled(resource, false, true);
 				
 			}
-			this.getView().setResourceAmount(resource, amount);
+			discardView.setResourceAmount(resource, amount);
+		}
+
+		DiscardController.prototype.setResource = function(resource, amount, total)
+		{
+			var discardView = this.getView();
+			discardView.setResourceAmountChangeEnabled(resource, true, false);
+				if(amount > 0)
+				{
+					discardView.setResourceAmountChangeEnabled(resource, true, true);
+				}
+				if(this.totalcardsgivenup ==this.totalCards)
+				{
+					discardView.setResourceAmountChangeEnabled(resource, false, true);
+					if(amount ==0)
+					{
+						discardView.setResourceAmountChangeEnabled(resource, false, false);
+					}
+				}
+				
 		}
 
 		/**
@@ -151,12 +143,12 @@ catan.discard.Controller = (function discard_namespace(){
 		 @return void
 		 */	
 		DiscardController.prototype.discard = function(){
+			var discardView = this.getView();
 			this.startDiscarding = true;
 			var myPlayerIndex = this.getClientModel().getPlayerIndex();
 			var resourceList = {brick:this.playerResources["brick"][1],ore:this.playerResources["ore"][1],sheep:this.playerResources["sheep"][1],wheat:this.playerResources["wheat"][1],wood:this.playerResources["wood"][1]};
 			this.getClientModel().sendMove({type:"discardCards",playerIndex:myPlayerIndex,discardedCards:resourceList});
-			console.log("discarded model", this.getClientModel());
-			this.getView().closeModal();
+			discardView.closeModal();
 			this.getWaitingView().showModal();
 		}
         
@@ -167,15 +159,16 @@ catan.discard.Controller = (function discard_namespace(){
 		 @return void
 		 */
 		DiscardController.prototype.increaseAmount = function(resource){
+			var discardView = this.getView();
 			this.totalcardsgivenup += 1;
 			this.playerResources[resource][1] += 1;
-			this.getView().setResourceAmount(resource,this.playerResources[resource][1]);
+			discardView.setResourceAmount(resource,this.playerResources[resource][1]);
 			this.enableResource(resource, this.playerResources[resource][1], this.playerResources[resource][0])
 			var statemessage = "" +this.totalcardsgivenup+ "/" + this.totalCards;
-			this.getView().setStateMessage(statemessage);
+			discardView.setStateMessage(statemessage);
 			if(this.totalcardsgivenup ==this.totalCards)
 				{
-					this.getView().setDiscardButtonEnabled(true);
+					discardView.setDiscardButtonEnabled(true);
 					for(myResource in this.playerResources)
 					{
 						this.enableResource(myResource, this.playerResources[myResource][1], this.playerResources[myResource][0])
@@ -190,15 +183,16 @@ catan.discard.Controller = (function discard_namespace(){
 		 @return void
 		 */
 		DiscardController.prototype.decreaseAmount = function(resource){
+			var discardView = this.getView();
 			this.totalcardsgivenup -= 1;
 			this.playerResources[resource][1] -= 1;
-			this.getView().setResourceAmount(resource,this.playerResources[resource][1]);
+			discardView.setResourceAmount(resource,this.playerResources[resource][1]);
 			this.enableResource(resource, this.playerResources[resource][1], this.playerResources[resource][0])
 			var statemessage = "" +this.totalcardsgivenup+ "/" + this.totalCards;
-			this.getView().setStateMessage(statemessage);
+			discardView.setStateMessage(statemessage);
 			if(this.totalcardsgivenup !=this.totalCards)
 				{
-					this.getView().setDiscardButtonEnabled(false);
+					discardView.setDiscardButtonEnabled(false);
 					for(myResource in this.playerResources)
 					{
 						this.enableResource(myResource, this.playerResources[myResource][1], this.playerResources[myResource][0])
