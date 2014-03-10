@@ -23,7 +23,6 @@ catan.roll.Controller = (function roll_namespace(){
 	var RollController = (function RollController_Class(){
 		
 		core.forceClassInherit(RollController,Controller);
- 
 		core.defineProperty(RollController.prototype,"rollResultView");
 		
 		function RollController(view, resultView, clientModel){
@@ -33,8 +32,9 @@ catan.roll.Controller = (function roll_namespace(){
 			this.showRollResult = false;
 			clientModel.rollStupid = "NoRoll";
 		};
-
+        
 		var counter;
+        var _rollTimeout = 5;
         RollController.prototype.updateFromModel = function() {
           var model = this.getClientModel();
           var turnTracker = model.getTurnTracker();
@@ -46,27 +46,24 @@ catan.roll.Controller = (function roll_namespace(){
             turnTracker.rollStatus = "Rolling";
             model.rollStupid = "Rolling!";
             var person = model.loadPersonByIndex(model.getTurnTracker().getCurrentTurn());
-			var view = this.getView()
+			var view = this.getView();
+            view.changeMessage('Rolling automatically in ' + _rollTimeout + "...");
+
             view.showModal();
-
-			var tick = function() 
-			{
-				this.changeMessage('Rolling automatically in ' + timeout + "...");
-                timeout = timeout - 1;
-                if (timeout == -1) {
-                  clearInterval(counter);
-                  this.rollDice();
-                }
-            }
-
-            var timeout = 5;
             counter = setInterval(core.makeAnonymousAction(view, tick), 1000);
-            
           }
           if(!model.isCurrentTurn(model.getClientID())) {
 				model.rollStupid = "NoRoll";
           }
         };
+        
+        var tick = function() {
+          this.changeMessage('Rolling automatically in ' + --_rollTimeout + "...");
+          if (_rollTimeout == -1) {
+            clearInterval(counter);
+            this.rollDice();
+          }
+        }
         
 		/**
 		 * This is called from the roll result view.  
@@ -78,7 +75,14 @@ catan.roll.Controller = (function roll_namespace(){
 		RollController.prototype.closeResult = function(){
          	this.getRollResultView().closeModal();
          	var clientModel = this.getClientModel();
-         	clientModel.sendMove({type:"rollNumber",playerIndex:this.getClientModel().getClientID(),number:roll});
+
+            var commandObj = {
+              type:"rollNumber",
+              playerIndex:this.getClientModel().getClientID(),
+              number:roll
+            }
+
+         	clientModel.sendMove(commandObj);
 		}
 		
 		/**
@@ -88,11 +92,15 @@ catan.roll.Controller = (function roll_namespace(){
 		**/
 		RollController.prototype.rollDice = function(){
 			clearInterval(counter);
-			this.getView().closeModal();
+			var view = this.getView();
+            view.closeModal();
 			roll = Math.floor(Math.random() * 6) + 1;
 			roll += Math.floor(Math.random() * 6) + 1;
 			this.getRollResultView().setAmount(roll);
 			this.getRollResultView().showModal();
+            _rollTimeout = 5;
+            view.changeMessage('Rolling automatically in ' + _rollTimeout + "...");
+
 		};
 		
 		return RollController;

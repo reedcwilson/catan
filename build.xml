@@ -1,41 +1,99 @@
 ﻿<project name="Demo Server" default="server" basedir=".">
 
 	<!-- PROPERTIES -->
-	<!-- ********** -->	
-    
+	<!-- ********** -->
+
 	<!-- Directory paths for the java server, javascript, and dest dir for the student copy -->
-    <property name="port.arg" value="8081"/>
-    <property name="web.arg" value="gameplay"/>
-    <property name="requests.arg" value="ug"/>
-    
-    <!-- Base output folder -->
-    <property name="dest.dir" value="docs"/>
-    <!-- YUIDoc output Folder -->
-    <property name="yuidoc.dir" value="${dest.dir}/javascript"/>
-    <!-- Jar file path/name from here -->
-    <property name="jar.file" value="server.jar"/>
+	<property name="port.arg" value="8081" />
+	<property name="web.arg" value="gameplay" />
+	<property name="requests.arg" value="ug" />
+
+	<!-- Base output folder -->
+	<property name="dest.dir" value="docs" />
+
+	<!-- YUIDoc output Folder -->
+	<property name="yuidoc.dir" value="${dest.dir}/javascript" />
+
+	<!-- Jar files -->
+	<property name="jar.file" value="server.jar" />
+	<property name="our-jar.file" value="our-server.jar" />
+
+	<!-- Directory where the Java compiler puts .class files -->
+	<property name="build-dir" location="build" />
+
+	<!-- Directory containing testing source code -->
+	<property name="test" location="test" />
+
+	<!-- Directory containing application source code -->
+	<property name="src" location="src" />
+
+	<!-- Directory containing Java libraries -->
+	<property name="lib" location="lib" />
+
+
+	<!-- CLASS PATHS -->
+	<!-- *********** -->
+	<path id="lib-classpath">
+		<fileset dir="${build-dir}">
+			<include name="**/*.jar" />
+		</fileset>
+	</path>
+
+	<path id="all-classpath">
+		<path refid="lib-classpath" />
+		<pathelement location="${build-dir}" />
+	</path>
 
 	<!-- TARGETS -->
 	<!-- ******* -->
-     
+
 	<target name="server" description="Runs the demo server">
 		<java jar="${jar.file}" fork="true">
-			<arg value="${port.arg}"/>
-			<arg value="${web.arg}"/>
-			<arg value="${requests.arg}"/>
+			<arg value="${port.arg}" />
+			<arg value="${web.arg}" />
+			<arg value="${requests.arg}" />
 			<assertions>
-				<enable/>
+				<enable />
 			</assertions>
 		</java>
 	</target>
-    
-    <target name="make-js-doc" description="Parse and produce the javascript docs">
-        <echo> Making javascript documentation</echo>
-        <exec executable="yuidoc">
-            <arg value="-o"/>
-            <arg value="${yuidoc.dir}"/>
-            <arg value="${javascript.dir}"/>
-        </exec>
-	</target>    
+
+	<target name="init" description="create build directories">
+		<tstamp />
+		<mkdir dir="${build-dir}" />
+		<mkdir dir="${test}" />
+	</target>
+
+	<target name="clean" description="delete build files and directories">
+		<delete dir="${build-dir}" />
+	</target>
+
+	<target name="build" depends="init" description="compile the source code">
+		<javac srcdir="${src}" classpathref="lib-classpath" destdir="${build-dir}" debug="true" includeantruntime="true" />
+		<javac srcdir="${test}" classpathref="lib-classpath" destdir="${build-dir}" debug="true" includeantruntime="true" />
+	</target>
+	
+	<target name="our-server" depends="build" description="run server on specified port">
+	    <java classname="com.catan.Server" fork="yes">
+	      <classpath>
+	        <path refid="all-classpath"/>
+	      </classpath>
+	    	<arg value="${port.arg}" />
+	      <arg value="${web.arg}" />
+	      <arg value="${requests.arg}" />
+	      <assertions>
+	        <enable/>
+	      </assertions>
+	    </java>
+	  </target>
+
+	<target name="make-js-doc" description="Parse and produce the javascript docs">
+		<echo> Making javascript documentation</echo>
+		<exec executable="yuidoc">
+			<arg value="-o" />
+			<arg value="${yuidoc.dir}" />
+			<arg value="${javascript.dir}" />
+		</exec>
+	</target>
 </project>
 
