@@ -8,10 +8,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.HttpURLConnection;
 import java.net.InetSocketAddress;
 import java.net.URI;
-import java.util.ArrayList;
+
+import sun.net.www.protocol.http.HttpURLConnection;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
@@ -80,25 +80,26 @@ public class Server {
 		this._server.createContext("/game/reset", resetGameHandler);
 		this._server.createContext("/game/commands", getCommandsHandler); // get
 		this._server.createContext("/game/commands", postCommandsHandler); // post
-		this._server.createContext("/game/listai", listAiHandler);
-		this._server.createContext("/game/addai", addAiHandler);
-		this._server.createContext("/util/changeloglevel", changeLogLevelHandler);
-		this._server.createContext("/moves/sendchat", sendChatHandler);
-		this._server.createContext("/moves/accepttrade", acceptTradeHandler);
-		this._server.createContext("/moves/discardcards", discardCardsHandler);
-		this._server.createContext("/moves/rollnumber", rollNumberHandler);
-		this._server.createContext("/moves/buildroad", buildRoadHandler);
-		this._server.createContext("/moves/buildsettlement", buildSettlementHandler);
-		this._server.createContext("/moves/buildcity", buildCityHandler);
-		this._server.createContext("/moves/offertrade", offerTradeHandler);
-		this._server.createContext("/moves/maritimetrade", maritimeTradeHandler);
-		this._server.createContext("/moves/finishturn", finishTurnHandler);
-		this._server.createContext("/moves/buydevcard", buyDevCardHandler);
-		this._server.createContext("/moves/year_of_plent", yearOfPlentyHandler);
-		this._server.createContext("/moves/road_building", roadBuildingHandler);
-		this._server.createContext("/moves/soldier", soldierHandler);
-		this._server.createContext("/moves/monopoly", monopolyHandler);
-		this._server.createContext("/moves/monument", monumentHandler);
+		this._server.createContext("/game/listAI", listAiHandler);
+		this._server.createContext("/game/addAI", addAiHandler);
+		this._server.createContext("/util/changeLogLevel", changeLogLevelHandler);
+		this._server.createContext("/moves/sendChat", sendChatHandler);
+		this._server.createContext("/moves/acceptTrade", acceptTradeHandler);
+		this._server.createContext("/moves/discardCards", discardCardsHandler);
+		this._server.createContext("/moves/rollNumber", rollNumberHandler);
+		this._server.createContext("/moves/buildRoad", buildRoadHandler);
+		this._server.createContext("/moves/buildSettlement", buildSettlementHandler);
+		this._server.createContext("/moves/buildCity", buildCityHandler);
+		this._server.createContext("/moves/offerTrade", offerTradeHandler);
+		this._server.createContext("/moves/maritimeTrade", maritimeTradeHandler);
+		this._server.createContext("/moves/finishTurn", finishTurnHandler);
+		this._server.createContext("/moves/buyDevCard", buyDevCardHandler);
+		this._server.createContext("/moves/Year_of_Plent", yearOfPlentyHandler);
+		this._server.createContext("/moves/Road_Building", roadBuildingHandler);
+		this._server.createContext("/moves/Soldier", soldierHandler);
+		this._server.createContext("/moves/Monopoly", monopolyHandler);
+		this._server.createContext("/moves/Monument", monumentHandler);
+		this._server.createContext("/docs/api/data", getSwaggerFilesHandler);
 		this._server.createContext("/", downloadFileHandler);
 
 		this._server.start();
@@ -128,18 +129,16 @@ public class Server {
 				// byte[] bytes = xStream.toXML(new
 				// ValidateUser_Result(user)).getBytes();
 				byte[] bytes = "Success".getBytes();
-				exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK,
-						bytes.length);
+				exchange.getResponseHeaders().add("Content-Type", "text/html");
+				exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, bytes.length);
 				exchange.getResponseBody().write(bytes);
 
 			} catch (Exception e) {
 
 				// send server exception response header
-				System.out.println("ERROR 500. Internal Server Error"
-						+ e.getMessage());
+				System.out.println("ERROR 500. Internal Server Error" + e.getMessage());
 				e.printStackTrace();
-				exchange.sendResponseHeaders(
-						HttpURLConnection.HTTP_INTERNAL_ERROR, -1);
+				exchange.sendResponseHeaders(HttpURLConnection.HTTP_INTERNAL_ERROR, -1);
 			}
 			exchange.close();
 		}
@@ -150,8 +149,8 @@ public class Server {
 		public void handle(HttpExchange exchange) throws IOException {
 			try {
 				byte[] bytes = "Success".getBytes();
-				exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK,
-						bytes.length);
+				exchange.getResponseHeaders().add("Content-Type", "text/html");
+				exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, bytes.length);
 				exchange.getResponseBody().write(bytes);
 
 			} catch (Exception e) {
@@ -173,8 +172,8 @@ public class Server {
 
 			try {
 				byte[] bytes = gamesList.getBytes();
-				exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK,
-						bytes.length);
+				exchange.getResponseHeaders().add("Content-Type", "application/json");
+				exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, bytes.length);
 				exchange.getResponseBody().write(bytes);
 
 			} catch (Exception e) {
@@ -196,8 +195,8 @@ public class Server {
 
 			try {
 				byte[] bytes = "{\"title\":\"gobble\",\"id\":3,\"players\":[{},{},{},{}]}".getBytes();
-				exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK,
-						bytes.length);
+				exchange.getResponseHeaders().add("Content-Type", "application/json");
+				exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, bytes.length);
 				exchange.getResponseBody().write(bytes);
 
 			} catch (Exception e) {
@@ -219,8 +218,8 @@ public class Server {
 
 			try {
 				byte[] bytes = "Success! You have joined the game.".getBytes();
-				exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK,
-						bytes.length);
+				exchange.getResponseHeaders().add("Content-Type", "text/html");
+				exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, bytes.length);
 				exchange.getResponseBody().write(bytes);
 
 			} catch (Exception e) {
@@ -242,8 +241,8 @@ public class Server {
 
 			try {
 				byte[] bytes = model.getBytes();
-				exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK,
-						bytes.length);
+				exchange.getResponseHeaders().add("Content-Type", "application/json");
+				exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, bytes.length);
 				exchange.getResponseBody().write(bytes);
 
 			} catch (Exception e) {
@@ -265,8 +264,8 @@ public class Server {
 
 			try {
 				byte[] bytes = model.getBytes();
-				exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK,
-						bytes.length);
+				exchange.getResponseHeaders().add("Content-Type", "application/json");
+				exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, bytes.length);
 				exchange.getResponseBody().write(bytes);
 
 			} catch (Exception e) {
@@ -288,8 +287,8 @@ public class Server {
 
 			try {
 				byte[] bytes = model.getBytes();
-				exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK,
-						bytes.length);
+				exchange.getResponseHeaders().add("Content-Type", "application/json");
+				exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, bytes.length);
 				exchange.getResponseBody().write(bytes);
 
 			} catch (Exception e) {
@@ -311,8 +310,8 @@ public class Server {
 
 			try {
 				byte[] bytes = "Success".getBytes();
-				exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK,
-						bytes.length);
+				exchange.getResponseHeaders().add("Content-Type", "text/html");
+				exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, bytes.length);
 				exchange.getResponseBody().write(bytes);
 
 			} catch (Exception e) {
@@ -334,8 +333,8 @@ public class Server {
 
 			try {
 				byte[] bytes = "[ \"LARGEST_ARMY\" ]".getBytes();
-				exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK,
-						bytes.length);
+				exchange.getResponseHeaders().add("Content-Type", "application/json");
+				exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, bytes.length);
 				exchange.getResponseBody().write(bytes);
 
 			} catch (Exception e) {
@@ -357,8 +356,8 @@ public class Server {
 
 			try {
 				byte[] bytes = "Success".getBytes();
-				exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK,
-						bytes.length);
+				exchange.getResponseHeaders().add("Content-Type", "text/html");
+				exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, bytes.length);
 				exchange.getResponseBody().write(bytes);
 
 			} catch (Exception e) {
@@ -380,8 +379,8 @@ public class Server {
 
 			try {
 				byte[] bytes = "Not an allowed log level.".getBytes();
-				exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK,
-						bytes.length);
+				exchange.getResponseHeaders().add("Content-Type", "text/html");
+				exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, bytes.length);
 				exchange.getResponseBody().write(bytes);
 
 			} catch (Exception e) {
@@ -403,8 +402,8 @@ public class Server {
 
 			try {
 				byte[] bytes = model.getBytes();
-				exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK,
-						bytes.length);
+				exchange.getResponseHeaders().add("Content-Type", "application/json");
+				exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, bytes.length);
 				exchange.getResponseBody().write(bytes);
 
 			} catch (Exception e) {
@@ -426,8 +425,8 @@ public class Server {
 
 			try {
 				byte[] bytes = model.getBytes();
-				exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK,
-						bytes.length);
+				exchange.getResponseHeaders().add("Content-Type", "application/json");
+				exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, bytes.length);
 				exchange.getResponseBody().write(bytes);
 
 			} catch (Exception e) {
@@ -449,8 +448,8 @@ public class Server {
 
 			try {
 				byte[] bytes = model.getBytes();
-				exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK,
-						bytes.length);
+				exchange.getResponseHeaders().add("Content-Type", "application/json");
+				exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, bytes.length);
 				exchange.getResponseBody().write(bytes);
 
 			} catch (Exception e) {
@@ -472,8 +471,8 @@ public class Server {
 
 			try {
 				byte[] bytes = model.getBytes();
-				exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK,
-						bytes.length);
+				exchange.getResponseHeaders().add("Content-Type", "application/json");
+				exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, bytes.length);
 				exchange.getResponseBody().write(bytes);
 
 			} catch (Exception e) {
@@ -495,8 +494,8 @@ public class Server {
 
 			try {
 				byte[] bytes = model.getBytes();
-				exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK,
-						bytes.length);
+				exchange.getResponseHeaders().add("Content-Type", "application/json");
+				exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, bytes.length);
 				exchange.getResponseBody().write(bytes);
 
 			} catch (Exception e) {
@@ -518,8 +517,8 @@ public class Server {
 
 			try {
 				byte[] bytes = model.getBytes();
-				exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK,
-						bytes.length);
+				exchange.getResponseHeaders().add("Content-Type", "application/json");
+				exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK,	bytes.length);
 				exchange.getResponseBody().write(bytes);
 
 			} catch (Exception e) {
@@ -541,8 +540,8 @@ public class Server {
 
 			try {
 				byte[] bytes = model.getBytes();
-				exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK,
-						bytes.length);
+				exchange.getResponseHeaders().add("Content-Type", "application/json");
+				exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, bytes.length);
 				exchange.getResponseBody().write(bytes);
 
 			} catch (Exception e) {
@@ -564,8 +563,8 @@ public class Server {
 
 			try {
 				byte[] bytes = model.getBytes();
-				exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK,
-						bytes.length);
+				exchange.getResponseHeaders().add("Content-Type", "application/json");
+				exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, bytes.length);
 				exchange.getResponseBody().write(bytes);
 
 			} catch (Exception e) {
@@ -587,8 +586,8 @@ public class Server {
 
 			try {
 				byte[] bytes = model.getBytes();
-				exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK,
-						bytes.length);
+				exchange.getResponseHeaders().add("Content-Type", "application/json");
+				exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, bytes.length);
 				exchange.getResponseBody().write(bytes);
 
 			} catch (Exception e) {
@@ -610,8 +609,8 @@ public class Server {
 
 			try {
 				byte[] bytes = model.getBytes();
-				exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK,
-						bytes.length);
+				exchange.getResponseHeaders().add("Content-Type", "application/json");
+				exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, bytes.length);
 				exchange.getResponseBody().write(bytes);
 
 			} catch (Exception e) {
@@ -633,8 +632,8 @@ public class Server {
 
 			try {
 				byte[] bytes = model.getBytes();
-				exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK,
-						bytes.length);
+				exchange.getResponseHeaders().add("Content-Type", "application/json");
+				exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, bytes.length);
 				exchange.getResponseBody().write(bytes);
 
 			} catch (Exception e) {
@@ -656,8 +655,8 @@ public class Server {
 
 			try {
 				byte[] bytes = model.getBytes();
-				exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK,
-						bytes.length);
+				exchange.getResponseHeaders().add("Content-Type", "application/json");
+				exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, bytes.length);
 				exchange.getResponseBody().write(bytes);
 
 			} catch (Exception e) {
@@ -679,8 +678,8 @@ public class Server {
 
 			try {
 				byte[] bytes = model.getBytes();
-				exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK,
-						bytes.length);
+				exchange.getResponseHeaders().add("Content-Type", "application/json");
+				exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, bytes.length);
 				exchange.getResponseBody().write(bytes);
 
 			} catch (Exception e) {
@@ -702,8 +701,8 @@ public class Server {
 
 			try {
 				byte[] bytes = model.getBytes();
-				exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK,
-						bytes.length);
+				exchange.getResponseHeaders().add("Content-Type", "application/json");
+				exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, bytes.length);
 				exchange.getResponseBody().write(bytes);
 
 			} catch (Exception e) {
@@ -725,8 +724,8 @@ public class Server {
 
 			try {
 				byte[] bytes = model.getBytes();
-				exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK,
-						bytes.length);
+				exchange.getResponseHeaders().add("Content-Type", "application/json");
+				exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, bytes.length);
 				exchange.getResponseBody().write(bytes);
 
 			} catch (Exception e) {
@@ -748,8 +747,8 @@ public class Server {
 
 			try {
 				byte[] bytes = model.getBytes();
-				exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK,
-						bytes.length);
+				exchange.getResponseHeaders().add("Content-Type", "application/json");
+				exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, bytes.length);
 				exchange.getResponseBody().write(bytes);
 
 			} catch (Exception e) {
@@ -765,9 +764,46 @@ public class Server {
 		}
 	};
 	
+	private HttpHandler getSwaggerFilesHandler = new HttpHandler() {
+
+		@Override
+		public void handle(HttpExchange exchange) throws IOException {
+
+			File file = null;
+			URI uri = exchange.getRequestURI();
+			String path = uri.getPath().substring(1);
+			
+			InputStream stream = null;
+			try {
+				if (path.equals("docs/api/data")) {
+					String str = "{\"apiVersion\":\"1.0\",\"swaggerVersion\":\"1.2\",\"apis\":[{\"path\":\"/user\",\"description\":\"Operations about users\"},{\"path\":\"/games\",\"description\":\"Game queries/actions (pre-joining)\"},{\"path\":\"/game\",\"description\":\"Operations for the game you're in. (requires cookie)\"},{\"path\":\"/moves\",\"description\":\"Actions you can take mid game. (requires cookie)\"},{\"path\":\"/util\",\"description\":\"Change how the server runs\"}]}";
+					byte[] bytes = str.getBytes();
+					exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, bytes.length);	
+					exchange.getResponseBody().write(bytes, 0, bytes.length);
+				} else {
+					file = new File("./" + path + ".json");
+					byte[] bytes = new byte[(int)file.length()];
+					stream = new BufferedInputStream(new FileInputStream(file));
+					stream.read(bytes, 0, bytes.length);
+					exchange.getResponseHeaders().add("Content-Type", "application/json");
+					exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, bytes.length);
+					exchange.getResponseBody().write(bytes, 0, bytes.length);
+				}
+			} catch (Exception e) {
+				System.out.println("ERROR 500. Internal Server Error" + e.getMessage());
+				e.printStackTrace();
+				exchange.sendResponseHeaders(HttpURLConnection.HTTP_INTERNAL_ERROR, -1);
+			} finally {
+				exchange.close();
+				if (stream != null) {
+					stream.close();
+				}
+			}
+		}
+	};
+	
 	private HttpHandler downloadFileHandler = new HttpHandler() {
 
-		@SuppressWarnings("resource")
 		@Override
 		public void handle(HttpExchange exchange) throws IOException {
 			
@@ -777,10 +813,10 @@ public class Server {
 			
 			if (path.isEmpty()) { 			 	 // default to index.html
 				file = new File("./gameplay/index.html");
-			} else if (path.startsWith("docs")){ // go to docs dir
-				file = new File(path);
+			} else if (path.startsWith("docs")) {
+				file = new File("./" + path);
 			}else { 							 // go to gameplay
-				file = new File("./gameplay/" + exchange.getRequestURI().getPath());
+				file = new File("./gameplay/" + path);
 			}
 			
 			InputStream stream = null;
@@ -793,36 +829,7 @@ public class Server {
 					
 					exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, bytes.length);	
 					exchange.getResponseBody().write(bytes, 0, bytes.length);
-				} else if (file.isDirectory()) {
-					
-					// this is somewhat of a hack (and it still doesn't work for swagger)
-					File[] files = file.listFiles();
-					ArrayList<StreamBytes> streamBytes = new ArrayList<>();
-					int length = 0;
-					try {
-						for (File f : files) {
-							byte[] b = new byte[(int)f.length()];
-							length += b.length;
-							streamBytes.add(new StreamBytes(new BufferedInputStream(new FileInputStream(f)), b));
-						}
-					
-						// send response headers including the length to expect
-						exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, length);
-					
-						for (StreamBytes s : streamBytes) {
-							s.get_stream().read(s.getBytes(), 0, s.getBytes().length);
-							exchange.getResponseBody().write(s.getBytes(), 0, s.getBytes().length);
-						}	
-					} catch (Exception e) {
-						System.out.println("ERROR 500. Internal Server Error" + e.getMessage());
-						e.printStackTrace();
-						exchange.sendResponseHeaders(HttpURLConnection.HTTP_INTERNAL_ERROR, -1);
-					} finally {
-						for (StreamBytes s : streamBytes) {
-							s.get_stream().close();
-						}
-					}
-				}else {
+				} else {
 					exchange.sendResponseHeaders(HttpURLConnection.HTTP_BAD_REQUEST, -1);
 				}
 			} catch (Exception e) {
@@ -835,30 +842,5 @@ public class Server {
 					stream.close();
 			}
 		}
-		class StreamBytes {
-			private InputStream _stream;
-			private byte[] bytes;
-			
-			public InputStream get_stream() {
-				return _stream;
-			}
-			@SuppressWarnings("unused")
-			public void set_stream(InputStream _stream) {
-				this._stream = _stream;
-			}
-			public byte[] getBytes() {
-				return bytes;
-			}
-			@SuppressWarnings("unused")
-			public void setBytes(byte[] bytes) {
-				this.bytes = bytes;
-			}
-			
-			public StreamBytes(InputStream stream, byte[] bytes) {
-				this.bytes = bytes;
-				this._stream = stream;
-			}
-		}
-
 	};
 }
