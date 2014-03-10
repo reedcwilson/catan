@@ -251,18 +251,25 @@ test( "Can Place Robber", function() {
   ok(canPlace == false, "user can place robber on water");
 });
 
-test( "Get best ratio", function() {
-  expect(2);
+test( "CanMaritimeTrade", function() {
+  expect(4);
 
   var map = new catan.models.Map(model.map.radius);
   map.setInfo(model.map);
 
   var playerId = 1;
-  map.ports[1].validVertex1.ownerID = playerId;
-  var ratio = map.getBestRatio("wheat", playerId);
-  ok(ratio == 4, "player doesn't get any advantage from this port using ore");
+
+  var ratio = map.getBestRatio("ore", playerId);
+  ok(ratio == 4, "player doesn't get any advantage from her ports using ore");
 
   ratio = map.getBestRatio("wood", playerId);
-  ok(ratio == 2, "player gets an advantage from this port using wheat");
+  ok(ratio == 2, "player gets a 2-1 trade advantage from her port using wheat");
+  
+  playerId = 0;
+  ratio = map.getBestRatio("ore", playerId);
+  ok(ratio == 3, "player gets a 3-1 advantage from his port using ore");
+  
+  ratio = map.getBestRatio("wheat", playerId);
+  ok(ratio == 3, "player gets a 3-1 advantage from his port using wheat");
 });
 
