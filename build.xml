@@ -61,6 +61,7 @@
 	<target name="init" description="create build directories">
 		<tstamp />
 		<mkdir dir="${build-dir}" />
+		<mkdir dir="${test}" />
 	</target>
 
 	<target name="clean" description="delete build files and directories">
