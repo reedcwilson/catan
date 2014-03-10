@@ -60,27 +60,35 @@ catan.resources.Controller = (function resources_namespace() {
 			for (var resource in player.resources) {
 				view.updateAmount(resource, player.resources[resource]);
 			}
+
+			
 			view.updateAmount("Roads", player.roads);
-			if(clientModel.canBuyRoad(player)) {
+			if(clientModel.canBuyItem(player, "Roads")) {
 				view.setActionEnabled("Roads", true);
 			}
 			else {
 				view.setActionEnabled("Roads", false);
 			}
 			view.updateAmount(SETTLEMENT, player.settlements);
-			if(clientModel.canBuySettlement(player)) {
+
+			
+			if(clientModel.canBuyItem(player, "Settlements")) {
 				view.setActionEnabled("Settlements", true);
 			}
 			else {
 				view.setActionEnabled("Settlements", false);
 			}
+
+			
 			view.updateAmount("Cities", player.cities);
-			if(clientModel.canBuyCity(player)) {
+			if(clientModel.canBuyItem(player, "Cities")) {
 				view.setActionEnabled("Cities", true);
 			}
 			else {
 				view.setActionEnabled("Cities", false);
 			}
+
+
 			if(clientModel.canBuyDevCard(player)){
 				view.setActionEnabled("BuyCard", true);
 			}

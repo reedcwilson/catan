@@ -36,6 +36,15 @@ asyncTest("Rolling Number", function(){
   });
 });
 
+asyncTest("Maritime Trade", function(){
+  var prox = new catan.models.Proxy();
+  var sender = new catan.models.CommandObject({type:'maritimeTrade', playerIndex: 0, ratio: 3, inputResource: "Wood", outputResource: "Wheat"});
+  prox.send(sender, function(data){
+    ok(data.map, "Successful Maritime Trade");
+    start();
+  });
+});
+
 asyncTest("Finishing Turn", function(){
   var prox = new catan.models.Proxy();
   var sender = new catan.models.CommandObject({type: "finishTurn",playerIndex:1});

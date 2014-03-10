@@ -49,24 +49,24 @@ catan.models.ClientModel  = (function clientModelNameSpace()
 			this.setRobbing(true);
 			this.setPlayerIndex(-1);
 		}      
-
+		
 		var DevCardResources = {
 			sheep: 1,
 			wheat: 1,
 			ore: 1,
 		}	
 
-		var RoadResources = {
+		this.RoadsResources = {
 			wood: 1,
 			brick: 1,
 		}
 
-		var CityResources = {
+		this.CitiesResources = {
 			wheat: 2,
 			ore: 3,
 		}
 
-		var SettlementResources = {
+		this.SettlementsResources = {
 			wood: 1,
 			brick: 1,
 			sheep: 1,
@@ -198,20 +198,10 @@ catan.models.ClientModel  = (function clientModelNameSpace()
 			return player.hasResources(DevCardResources) && this.isCurrentTurn(player.playerID) && this.bankHasResources();
 		};
 
-		ClientModel.prototype.canBuyRoad = function(player)
-		{	
-			return player.hasResources(RoadResources) && this.isCurrentTurn(player.playerID) && player.roads > 0;
-		};
-
-		ClientModel.prototype.canBuySettlement = function(player)
-		{	
-			return player.hasResources(SettlementResources) && this.isCurrentTurn(player.playerID) && player.settlements > 0;
-		};
-
-		ClientModel.prototype.canBuyCity = function(player)
-		{	
-			return player.hasResources(CityResources) && this.isCurrentTurn(player.playerID) && player.cities > 0;
-		};				
+		//Item type should be "Roads", "Cities" or "Settlements"
+		ClientModel.prototype.canBuyItem = function(player, itemType) {
+			return player.hasResources(window[itemType+"Resources"]) && this.isCurrentTurn(player.playerID) && player[itemType.toLowerCase()] > 0;
+		};			
 
 		ClientModel.prototype.bankHasResources = function() {
 			var bank = this.getDeck();
@@ -297,7 +287,7 @@ catan.models.ClientModel  = (function clientModelNameSpace()
 
 
 		/**
-			This method will return the play at the specific index.  For example if index is 3 it will get the 4th player whose ID might be 11.
+			This method will return the player at the specific index.  For example if index is 3 it will get the 4th player whose ID might be 11.
 		*/
 		ClientModel.prototype.loadPersonByIndex = function(index){
 			var myint = -1;
