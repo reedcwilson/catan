@@ -259,10 +259,10 @@ test( "Get best ratio", function() {
 
   var playerId = 1;
   map.ports[1].validVertex1.ownerID = playerId;
-  var ratio = map.getBestRatio("ore", playerId);
+  var ratio = map.getBestRatio("wheat", playerId);
   ok(ratio == 4, "player doesn't get any advantage from this port using ore");
 
-  ratio = map.getBestRatio("wheat", playerId);
+  ratio = map.getBestRatio("wood", playerId);
   ok(ratio == 2, "player gets an advantage from this port using wheat");
 });
 
