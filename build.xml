@@ -74,7 +74,7 @@
 	</target>
 	
 	<target name="our-server" depends="build" description="run server on specified port">
-	    <java classname="com.catan.Server" fork="yes">
+	    <java classname="com.catan.main.server.Server" fork="yes">
 	      <classpath>
 	        <path refid="all-classpath"/>
 	      </classpath>

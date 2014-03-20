@@ -37,3 +37,6 @@ __*
 # ignore bin and build
 /bin
 /build
+
+# ignore intellij files
+.idea/
