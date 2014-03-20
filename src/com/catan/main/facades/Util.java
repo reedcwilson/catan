@@ -1,6 +1,6 @@
-package com.catan.main;
+package com.catan.main.facades;
 
-import com.catan.datamodel.DataModel;
+import com.catan.main.datamodel.DataModel;
 
 public class Util {
 
