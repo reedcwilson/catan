@@ -153,11 +153,12 @@ catan.trade.domestic.Controller= (function trade_namespace()
 		DomesticController.prototype.generateOffer = function()
 		{
 			var offer = new Object();			
-			offer.brick = tradeResources["brick"]*tradeDirections["brick"];
-			offer.sheep = tradeResources["sheep"]*tradeDirections["sheep"];
-			offer.ore = tradeResources["ore"]*tradeDirections["ore"];
-			offer.wheat = tradeResources["wheat"]*tradeDirections["wheat"];
-			offer.wood = tradeResources["wood"]*tradeDirections["wood"];			
+			
+			for (var resource in resources)
+			{			
+				var index = resources[resource];
+				offer[index] = tradeResources[index]*tradeDirections[index];
+			}
 			return offer;
 		}
 		
@@ -165,27 +166,15 @@ catan.trade.domestic.Controller= (function trade_namespace()
 		{
 			var client = this.getClientModel();
 			var offer = client.getTradeOffer().offer;
-							
-			if(offer.brick > 0)
-				vew.addGiveResource("brick", offer.brick);
-			if(offer.brick < 0)
-				vew.addGetResource("brick", offer.brick);
-			if(offer.sheep > 0)
-				vew.addGiveResource("sheep", offer.sheep);
-			if(offer.sheep < 0)
-				vew.addGetResource("sheep", offer.sheep);
-			if(offer.ore > 0)
-				vew.addGiveResource("ore", offer.ore);
-			if(offer.ore < 0)
-				vew.addGetResource("ore", offer.ore);
-			if(offer.wheat > 0)
-				vew.addGiveResource("wheat", offer.wheat);
-			if(offer.wheat < 0)
-				vew.addGetResource("wheat", offer.wheat);
-			if(offer.wood > 0)
-				vew.addGiveResource("wood", offer.wood);
-			if(offer.wood < 0)
-				vew.addGetResource("wood", offer.wood);								
+			
+			for (var resource in resources)
+			{			
+				var index = resources[resource];
+				if(offer[index] > 0)
+					vew.addGiveResource(index, offer[index]);
+				if(offer[index] < 0)
+					vew.addGetResource(index, offer[index]);
+			}							
 		}		
          
 		/******** Methods called by the Domestic View *********/
