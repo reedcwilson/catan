@@ -34,7 +34,7 @@
 	<!-- CLASS PATHS -->
 	<!-- *********** -->
 	<path id="lib-classpath">
-		<fileset dir="${build-dir}">
+		<fileset dir="${lib}">
 			<include name="**/*.jar" />
 		</fileset>
 	</path>
@@ -69,10 +69,10 @@
 	</target>
 
 	<target name="build" depends="init" description="compile the source code">
-		<javac srcdir="${src}" classpathref="lib-classpath" destdir="${build-dir}" debug="true" includeantruntime="true" />
-		<javac srcdir="${test}" classpathref="lib-classpath" destdir="${build-dir}" debug="true" includeantruntime="true" />
+		<javac srcdir="${src}" classpathref="all-classpath" destdir="${build-dir}" debug="true" includeantruntime="true" />
+		<javac srcdir="${test}" classpathref="all-classpath" destdir="${build-dir}" debug="true" includeantruntime="true" />
 	</target>
-	
+
 	<target name="our-server" depends="build" description="run server on specified port">
 	    <java classname="com.catan.main.server.Server" fork="yes">
 	      <classpath>

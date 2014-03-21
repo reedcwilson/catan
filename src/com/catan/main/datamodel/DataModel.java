@@ -10,7 +10,6 @@ import com.catan.main.datamodel.player.TurnTracker;
 import com.google.gson.Gson;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.StaxDriver;
-import org.apache.commons.lang.NotImplementedException;
 
 import java.util.Arrays;
 
@@ -30,11 +29,11 @@ public class DataModel implements Cloneable {
     private int biggestArmy;
     private int longestRoad = -1;
     private Long winner;
-    private int revision = 0;
+    private int version = 0;
     //endregion
 
     public DataModel() {
-        throw new NotImplementedException("This constructor is only for compiling");
+        System.out.println("This constructor is only for compiling");
     }
     public DataModel(Map map, Player[] players) {
         this.log = new MessageBox();
@@ -53,7 +52,7 @@ public class DataModel implements Cloneable {
         return this.players;
     }
     public int getVersion() {
-        return this.revision;
+        return this.version;
     }
     //endregion
 
@@ -148,7 +147,7 @@ public class DataModel implements Cloneable {
     }
 
     public void advanceVersion() {
-        this.revision += 1;
+        this.version += 1;
     }
 
     public String toJSON() {
@@ -177,7 +176,7 @@ public class DataModel implements Cloneable {
                 ", biggestArmy=" + biggestArmy +
                 ", longestRoad=" + longestRoad +
                 ", winner=" + winner +
-                ", revision=" + revision +
+                ", revision=" + version +
                 '}';
     }
 
@@ -190,7 +189,7 @@ public class DataModel implements Cloneable {
 
         if (biggestArmy != that.biggestArmy) return false;
         if (longestRoad != that.longestRoad) return false;
-        if (revision != that.revision) return false;
+        if (version != that.version) return false;
         if (bank != null ? !bank.equals(that.bank) : that.bank != null) return false;
         if (chat != null ? !chat.equals(that.chat) : that.chat != null) return false;
         if (deck != null ? !deck.equals(that.deck) : that.deck != null) return false;
@@ -217,7 +216,7 @@ public class DataModel implements Cloneable {
         result = 31 * result + biggestArmy;
         result = 31 * result + longestRoad;
         result = 31 * result + (winner != null ? winner.hashCode() : 0);
-        result = 31 * result + revision;
+        result = 31 * result + version;
         return result;
     }
     //endregion
