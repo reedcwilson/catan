@@ -17,11 +17,11 @@ public abstract class DevCard extends Command {
     //region Abstract Methods
     protected abstract void playDevCard(DataModel paramDataModel);
 
-    protected abstract MessageLine getLogMessage(DataModel paramDataModel);
+    protected abstract MessageLine getLog(DataModel paramDataModel);
     //endregion
 
     //region Public Interface
-    public void doExecute(DataModel model) {
+    public void action(DataModel model) {
         playDevCard(model);
         model.getPlayers()[this.getPlayerIndex()].getOldDevCards().add(this.cardType, -1);
     }

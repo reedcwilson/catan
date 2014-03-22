@@ -24,7 +24,7 @@ public class Monument extends DevCard {
     }
 
     @Override
-    protected MessageLine getLogMessage(DataModel model) {
+    protected MessageLine getLog(DataModel model) {
         String name = model.getPlayerName(model.currentTurn());
         return new MessageLine(name, name + " built a monument and gained a victory point");
     }

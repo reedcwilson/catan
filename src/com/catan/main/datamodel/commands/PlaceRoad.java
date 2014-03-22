@@ -47,7 +47,7 @@ public class PlaceRoad extends Command {
 
     //region Overrides
     @Override
-    public void doExecute(DataModel model) {
+    public void action(DataModel model) {
         Map map = model.getMap();
         Bank bank = model.getBank();
 
@@ -68,7 +68,7 @@ public class PlaceRoad extends Command {
     }
 
     @Override
-    protected MessageLine getLogMessage(DataModel model) {
+    protected MessageLine getLog(DataModel model) {
         String name = model.getPlayers()[this.getPlayerIndex()].getName();
         return new MessageLine(name, name + " built a road");
     }

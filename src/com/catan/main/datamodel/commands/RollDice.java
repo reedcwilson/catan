@@ -80,12 +80,12 @@ public class RollDice extends Command {
     }
 
     @Override
-    protected MessageLine getLogMessage(DataModel model) {
+    protected MessageLine getLog(DataModel model) {
         String name = model.getPlayerName(model.getTurnTracker().getCurrentTurn());
         return new MessageLine(name, name + " rolled a " + this.number + ".");
     }
     @Override
-    public void doExecute(DataModel model) {
+    public void action(DataModel model) {
         _logger.log(Level.FINER, "roll execute:   You rolled a " + this.number);
         if (this.number != 7) {
             allocateResources(model);

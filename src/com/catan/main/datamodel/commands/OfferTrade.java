@@ -40,7 +40,7 @@ public class OfferTrade extends Command {
 
     //region Overrides
     @Override
-    public void doExecute(DataModel model) {
+    public void action(DataModel model) {
         model.setTradeOffer(new TradeOffer(this.offer, this.getPlayerIndex(), this.receiver));
         System.out.println("just set trade offer.");
         TradeOffer offer = model.getTradeOffer();
@@ -56,7 +56,7 @@ public class OfferTrade extends Command {
     }
 
     @Override
-    protected MessageLine getLogMessage(DataModel model) {
+    protected MessageLine getLog(DataModel model) {
         return null;
     }
 

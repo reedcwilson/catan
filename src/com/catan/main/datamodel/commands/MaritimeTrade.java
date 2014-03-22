@@ -43,12 +43,12 @@ public class MaritimeTrade extends Command {
 
     //region Overrides
     @Override
-    protected MessageLine getLogMessage(DataModel model) {
+    protected MessageLine getLog(DataModel model) {
         // TODO: what should this return
         return null;
     }
     @Override
-    public void doExecute(DataModel model) {
+    public void action(DataModel model) {
         Player sender = model.getPlayers()[this.getPlayerIndex()];
         Bank bank = model.getBank();
         ResourceHand offer = new ResourceHand(0, 0, 0, 0, 0);

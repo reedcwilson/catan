@@ -61,7 +61,7 @@ public class Soldier extends DevCard {
         new RobPlayer(this.victim.intValue(), this.location).execute(model);
     }
     @Override
-    protected MessageLine getLogMessage(DataModel model) {
+    protected MessageLine getLog(DataModel model) {
         String name = model.getPlayerName(model.currentTurn());
         String addendum = "";
         if (model.getPlayers()[model.currentTurn()].getLargestArmy()) {

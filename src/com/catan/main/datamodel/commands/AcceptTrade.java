@@ -25,7 +25,7 @@ public class AcceptTrade extends Command {
 
     //region Overrides
     @Override
-    public void doExecute(DataModel model) {
+    public void action(DataModel model) {
         if (this.accept) {
             TradeOffer t = model.getTradeOffer();
             Player[] players = model.getPlayers();
@@ -37,7 +37,7 @@ public class AcceptTrade extends Command {
         model.setTradeOffer(null);
     }
     @Override
-    protected MessageLine getLogMessage(DataModel model) {
+    protected MessageLine getLog(DataModel model) {
         if (this.accept) {
             return new MessageLine(model.getPlayers()[0].getName(), "The trade was accepted");
         }

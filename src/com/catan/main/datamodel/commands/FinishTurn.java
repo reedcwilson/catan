@@ -34,7 +34,7 @@ public class FinishTurn extends Command {
 
     //region Overrides
     @Override
-    public void doExecute(DataModel model) {
+    public void action(DataModel model) {
         TurnTracker tracker = model.getTurnTracker();
 
 
@@ -49,7 +49,7 @@ public class FinishTurn extends Command {
         setTrackerStatus(tracker);
     }
     @Override
-    protected MessageLine getLogMessage(DataModel model) {
+    protected MessageLine getLog(DataModel model) {
         String name = model.getPlayers()[model.getTurnTracker().getCurrentTurn()].getName();
         return new MessageLine(name, name + "'s turn just ended");
     }

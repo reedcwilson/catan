@@ -77,7 +77,7 @@ public class PlaceSettlement extends Command {
     }
 
     @Override
-    public void doExecute(DataModel model) {
+    public void action(DataModel model) {
         Map map = model.getMap();
         TurnTracker tracker = model.getTurnTracker();
         Bank bank = model.getBank();
@@ -110,7 +110,7 @@ public class PlaceSettlement extends Command {
     }
 
     @Override
-    protected MessageLine getLogMessage(DataModel model) {
+    protected MessageLine getLog(DataModel model) {
         String name = model.getPlayers()[model.getTurnTracker().getCurrentTurn()].getName();
         return new MessageLine(name, name + " built a settlement");
     }

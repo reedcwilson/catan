@@ -40,7 +40,7 @@ public class RobPlayer extends Command {
 
     //region Overrides
     @Override
-    public void doExecute(DataModel model) {
+    public void action(DataModel model) {
         TurnTracker t = model.getTurnTracker();
         Map m = model.getMap();
         if (this.victimIndex != -1) {
@@ -56,7 +56,7 @@ public class RobPlayer extends Command {
         t.setStatus(Status.Playing);
     }
     @Override
-    protected MessageLine getLogMessage(DataModel model) {
+    protected MessageLine getLog(DataModel model) {
         String robberName = model.getPlayerName(model.getTurnTracker().getCurrentTurn());
         String message = robberName + " moved the robber";
         String message2;

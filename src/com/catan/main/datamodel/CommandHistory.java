@@ -13,29 +13,32 @@ public class CommandHistory {
     private ArrayList<Command> commands;
     //endregion
 
-    public CommandHistory(boolean isVerbose, boolean isStrict) {
-        this.strict = isStrict;
-        this.verbose = isVerbose;
+    public CommandHistory(boolean verbose, boolean strict) {
         this.commands = new ArrayList();
+        this.strict = strict;
+        this.verbose = verbose;
     }
 
     //region Properties
-    public boolean isVerbose() {
-        return this.verbose;
-    }
 
-    public void setVerbose(boolean verbose) {
-        this.verbose = verbose;
-    }
     public boolean isStrict() {
-        return this.strict;
+        return strict;
     }
 
     public void setStrict(boolean strict) {
         this.strict = strict;
     }
+
+    public boolean isVerbose() {
+        return verbose;
+    }
+
+    public void setVerbose(boolean verbose) {
+        this.verbose = verbose;
+    }
+
     public ArrayList<Command> getCommands() {
-        return this.commands;
+        return commands;
     }
 
     //endregion
@@ -50,7 +53,7 @@ public class CommandHistory {
         if (this.verbose) {
             c.log(model);
         }
-        c.doExecute(model);
+        c.action(model);
         model.advanceVersion();
         return true;
     }
