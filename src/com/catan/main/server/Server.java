@@ -4,9 +4,12 @@
 package com.catan.main.server;
 
 import com.catan.main.datamodel.DataModel;
+import com.catan.main.datamodel.User;
 import com.catan.main.datamodel.commands.SendChat;
 import com.catan.main.datamodel.game.CreateGameRequest;
 import com.catan.main.datamodel.game.Game;
+import com.catan.main.datamodel.map.Map;
+import com.catan.main.datamodel.player.Player;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
@@ -15,8 +18,9 @@ import com.thoughtworks.xstream.io.json.JettisonMappedXmlDriver;
 import sun.net.www.protocol.http.HttpURLConnection;
 
 import java.io.*;
-import java.net.InetSocketAddress;
-import java.net.URI;
+import java.net.*;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  * @author reed.wilson
@@ -29,18 +33,46 @@ public class Server {
     private final String gamesList = "[{\"title\":\"Default Game\",\"id\":0,\"players\":[{\"color\":\"orange\",\"name\":\"Sam\",\"id\":0},{\"color\":\"blue\",\"name\":\"Brooke\",\"id\":1},{\"color\":\"red\",\"name\":\"Pete\",\"id\":10},{\"color\":\"green\",\"name\":\"Mark\",\"id\":11}]},{\"title\":\"AI Game\",\"id\":1,\"players\":[{\"color\":\"orange\",\"name\":\"Pete\",\"id\":10},{\"color\":\"green\",\"name\":\"Squall\",\"id\":-2},{\"color\":\"red\",\"name\":\"Steve\",\"id\":-2},{\"color\":\"white\",\"name\":\"Ken\",\"id\":-2}]},{\"title\":\"Empty Game\",\"id\":2,\"players\":[{\"color\":\"orange\",\"name\":\"Sam\",\"id\":0},{\"color\":\"blue\",\"name\":\"Brooke\",\"id\":1},{\"color\":\"red\",\"name\":\"Pete\",\"id\":10},{\"color\":\"green\",\"name\":\"Mark\",\"id\":11}]}]";
     XStream _xStream;
     private int _port;
+    private ArrayList<User> users;
+    private ArrayList<Game> gameList;
     private HttpServer _server;
     private DataModel _currentDataModel;
     private HttpHandler loginHandler = new HttpHandler() {
 
         @Override
         public void handle(HttpExchange exchange) throws IOException {
-
             try {
-                byte[] bytes = "Success".getBytes();
-                exchange.getResponseHeaders().add("Content-Type", "text/html");
-                exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, bytes.length);
-                exchange.getResponseBody().write(bytes);
+                String requestString = exchange.getRequestBody().toString();
+                User myUser = new User("Sam", "sam");
+                //TODO Load name and password from request
+                //User myUser = (User) _xStream.fromXML(exchange.getRequestBody());
+                Iterator it = users.iterator();
+                byte[] bytes = "".getBytes();
+                while(it.hasNext())
+                {
+                    User itUser = (User)it.next();
+                    System.out.println(itUser.getName() + " " + itUser.getPassword() + " " + itUser.getName().equals(myUser.getName()) + " " + itUser.getPassword().equals(myUser.getPassword()));
+                    if(itUser.getName().equals(myUser.getName()) && itUser.getPassword().equals(myUser.getPassword()))
+                    {
+                        //TODO Load Cookie
+                        bytes = "Success".getBytes();
+                        exchange.getResponseHeaders().add("Content-Type", "text/html");
+                        exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, bytes.length);
+                        exchange.getResponseBody().write(bytes);
+                        /**ookieManager manager = new CookieManager();
+                        CookieHandler.setDefault(manager);
+                        CookieStore cookieJar =  manager.getCookieStore();
+                        HttpCookie cookie = new HttpCookie("UserName", "John Doe");
+                        URL url = new URL("http://host.example.com");
+                        cookieJar.add(url.toURI(), cookie);*/
+                        System.out.println("Added cookie using cookie handler");
+                        break;
+                    }
+                }
+                if(bytes.length == 0)
+                {
+                    throw new IOException("Invlaid username or password");
+                }
 
             } catch (Exception e) {
 
@@ -57,6 +89,9 @@ public class Server {
         @Override
         public void handle(HttpExchange exchange) throws IOException {
             try {
+                User myUser = (User) _xStream.fromXML(exchange.getRequestBody());
+                myUser.setPlayerID((long)7); //TODO set Random unused ID
+                users.add(myUser);
                 byte[] bytes = "Success".getBytes();
                 exchange.getResponseHeaders().add("Content-Type", "text/html");
                 exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, bytes.length);
@@ -80,7 +115,7 @@ public class Server {
         public void handle(HttpExchange exchange) throws IOException {
 
             try {
-                byte[] bytes = gamesList.getBytes();
+                byte[] bytes = gamesList.toString().getBytes();
                 exchange.getResponseHeaders().add("Content-Type", "application/json");
                 exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, bytes.length);
                 exchange.getResponseBody().write(bytes);
@@ -150,7 +185,7 @@ public class Server {
         public void handle(HttpExchange exchange) throws IOException {
 
             try {
-                byte[] bytes = model.getBytes();
+                byte[] bytes = getModel().toJSON().getBytes();
                 exchange.getResponseHeaders().add("Content-Type", "application/json");
                 exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, bytes.length);
                 exchange.getResponseBody().write(bytes);
@@ -757,7 +792,11 @@ public class Server {
     private Server(int p) {
         this._port = p;
         _xStream = new XStream(new JettisonMappedXmlDriver());
-
+        users = new ArrayList<User>();
+        users.add(new User("Sam", "sam", (long)0));
+        users.add(new User("Brooke", "Brooke", (long)1));
+        users.add(new User("Pete", "Pete", (long)2));
+        users.add(new User("Mark", "Mark", (long)3));
     }
 
     /**
