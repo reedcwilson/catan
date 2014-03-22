@@ -45,7 +45,7 @@ public class RoadBuilding extends DevCard {
         model.getPlayers()[this.getPlayerIndex()].setPlayedDevCard(true);
     }
     @Override
-    protected MessageLine getLogMessage(DataModel model) {
+    protected MessageLine getLog(DataModel model) {
         String name = model.getPlayerName(this.getPlayerIndex());
         return new MessageLine(name, name + " built 2 roads");
     }

@@ -39,7 +39,7 @@ public class YearOfPlenty extends DevCard {
 
     //region Overrides
     @Override
-    protected MessageLine getLogMessage(DataModel model) {
+    protected MessageLine getLog(DataModel model) {
         String name = model.getPlayerName(this.getPlayerIndex());
         return new MessageLine(name, name + " used Year of Plenty and got a " + this.resource1.toString().toLowerCase() + " and a " + this.resource2.toString().toLowerCase());
     }

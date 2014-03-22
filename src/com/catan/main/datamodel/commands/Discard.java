@@ -38,7 +38,7 @@ public class Discard extends Command {
 
     //region Overrides
     @Override
-    public void doExecute(DataModel model) {
+    public void action(DataModel model) {
         TurnTracker t = model.getTurnTracker();
         Player[] players = model.getPlayers();
 
@@ -52,7 +52,7 @@ public class Discard extends Command {
         }
     }
     @Override
-    protected MessageLine getLogMessage(DataModel model) {
+    protected MessageLine getLog(DataModel model) {
         return null;
     }
 

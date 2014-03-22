@@ -14,9 +14,9 @@ public abstract class Command {
     }
 
     //region Abstract Methods
-    protected abstract MessageLine getLogMessage(DataModel paramDataModel);
+    protected abstract MessageLine getLog(DataModel paramDataModel);
 
-    public abstract void doExecute(DataModel paramDataModel);
+    public abstract void action(DataModel paramDataModel);
     //endregion
 
     //region Properties
@@ -37,12 +37,12 @@ public abstract class Command {
 
     //region Public Interface
     public void execute(DataModel model) {
+        action(model);
         log(model);
-        doExecute(model);
     }
 
     public void log(DataModel model) {
-        MessageLine logLine = getLogMessage(model);
+        MessageLine logLine = getLog(model);
         if (logLine != null) {
             model.getLog().addLine(logLine);
         }

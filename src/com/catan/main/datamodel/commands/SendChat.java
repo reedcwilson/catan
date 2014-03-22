@@ -14,20 +14,20 @@ public class SendChat extends Command {
 
     //region Overrides
     @Override
-    public void doExecute(DataModel model) {
+    public void action(DataModel model) {
         String source = model.getPlayerName(this.getPlayerIndex());
         System.out.println(source + " sent the message : '" + this.content + "'");
         model.getChat().addLine(new MessageLine(source, this.content));
     }
 
     @Override
-    protected MessageLine getLogMessage(DataModel model) {
+    protected MessageLine getLog(DataModel model) {
         return null;
     }
 
     @Override
     public String toString() {
-        return "SendChat{" +
+        return "SendChatLogic{" +
                 "content='" + content + '\'' +
                 '}';
     }

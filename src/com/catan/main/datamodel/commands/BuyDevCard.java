@@ -14,23 +14,23 @@ public class BuyDevCard extends Command {
 
     //region Overrides
     @Override
-    protected MessageLine getLogMessage(DataModel model) {
+    protected MessageLine getLog(DataModel model) {
         this.setPlayerIndex(model.getTurnTracker().getCurrentTurn());
         String name = model.getPlayerName(this.getPlayerIndex());
         return new MessageLine(name, name + " bought a Development Card.");
     }
     @Override
-    public void doExecute(DataModel model) {
-        DevCardType boughtCard = (DevCardType) model.getDeck().removeRandomItem();
-        Player ap = model.getPlayers()[this.getPlayerIndex()];
+    public void action(DataModel model) {
+        DevCardType boughtCard = model.getDeck().removeRandomItem();
+        Player player = model.getPlayers()[this.getPlayerIndex()];
         if (boughtCard == DevCardType.Monument) {
-            ap.getOldDevCards().add(boughtCard, 1);
+            player.getOldDevCards().add(boughtCard, 1);
         } else {
-            ap.getNewDevCards().add(boughtCard, 1);
+            player.getNewDevCards().add(boughtCard, 1);
         }
-        ap.getResources().add(Resource.Wheat, -1);
-        ap.getResources().add(Resource.Sheep, -1);
-        ap.getResources().add(Resource.Ore, -1);
+        player.getResources().add(Resource.Wheat, -1);
+        player.getResources().add(Resource.Sheep, -1);
+        player.getResources().add(Resource.Ore, -1);
     }
     //endregion
 }

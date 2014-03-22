@@ -34,7 +34,7 @@ public class PlaceCity extends Command {
 
     //region Overrides
     @Override
-    public void doExecute(DataModel model) {
+    public void action(DataModel model) {
         Map map = model.getMap();
         Bank bank = model.getBank();
         map.addCity(this.location, this.getPlayerIndex());
@@ -54,7 +54,7 @@ public class PlaceCity extends Command {
         bank.giveResourcesToPlayer(player, rh);
     }
     @Override
-    protected MessageLine getLogMessage(DataModel model) {
+    protected MessageLine getLog(DataModel model) {
         String name = model.getPlayers()[model.getTurnTracker().getCurrentTurn()].getName();
         return new MessageLine(name, name + " upgraded to a city");
     }

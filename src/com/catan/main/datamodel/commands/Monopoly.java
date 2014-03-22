@@ -44,7 +44,7 @@ public class Monopoly extends DevCard {
         }
     }
     @Override
-    protected MessageLine getLogMessage(DataModel model) {
+    protected MessageLine getLog(DataModel model) {
         String name = model.getPlayerName(this.getPlayerIndex());
         return new MessageLine(name, name + " stole everyones " + this.resource.toString().toLowerCase());
     }
