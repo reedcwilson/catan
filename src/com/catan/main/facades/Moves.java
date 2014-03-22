@@ -1,10 +1,17 @@
 package com.catan.main.facades;
 
 import com.catan.main.datamodel.DataModel;
+import com.catan.main.datamodel.commands.SendChat;
 
 public class Moves {
 
-	public DataModel sendChat() {
+    //region Fields
+    private SendChat _sendChat;
+    //endregion
+	public DataModel sendChat(String params) {
+        //SendChatParams sendChatParams = (SendChatParams)GenerateParams(params);
+        _sendChat = new SendChat();
+        _sendChat.doExecute(new DataModel());
 		return new DataModel();
 	}
 

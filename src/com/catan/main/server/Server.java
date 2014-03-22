@@ -10,7 +10,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.InetSocketAddress;
 import java.net.URI;
+import java.util.ArrayList;
 
+import com.catan.main.datamodel.User;
+import com.catan.main.facades.Moves;
 import sun.net.www.protocol.http.HttpURLConnection;
 
 import com.sun.net.httpserver.HttpExchange;
@@ -25,12 +28,12 @@ public class Server {
 
 	private static final int SERVER_PORT_NUMBER = 8081;
 	private static final int MAX_WAITING_CONNECTIONS = 10;
+    private ArrayList<User> users;
 
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
-
 		if (args.length < 1 || args[0].isEmpty())
 			new Server(SERVER_PORT_NUMBER).run();
 		else {
@@ -54,6 +57,11 @@ public class Server {
 
 	private Server(int p) {
 		this._port = p;
+        users = new ArrayList<User>();
+        users.add(new User("Sam", "sam", (long)0));
+        users.add(new User("Brooke", "brooke", (long)1));
+        users.add(new User("Pete", "pete", (long)11));
+        users.add(new User("Mark", "mark", (long)12));
 	}
 
 	private void run() {
@@ -128,6 +136,7 @@ public class Server {
 
 				// byte[] bytes = xStream.toXML(new
 				// ValidateUser_Result(user)).getBytes();
+                System.out.println(users);
 				byte[] bytes = "Success".getBytes();
 				exchange.getResponseHeaders().add("Content-Type", "text/html");
 				exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, bytes.length);
@@ -401,7 +410,10 @@ public class Server {
 		public void handle(HttpExchange exchange) throws IOException {
 
 			try {
-				byte[] bytes = model.getBytes();
+                Moves moves = new Moves();
+                moves.sendChat("hi");
+
+                byte[] bytes = model.getBytes();
 				exchange.getResponseHeaders().add("Content-Type", "application/json");
 				exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, bytes.length);
 				exchange.getResponseBody().write(bytes);
