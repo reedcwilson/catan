@@ -17,6 +17,7 @@ import sun.net.www.protocol.http.HttpURLConnection;
 import java.io.*;
 import java.net.InetSocketAddress;
 import java.net.URI;
+import java.util.Scanner;
 
 /**
  * @author reed.wilson
@@ -311,9 +312,20 @@ public class Server {
         public void handle(HttpExchange exchange) throws IOException {
 
             try {
-                SendChat command = (SendChat) _xStream.fromXML(exchange.getRequestBody());
-                command.execute(getModel());
-                byte[] bytes = getModel().toJSON().getBytes();
+                _xStream.alias("SendChat", com.catan.main.datamodel.commands.SendChat.class);
+                Scanner scan = new Scanner(exchange.getRequestBody());
+                StringBuilder sb = new StringBuilder();
+                while(scan.hasNext())
+                {
+                    sb.append(scan.next());
+                }
+                String json = sb.toString();
+                SendChat command = (SendChat) _xStream.fromXML(json);
+                //command.execute(getModel());
+                System.out.println(command.content);
+                System.out.println(command.getType());
+                //byte[] bytes = getModel().toJSON().getBytes();
+                byte[] bytes = model.getBytes();
                 exchange.getResponseHeaders().add("Content-Type", "application/json");
                 exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, bytes.length);
                 exchange.getResponseBody().write(bytes);
