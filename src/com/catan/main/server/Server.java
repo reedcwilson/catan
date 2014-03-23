@@ -10,6 +10,7 @@ import com.catan.main.datamodel.game.CreateGameRequest;
 import com.catan.main.datamodel.game.Game;
 import com.catan.main.datamodel.map.Map;
 import com.catan.main.datamodel.player.Player;
+import com.fasterxml.jackson.databind.util.JSONPObject;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
@@ -37,17 +38,23 @@ public class Server {
     private ArrayList<Game> gameList;
     private HttpServer _server;
     private DataModel _currentDataModel;
+
+    private String getInputString(HttpExchange exchange) throws IOException {
+        String inputString = "";
+        InputStream requestBody = exchange.getRequestBody();
+        while(requestBody.available() != 0)
+        {
+            inputString += (char)requestBody.read();
+        }
+        return inputString;
+    }
+
     private HttpHandler loginHandler = new HttpHandler() {
 
         @Override
         public void handle(HttpExchange exchange) throws IOException {
             try {
-                String inputString = "";
-                InputStream requestBody = exchange.getRequestBody();
-                while(requestBody.available() != 0)
-                {
-                    inputString += (char)requestBody.read();
-                }
+                String inputString = getInputString(exchange);
                 String username = inputString.substring(9, inputString.indexOf('&'));
                 String password = inputString.substring(inputString.indexOf("password="));
                 password = password.substring(9);
@@ -62,6 +69,7 @@ public class Server {
                     {
                         //TODO Load Cookie
                         bytes = "Success".getBytes();
+                        exchange.setAttribute("username", inputUser.getName());
                         exchange.getResponseHeaders().add("Content-Type", "text/html");
                         exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, bytes.length);
                         exchange.getResponseBody().write(bytes);
@@ -77,7 +85,6 @@ public class Server {
                 }
                 if(bytes.length == 0)
                 {
-                    //throw new IOException("Invlaid username or password");
                     bytes = "Invalid Username and Password".getBytes();
                     exchange.getResponseHeaders().add("Content-Type", "text/html");
                     exchange.sendResponseHeaders(HttpURLConnection.HTTP_BAD_REQUEST, bytes.length);
@@ -99,12 +106,7 @@ public class Server {
         @Override
         public void handle(HttpExchange exchange) throws IOException {
             try {
-                String inputString = "";
-                InputStream requestBody = exchange.getRequestBody();
-                while(requestBody.available() != 0)
-                {
-                    inputString += (char)requestBody.read();
-                }
+                String inputString = getInputString(exchange);
                 String username = inputString.substring(9, inputString.indexOf('&'));
                 String password = inputString.substring(inputString.indexOf("password="));
                 password = password.substring(9);
@@ -364,7 +366,14 @@ public class Server {
         public void handle(HttpExchange exchange) throws IOException {
 
             try {
-                SendChat command = (SendChat) _xStream.fromXML(exchange.getRequestBody());
+                String inputString = getInputString(exchange);
+                System.out.println(inputString + '\n');
+                //SendChat command = (SendChat) _xStream.fromXML(inputString);
+                _xStream.alias("product", SendChat.class);
+                SendChat command = (SendChat) _xStream.fromXML(inputString);
+                System.out.println(command.getPlayerIndex());
+                System.out.println(command + "\n");
+                System.out.println("meow");
                 command.execute(getModel());
                 byte[] bytes = getModel().toJSON().getBytes();
                 exchange.getResponseHeaders().add("Content-Type", "application/json");
