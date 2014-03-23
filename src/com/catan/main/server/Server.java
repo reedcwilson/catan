@@ -42,17 +42,23 @@ public class Server {
         @Override
         public void handle(HttpExchange exchange) throws IOException {
             try {
-                String requestString = exchange.getRequestBody().toString();
-                User myUser = new User("Sam", "sam");
-                //TODO Load name and password from request
-                //User myUser = (User) _xStream.fromXML(exchange.getRequestBody());
+                String inputString = "";
+                InputStream requestBody = exchange.getRequestBody();
+                while(requestBody.available() != 0)
+                {
+                    inputString += (char)requestBody.read();
+                }
+                String username = inputString.substring(9, inputString.indexOf('&'));
+                String password = inputString.substring(inputString.indexOf("password="));
+                password = password.substring(9);
+                User inputUser = new User(username, password);
                 Iterator it = users.iterator();
                 byte[] bytes = "".getBytes();
                 while(it.hasNext())
                 {
                     User itUser = (User)it.next();
-                    System.out.println(itUser.getName() + " " + itUser.getPassword() + " " + itUser.getName().equals(myUser.getName()) + " " + itUser.getPassword().equals(myUser.getPassword()));
-                    if(itUser.getName().equals(myUser.getName()) && itUser.getPassword().equals(myUser.getPassword()))
+                    System.out.println(itUser.getName() + " " + itUser.getPassword() + " " + itUser.getName().equals(inputUser.getName()) + " " + itUser.getPassword().equals(inputUser.getPassword()));
+                    if(itUser.getName().equals(inputUser.getName()) && itUser.getPassword().equals(inputUser.getPassword()))
                     {
                         //TODO Load Cookie
                         bytes = "Success".getBytes();
@@ -71,7 +77,11 @@ public class Server {
                 }
                 if(bytes.length == 0)
                 {
-                    throw new IOException("Invlaid username or password");
+                    //throw new IOException("Invlaid username or password");
+                    bytes = "Invalid Username and Password".getBytes();
+                    exchange.getResponseHeaders().add("Content-Type", "text/html");
+                    exchange.sendResponseHeaders(HttpURLConnection.HTTP_BAD_REQUEST, bytes.length);
+                    exchange.getResponseBody().write(bytes);
                 }
 
             } catch (Exception e) {
@@ -89,9 +99,17 @@ public class Server {
         @Override
         public void handle(HttpExchange exchange) throws IOException {
             try {
-                User myUser = (User) _xStream.fromXML(exchange.getRequestBody());
-                myUser.setPlayerID((long)7); //TODO set Random unused ID
-                users.add(myUser);
+                String inputString = "";
+                InputStream requestBody = exchange.getRequestBody();
+                while(requestBody.available() != 0)
+                {
+                    inputString += (char)requestBody.read();
+                }
+                String username = inputString.substring(9, inputString.indexOf('&'));
+                String password = inputString.substring(inputString.indexOf("password="));
+                password = password.substring(9);
+                User inputUser = new User(username, password, (long)8);
+                users.add(inputUser);
                 byte[] bytes = "Success".getBytes();
                 exchange.getResponseHeaders().add("Content-Type", "text/html");
                 exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, bytes.length);
@@ -794,9 +812,9 @@ public class Server {
         _xStream = new XStream(new JettisonMappedXmlDriver());
         users = new ArrayList<User>();
         users.add(new User("Sam", "sam", (long)0));
-        users.add(new User("Brooke", "Brooke", (long)1));
-        users.add(new User("Pete", "Pete", (long)2));
-        users.add(new User("Mark", "Mark", (long)3));
+        users.add(new User("Brooke", "brooke", (long)1));
+        users.add(new User("Pete", "pete", (long)11));
+        users.add(new User("Mark", "mark", (long)3));
     }
 
     /**
