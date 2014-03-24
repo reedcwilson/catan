@@ -40,7 +40,7 @@
 	<property name="coverage-data-file" location="${coverage-reports}/cobertura.ser"/>
 
 	<!-- Junit JAR location -->
-	<property name="junit-home" location="${lib}/junit-4.8.2" />
+	<property name="junit-home" location="${lib}" />
 
 
 	<!-- CLASS PATHS -->
@@ -92,6 +92,7 @@
 
 	<target name="init" description="create build directories">
 		<tstamp />
+        <mkdir dir="${test-src}" />
 		<mkdir dir="${build-dir}" />
 		<mkdir dir="${test-build}"/>
 		<mkdir dir="${test-reports}"/>
@@ -109,10 +110,10 @@
 
 	<target name="build" depends="init" description="compile the source code">
 		<javac srcdir="${src}" classpathref="all-classpath" destdir="${build-dir}" debug="true" includeantruntime="true" />
-		<!-- <javac srcdir="${test}" classpathref="all-classpath" destdir="${build-dir}" debug="true" includeantruntime="true" /> -->
+		 <javac srcdir="${test}" classpathref="all-classpath" destdir="${build-dir}" debug="true" includeantruntime="true" />
 	</target>
 
-	<target name="our-server" depends="build" description="run server on specified port">
+	<target name="our-server" depends="test" description="run server on specified port">
 	    <java classname="com.catan.main.server.Server" fork="yes">
 	      <classpath>
 	        <path refid="all-classpath"/>
