@@ -28,14 +28,15 @@
 	<property name="lib" location="lib" />
 	
 	<!-- Directories containing testing files -->
-	<property name="test-src" location="test-src"/>
-	<property name="test-build" location="test-build"/>
-	<property name="test-reports" location="test-reports"/>
+    <property name="test" location="test" />
+	<property name="test-src" location="${test}/test-src"/>
+	<property name="test-build" location="${test}/test-build"/>
+	<property name="test-reports" location="${test}/test-reports"/>
 
 	<!-- Directories containing cobertura files -->
 	<property name="cobertura-home" location="${lib}/cobertura-2.0.3"/>
-	<property name="coverage-build" location="coverage-build"/>
-	<property name="coverage-reports" location="coverage-reports"/>
+	<property name="coverage-build" location="${test}/coverage-build"/>
+	<property name="coverage-reports" location="${test}/coverage-reports"/>
 	<property name="coverage-data-file" location="${coverage-reports}/cobertura.ser"/>
 
 	<!-- Junit JAR location -->
@@ -57,7 +58,7 @@
 	
 	<path id="cobertura-classpath">
 		<fileset dir="${cobertura-home}">
-			<include name="cobertura.jar" />
+			<include name="cobertura-2.0.3.jar" />
 		</fileset>
 		<fileset dir="${cobertura-home}/lib">
 			<include name="**/*.jar" />

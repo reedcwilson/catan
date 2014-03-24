@@ -34,9 +34,10 @@ Desktop.ini
 # ignore special files with double underscore __
 __*
 
-# ignore bin and build
+# ignore bin, build and test
 /bin
 /build
+/test
 
 # ignore intellij files
 .idea/
