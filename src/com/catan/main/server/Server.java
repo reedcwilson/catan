@@ -31,6 +31,16 @@ public class Server {
     private int _port;
     private HttpServer _server;
     private DataModel _currentDataModel;
+
+    private String getInputString(HttpExchange exchange) throws IOException {
+        String inputString = "";
+        InputStream requestBody = exchange.getRequestBody();
+        while(requestBody.available() != 0)
+        {
+            inputString += (char)requestBody.read();
+        }
+        return inputString;
+    }
     private HttpHandler loginHandler = new HttpHandler() {
 
         @Override
@@ -311,14 +321,8 @@ public class Server {
         public void handle(HttpExchange exchange) throws IOException {
 
             try {
-                Scanner scan = new Scanner(exchange.getRequestBody());
-                StringBuilder sb = new StringBuilder();
-                while(scan.hasNext())
-                {
-                    sb.append(scan.next());
-                    sb.append(" ");
-                }
-                String json = sb.toString();
+                
+                String json = getInputString(exchange);
                 Gson gson = new Gson();
                 SendChat command = gson.fromJson(json, SendChat.class);
                 //command.execute(getModel());
