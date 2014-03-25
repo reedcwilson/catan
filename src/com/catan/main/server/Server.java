@@ -376,8 +376,7 @@ public class Server {
                 System.out.println(command.content);
                 System.out.println(command.getType());
                 System.out.println(command.getPlayerIndex());
-                //byte[] bytes = getModel().toJSON().getBytes();
-                byte[] bytes = model.getBytes();
+                byte[] bytes = getModel().toJSON().getBytes();
                 exchange.getResponseHeaders().add("Content-Type", "application/json");
                 exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, bytes.length);
                 exchange.getResponseBody().write(bytes);
@@ -880,7 +879,7 @@ public class Server {
 
     private Server(int p) {
         this._port = p;
-        Gson gson = new Gson();
+        gson = new Gson();
         users = new ArrayList<User>();
         users.add(new User("Sam", "sam", (long)0));
         users.add(new User("Brooke", "brooke", (long)1));
