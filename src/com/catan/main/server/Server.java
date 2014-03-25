@@ -5,7 +5,7 @@ package com.catan.main.server;
 
 import com.catan.main.datamodel.DataModel;
 import com.catan.main.datamodel.User;
-import com.catan.main.datamodel.commands.SendChat;
+import com.catan.main.datamodel.commands.*;
 import com.catan.main.datamodel.game.CreateGameRequest;
 import com.catan.main.datamodel.game.Game;
 import com.sun.net.httpserver.Headers;
@@ -37,6 +37,7 @@ public class Server {
     private ArrayList<Game> gameList;
     private HttpServer _server;
     private DataModel _currentDataModel;
+    private Gson gson;
 
     private String getInputString(HttpExchange exchange) throws IOException {
         String inputString = "";
@@ -370,7 +371,6 @@ public class Server {
 
             try {
                 String json = getInputString(exchange);
-                Gson gson = new Gson();
                 SendChat command = gson.fromJson(json, SendChat.class);
                 //command.execute(getModel());
                 System.out.println(command.content);
@@ -400,6 +400,10 @@ public class Server {
         public void handle(HttpExchange exchange) throws IOException {
 
             try {
+                String json = getInputString(exchange);
+                AcceptTrade command = gson.fromJson(json, AcceptTrade.class);
+                //command.execute(getModel());
+                System.out.println(command);
                 byte[] bytes = model.getBytes();
                 exchange.getResponseHeaders().add("Content-Type", "application/json");
                 exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, bytes.length);
@@ -423,6 +427,10 @@ public class Server {
         public void handle(HttpExchange exchange) throws IOException {
 
             try {
+                String json = getInputString(exchange);
+                Discard command = gson.fromJson(json, Discard.class);
+                //command.execute(getModel());
+                System.out.println(command);
                 byte[] bytes = model.getBytes();
                 exchange.getResponseHeaders().add("Content-Type", "application/json");
                 exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, bytes.length);
@@ -446,6 +454,10 @@ public class Server {
         public void handle(HttpExchange exchange) throws IOException {
 
             try {
+                String json = getInputString(exchange);
+                RollDice command = gson.fromJson(json, RollDice.class);
+                //command.execute(getModel());
+                System.out.println(command);
                 byte[] bytes = model.getBytes();
                 exchange.getResponseHeaders().add("Content-Type", "application/json");
                 exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, bytes.length);
@@ -469,6 +481,10 @@ public class Server {
         public void handle(HttpExchange exchange) throws IOException {
 
             try {
+                String json = getInputString(exchange);
+                PlaceRoad command = gson.fromJson(json, PlaceRoad.class);
+                //command.execute(getModel());
+                System.out.println(command);
                 byte[] bytes = model.getBytes();
                 exchange.getResponseHeaders().add("Content-Type", "application/json");
                 exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, bytes.length);
@@ -492,6 +508,10 @@ public class Server {
         public void handle(HttpExchange exchange) throws IOException {
 
             try {
+                String json = getInputString(exchange);
+                PlaceSettlement command = gson.fromJson(json, PlaceSettlement.class);
+                //command.execute(getModel());
+                System.out.println(command);
                 byte[] bytes = model.getBytes();
                 exchange.getResponseHeaders().add("Content-Type", "application/json");
                 exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, bytes.length);
@@ -515,6 +535,10 @@ public class Server {
         public void handle(HttpExchange exchange) throws IOException {
 
             try {
+                String json = getInputString(exchange);
+                PlaceCity command = gson.fromJson(json, PlaceCity.class);
+                //command.execute(getModel());
+                System.out.println(command);
                 byte[] bytes = model.getBytes();
                 exchange.getResponseHeaders().add("Content-Type", "application/json");
                 exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, bytes.length);
@@ -538,6 +562,10 @@ public class Server {
         public void handle(HttpExchange exchange) throws IOException {
 
             try {
+                String json = getInputString(exchange);
+                OfferTrade command = gson.fromJson(json, OfferTrade.class);
+                //command.execute(getModel());
+                System.out.println(command);
                 byte[] bytes = model.getBytes();
                 exchange.getResponseHeaders().add("Content-Type", "application/json");
                 exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, bytes.length);
@@ -561,6 +589,10 @@ public class Server {
         public void handle(HttpExchange exchange) throws IOException {
 
             try {
+                String json = getInputString(exchange);
+                MaritimeTrade command = gson.fromJson(json, MaritimeTrade.class);
+                //command.execute(getModel());
+                System.out.println(command);
                 byte[] bytes = model.getBytes();
                 exchange.getResponseHeaders().add("Content-Type", "application/json");
                 exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, bytes.length);
@@ -584,6 +616,10 @@ public class Server {
         public void handle(HttpExchange exchange) throws IOException {
 
             try {
+                String json = getInputString(exchange);
+                FinishTurn command = gson.fromJson(json, FinishTurn.class);
+                //command.execute(getModel());
+                System.out.println(command);
                 byte[] bytes = model.getBytes();
                 exchange.getResponseHeaders().add("Content-Type", "application/json");
                 exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, bytes.length);
@@ -607,6 +643,10 @@ public class Server {
         public void handle(HttpExchange exchange) throws IOException {
 
             try {
+                String json = getInputString(exchange);
+                BuyDevCard command = gson.fromJson(json, BuyDevCard.class);
+                //command.execute(getModel());
+                System.out.println(command);
                 byte[] bytes = model.getBytes();
                 exchange.getResponseHeaders().add("Content-Type", "application/json");
                 exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, bytes.length);
@@ -630,6 +670,10 @@ public class Server {
         public void handle(HttpExchange exchange) throws IOException {
 
             try {
+                String json = getInputString(exchange);
+                YearOfPlenty command = gson.fromJson(json, YearOfPlenty.class);
+                //command.execute(getModel());
+                System.out.println(command);
                 byte[] bytes = model.getBytes();
                 exchange.getResponseHeaders().add("Content-Type", "application/json");
                 exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, bytes.length);
@@ -653,6 +697,10 @@ public class Server {
         public void handle(HttpExchange exchange) throws IOException {
 
             try {
+                String json = getInputString(exchange);
+                RoadBuilding command = gson.fromJson(json, RoadBuilding.class);
+                //command.execute(getModel());
+                System.out.println(command);
                 byte[] bytes = model.getBytes();
                 exchange.getResponseHeaders().add("Content-Type", "application/json");
                 exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, bytes.length);
@@ -676,6 +724,10 @@ public class Server {
         public void handle(HttpExchange exchange) throws IOException {
 
             try {
+                String json = getInputString(exchange);
+                Soldier command = gson.fromJson(json, Soldier.class);
+                //command.execute(getModel());
+                System.out.println(command);
                 byte[] bytes = model.getBytes();
                 exchange.getResponseHeaders().add("Content-Type", "application/json");
                 exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, bytes.length);
@@ -699,6 +751,10 @@ public class Server {
         public void handle(HttpExchange exchange) throws IOException {
 
             try {
+                String json = getInputString(exchange);
+                Monopoly command = gson.fromJson(json, Monopoly.class);
+                //command.execute(getModel());
+                System.out.println(command);
                 byte[] bytes = model.getBytes();
                 exchange.getResponseHeaders().add("Content-Type", "application/json");
                 exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, bytes.length);
@@ -722,6 +778,10 @@ public class Server {
         public void handle(HttpExchange exchange) throws IOException {
 
             try {
+                String json = getInputString(exchange);
+                Monument command = gson.fromJson(json, Monument.class);
+                //command.execute(getModel());
+                System.out.println(command);
                 byte[] bytes = model.getBytes();
                 exchange.getResponseHeaders().add("Content-Type", "application/json");
                 exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, bytes.length);
@@ -820,6 +880,7 @@ public class Server {
 
     private Server(int p) {
         this._port = p;
+        Gson gson = new Gson();
         users = new ArrayList<User>();
         users.add(new User("Sam", "sam", (long)0));
         users.add(new User("Brooke", "brooke", (long)1));
