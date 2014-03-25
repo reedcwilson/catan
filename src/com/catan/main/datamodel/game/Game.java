@@ -12,13 +12,15 @@ public class Game {
 
     //region Fields
     private Long id;
+    private String title;
     private DataModel model;
     private DataModel start;
     private CommandHistory history;
     //endregion
 
-    public Game(Long id, DataModel model, CommandHistory configuredHistory) {
+    public Game(Long id, String title, DataModel model, CommandHistory configuredHistory) {
         this.id = id;
+        this.title = title;
         setModel(model);
         setDefaultModel(model);
         this.history = configuredHistory;
@@ -30,13 +32,19 @@ public class Game {
         Map map = Map.generateNewMap(request.randomTiles, request.randomNumbers, request.randomNumbers);
 
         DataModel model = new DataModel(map, players);
-        Game game = new Game(null, model, new CommandHistory(true, false));
+        Game game = new Game(null, request.getName(), model, new CommandHistory(true, false));
 
         return game;
     }
 
     //region Properties
 
+    public String getTitle() {
+        return title;
+    }
+    public void setTitle(String title) {
+        this.title = title;
+    }
     public Long getId() {
         return id;
     }
