@@ -20,11 +20,20 @@ import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
 class ServerUtils {
+
     private static Logger LOGGER = LogManager.getLogManager().getLogger("global");
     private static Map<Long, User> _users = new HashMap<Long, User>();
     private static Map<Long, Game> _games = new HashMap<Long, Game>();
-    private static Long _userId = 0L;
+    private static Long _userId = 4L;
     private static Long _gameId = 0L;
+
+    // static initializer
+    static {
+        _users.put(0L, new User("Sam", "sam", 0L));
+        _users.put(1L, new User("Brooke", "brooke", 1L));
+        _users.put(2L, new User("Pete", "pete", 2L));
+        _users.put(3L, new User("Mark", "mark", 3L));
+    }
 
     private static Long getUserId() {
         return _userId++;
