@@ -37,7 +37,8 @@ __*
 # ignore bin, build and test
 /bin
 /build
-/test
+/test/coverage*
+/test/test*
 
 # ignore intellij files
 .idea/
