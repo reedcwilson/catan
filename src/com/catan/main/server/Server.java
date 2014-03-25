@@ -350,6 +350,14 @@ public class Server {
         public void handle(HttpExchange exchange) throws IOException {
 
             try {
+                String body = getInputString(exchange);
+                String[] need = body.split("=");
+                String newLogLevel = need[1];
+                //check if newLogLevel is valid
+                    //if valid: set it
+
+                //else send error
+
                 byte[] bytes = "Not an allowed getLog level.".getBytes();
                 exchange.getResponseHeaders().add("Content-Type", "text/html");
                 exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, bytes.length);
