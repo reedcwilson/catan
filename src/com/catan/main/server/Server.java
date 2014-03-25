@@ -763,7 +763,7 @@ public class Server {
 
             try {
                 String json = getInputString(exchange);
-                Monopoly command = gson.fromJson(json, Monopoly.class);
+                Monopoly command = new Gson().fromJson(json, Monopoly.class);
                 //command.execute(getModel());
                 System.out.println(command);
                 byte[] bytes = model.getBytes();
@@ -891,7 +891,7 @@ public class Server {
 
     private Server(int p) {
         this._port = p;
-        Gson gson = new Gson();
+        gson = new Gson();
         users = new ArrayList<User>();
         users.add(new User("Sam", "sam", (long)0));
         users.add(new User("Brooke", "brooke", (long)1));
