@@ -8,9 +8,7 @@ import com.catan.main.datamodel.User;
 import com.catan.main.datamodel.commands.SendChat;
 import com.catan.main.datamodel.game.CreateGameRequest;
 import com.catan.main.datamodel.game.Game;
-import com.catan.main.datamodel.map.Map;
-import com.catan.main.datamodel.player.Player;
-import com.fasterxml.jackson.databind.util.JSONPObject;
+import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
@@ -73,6 +71,9 @@ public class Server {
                         exchange.getResponseHeaders().add("Content-Type", "text/html");
                         exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, bytes.length);
                         exchange.getResponseBody().write(bytes);
+                        Headers headers = exchange.getRequestHeaders();
+                        System.out.println(headers.values());
+
                         /**ookieManager manager = new CookieManager();
                         CookieHandler.setDefault(manager);
                         CookieStore cookieJar =  manager.getCookieStore();
@@ -110,7 +111,8 @@ public class Server {
                 String username = inputString.substring(9, inputString.indexOf('&'));
                 String password = inputString.substring(inputString.indexOf("password="));
                 password = password.substring(9);
-                User inputUser = new User(username, password, (long)8);
+                User inputUser = new User(username, password, (long)users.size());
+                System.out.println(inputUser);
                 users.add(inputUser);
                 byte[] bytes = "Success".getBytes();
                 exchange.getResponseHeaders().add("Content-Type", "text/html");
@@ -135,7 +137,7 @@ public class Server {
         public void handle(HttpExchange exchange) throws IOException {
 
             try {
-                byte[] bytes = gamesList.toString().getBytes();
+                byte[] bytes = gameList.toString().getBytes();
                 exchange.getResponseHeaders().add("Content-Type", "application/json");
                 exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, bytes.length);
                 exchange.getResponseBody().write(bytes);
@@ -822,7 +824,7 @@ public class Server {
         users = new ArrayList<User>();
         users.add(new User("Sam", "sam", (long)0));
         users.add(new User("Brooke", "brooke", (long)1));
-        users.add(new User("Pete", "pete", (long)11));
+        users.add(new User("Pete", "pete", (long)2));
         users.add(new User("Mark", "mark", (long)3));
     }
 
