@@ -81,7 +81,6 @@ catan.roll.Controller = (function roll_namespace(){
               playerIndex:this.getClientModel().getClientID(),
               number:roll
             }
-
          	clientModel.sendMove(commandObj);
 		}
 		
