@@ -229,7 +229,7 @@ public class Server {
                 int version = versionString == null ? -1 : Integer.parseInt(versionString);
                 if (game != null) {
                     String response;
-                    if (game.getModel().getVersion() == version) {
+                    if (game.getModel().getRevision() == version) {
                         response = "\"true\"";
                     } else {
                         response = ServerUtils.getGame(client.getGameID()).getModel().toJSON();
