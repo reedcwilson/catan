@@ -5,9 +5,11 @@ import com.catan.main.datamodel.map.Resource;
 public class Bank extends ResourceHand {
 
     public Bank() {
-        for (Resource r : Resource.values()) {
-            add(r, 24);
-        }
+        this.setWood(24);
+        this.setBrick(24);
+        this.setOre(24);
+        this.setSheep(24);
+        this.setWheat(24);
     }
     public Bank(ResourceHand resourceHand) {
         addRange(resourceHand);
