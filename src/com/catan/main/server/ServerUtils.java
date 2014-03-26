@@ -32,10 +32,35 @@ class ServerUtils {
 
     // static initializer
     static {
-        _users.put(0L, new User("Sam", "sam", 0L));
-        _users.put(1L, new User("Brooke", "brooke", 1L));
-        _users.put(2L, new User("Pete", "pete", 2L));
-        _users.put(3L, new User("Mark", "mark", 3L));
+        User user1 = new User("Sam", "sam", 0L);
+        User user2 = new User("Brooke", "brooke", 1L);
+        User user3 = new User("Pete", "pete", 2L);
+        User user4 = new User("Mark", "mark", 3L);
+
+        _users.put(0L, user1);
+        _users.put(1L, user2);
+        _users.put(2L, user3);
+        _users.put(3L, user4);
+
+        // default game 1
+        Game game1 = createGame(new CreateGameRequest(true, true, true, "Default1"));
+        addUserToGame(user1, Color.blue, 0L);
+        addUserToGame(user2, Color.brown, 0L);
+        addUserToGame(user3, Color.orange, 0L);
+        addUserToGame(user4, Color.red, 0L);
+
+        // default game 2
+        Game game2 = createGame(new CreateGameRequest(true, true, true, "Default2"));
+        addUserToGame(user1, Color.blue, 1L);
+        addUserToGame(user2, Color.brown, 1L);
+        addUserToGame(user3, Color.orange, 1L);
+
+        // default game 3
+        Game game3 = createGame(new CreateGameRequest(true, true, true, "Default3"));
+
+        _games.put(0L, game1);
+        _games.put(1L, game2);
+        _games.put(2L, game3);
     }
 
     private static Long getUserId() {
@@ -154,15 +179,15 @@ class ServerUtils {
         return validateLogin(outsideUser.getName(), outsideUser.getPassword());
     }
 
-    public static boolean addUserToGame(User playerInfo, Color color, Long gameID) {
+    public static boolean addUserToGame(User user, Color color, Long gameID) {
         Game g = _games.get(gameID);
-        if (playerInfo == null) {
+        if (user == null) {
             LOGGER.log(Level.WARNING, "Unable to grab player info from cookie.");
             return false;
         }
         if (g != null) {
-            LOGGER.log(Level.FINE, playerInfo.toString());
-            if (g.addPlayer(playerInfo.getPlayerID(), color, playerInfo.getName())) {
+            LOGGER.log(Level.FINE, user.toString());
+            if (g.addPlayer(user.getPlayerID(), color, user.getName())) {
                 _games.put(g.getId(), g);
                 return true;
             }
