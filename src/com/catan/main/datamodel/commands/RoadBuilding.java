@@ -8,40 +8,40 @@ import com.catan.main.datamodel.message.MessageLine;
 public class RoadBuilding extends DevCard {
 
     //region Fields
-    private EdgeLocation location1;
-    private EdgeLocation location2;
+    private EdgeLocation spot1;
+    private EdgeLocation spot2;
     //endregion
 
     public RoadBuilding(EdgeLocation location1, EdgeLocation location2) {
         this();
-        this.location1 = location1;
-        this.location2 = location2;
+        this.spot1 = location1;
+        this.spot2 = location2;
     }
     public RoadBuilding() {
         super(DevCardType.Road_Building);
     }
 
     //region Properties
-    public EdgeLocation getLocation1() {
-        return this.location1;
+    public EdgeLocation getSpot1() {
+        return this.spot1;
     }
-    public void setLocation1(EdgeLocation location1) {
-        this.location1 = location1;
+    public void setSpot1(EdgeLocation spot1) {
+        this.spot1 = spot1;
     }
 
-    public EdgeLocation getLocation2() {
-        return this.location2;
+    public EdgeLocation getSpot2() {
+        return this.spot2;
     }
-    public void setLocation2(EdgeLocation location2) {
-        this.location2 = location2;
+    public void setSpot2(EdgeLocation spot2) {
+        this.spot2 = spot2;
     }
     //endregion
 
     //region Overrides
     @Override
     protected void playDevCard(DataModel model) {
-        new PlaceRoad(this.location1, Integer.valueOf(this.getPlayerIndex()), Boolean.valueOf(true)).execute(model);
-        new PlaceRoad(this.location2, Integer.valueOf(this.getPlayerIndex()), Boolean.valueOf(true)).execute(model);
+        new PlaceRoad(this.spot1, Integer.valueOf(this.getPlayerIndex()), Boolean.valueOf(true)).execute(model);
+        new PlaceRoad(this.spot2, Integer.valueOf(this.getPlayerIndex()), Boolean.valueOf(true)).execute(model);
         model.getPlayers()[this.getPlayerIndex()].setPlayedDevCard(true);
     }
     @Override
@@ -53,8 +53,8 @@ public class RoadBuilding extends DevCard {
     @Override
     public String toString() {
         return "RoadBuilding{" +
-                "location1=" + location1 +
-                ", location2=" + location2 +
+                "location1=" + spot1 +
+                ", location2=" + spot2 +
                 '}';
     }
 
@@ -65,16 +65,16 @@ public class RoadBuilding extends DevCard {
 
         RoadBuilding that = (RoadBuilding) o;
 
-        if (location1 != null ? !location1.equals(that.location1) : that.location1 != null) return false;
-        if (location2 != null ? !location2.equals(that.location2) : that.location2 != null) return false;
+        if (spot1 != null ? !spot1.equals(that.spot1) : that.spot1 != null) return false;
+        if (spot2 != null ? !spot2.equals(that.spot2) : that.spot2 != null) return false;
 
         return true;
     }
 
     @Override
     public int hashCode() {
-        int result = location1 != null ? location1.hashCode() : 0;
-        result = 31 * result + (location2 != null ? location2.hashCode() : 0);
+        int result = spot1 != null ? spot1.hashCode() : 0;
+        result = 31 * result + (spot2 != null ? spot2.hashCode() : 0);
         return result;
     }
     //endregion

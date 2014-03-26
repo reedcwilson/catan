@@ -10,7 +10,7 @@ public class Soldier extends DevCard {
 
     //region Fields
     private HexLocation location;
-    private Integer victim;
+    private Integer victimIndex;
     //endregion
 
     public Soldier() {
@@ -19,7 +19,7 @@ public class Soldier extends DevCard {
     public Soldier(HexLocation location, Integer victimID) {
         this();
         this.location = location;
-        this.victim = victimID;
+        this.victimIndex = victimID;
     }
 
     //region Properties
@@ -31,10 +31,10 @@ public class Soldier extends DevCard {
     }
 
     public Integer getVictimID() {
-        return this.victim;
+        return this.victimIndex;
     }
     public void setVictimID(Integer victimID) {
-        this.victim = victimID;
+        this.victimIndex = victimID;
     }
     //endregion
 
@@ -58,7 +58,7 @@ public class Soldier extends DevCard {
         if ((model.getWinner().longValue() == -1L) && (currentPlayer.wonGame())) {
             model.setWinner(currentPlayer.getPlayerID());
         }
-        new RobPlayer(this.victim.intValue(), this.location).execute(model);
+        new RobPlayer(this.victimIndex.intValue(), this.location).execute(model);
     }
     @Override
     protected MessageLine getLog(DataModel model) {
@@ -74,7 +74,7 @@ public class Soldier extends DevCard {
     public String toString() {
         return "Soldier{" +
                 "location=" + location +
-                ", victim=" + victim +
+                ", victim=" + victimIndex +
                 '}';
     }
 
@@ -86,7 +86,7 @@ public class Soldier extends DevCard {
         Soldier soldier = (Soldier) o;
 
         if (location != null ? !location.equals(soldier.location) : soldier.location != null) return false;
-        if (victim != null ? !victim.equals(soldier.victim) : soldier.victim != null) return false;
+        if (victimIndex != null ? !victimIndex.equals(soldier.victimIndex) : soldier.victimIndex != null) return false;
 
         return true;
     }
@@ -94,7 +94,7 @@ public class Soldier extends DevCard {
     @Override
     public int hashCode() {
         int result = location != null ? location.hashCode() : 0;
-        result = 31 * result + (victim != null ? victim.hashCode() : 0);
+        result = 31 * result + (victimIndex != null ? victimIndex.hashCode() : 0);
         return result;
     }
     //endregion

@@ -11,18 +11,18 @@ import com.catan.main.datamodel.player.ResourceHand;
 public class PlaceCity extends Command {
 
     //region Fields
-    private VertexLocation location;
+    private VertexLocation vertexLocation;
     //endregion
 
     public PlaceCity() {
     }
 
     //region Properties
-    public VertexLocation getLocation() {
-        return location;
+    public VertexLocation getVertexLocation() {
+        return vertexLocation;
     }
-    public void setLocation(VertexLocation location) {
-        this.location = location;
+    public void setVertexLocation(VertexLocation vertexLocation) {
+        this.vertexLocation = vertexLocation;
     }
     //endregion
 
@@ -37,7 +37,7 @@ public class PlaceCity extends Command {
     public void action(DataModel model) {
         Map map = model.getMap();
         Bank bank = model.getBank();
-        map.addCity(this.location, this.getPlayerIndex());
+        map.addCity(this.vertexLocation, this.getPlayerIndex());
 
         Player player = model.getPlayers()[this.getPlayerIndex()];
         if (model.getWinner().longValue() == -1L) {
@@ -62,7 +62,7 @@ public class PlaceCity extends Command {
     @Override
     public String toString() {
         return "PlaceCity{" +
-                "location=" + location +
+                "location=" + vertexLocation +
                 '}';
     }
 
@@ -73,14 +73,14 @@ public class PlaceCity extends Command {
 
         PlaceCity placeCity = (PlaceCity) o;
 
-        if (location != null ? !location.equals(placeCity.location) : placeCity.location != null) return false;
+        if (vertexLocation != null ? !vertexLocation.equals(placeCity.vertexLocation) : placeCity.vertexLocation != null) return false;
 
         return true;
     }
 
     @Override
     public int hashCode() {
-        return location != null ? location.hashCode() : 0;
+        return vertexLocation != null ? vertexLocation.hashCode() : 0;
     }
     //endregion
 }

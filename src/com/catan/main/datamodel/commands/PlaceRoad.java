@@ -11,31 +11,29 @@ import com.catan.main.datamodel.player.ResourceHand;
 public class PlaceRoad extends Command {
 
     //region Fields
-    private EdgeLocation location;
-    private boolean available;
+    private EdgeLocation roadLocation;
+    private boolean free;
     //endregion
 
-    public PlaceRoad() {
-    }
     public PlaceRoad(EdgeLocation roadLocation, Integer playerIndex, Boolean available) {
-        this.location = roadLocation;
-        this.available = available.booleanValue();
+        this.roadLocation = roadLocation;
+        this.free = available.booleanValue();
         setPlayerIndex(playerIndex.intValue());
     }
 
     //region Properties
-    public EdgeLocation getLocation() {
-        return this.location;
+    public EdgeLocation getRoadLocation() {
+        return this.roadLocation;
     }
-    public void setLocation(EdgeLocation location) {
-        this.location = location;
+    public void setRoadLocation(EdgeLocation roadLocation) {
+        this.roadLocation = roadLocation;
     }
 
-    public boolean isAvailable() {
-        return available;
+    public boolean isFree() {
+        return free;
     }
-    public void setAvailable(Boolean available) {
-        this.available = available.booleanValue();
+    public void setFree(Boolean free) {
+        this.free = free.booleanValue();
     }
     //endregion
 
@@ -51,7 +49,7 @@ public class PlaceRoad extends Command {
         Map map = model.getMap();
         Bank bank = model.getBank();
 
-        map.addRoad(this.location, this.getPlayerIndex());
+        map.addRoad(this.roadLocation, this.getPlayerIndex());
         // TODO: modify most roads person
         Player player = model.getPlayers()[this.getPlayerIndex()];
         if ((model.getWinner().longValue() == -1L) &&
@@ -59,7 +57,7 @@ public class PlaceRoad extends Command {
             model.setWinner(player.getPlayerID());
         }
         player.setRoads(player.getRoads() - 1);
-        if (!this.available) {
+        if (!this.free) {
             ResourceHand rh = new ResourceHand();
             rh.setWood(-1);
             rh.setBrick(-1);
@@ -76,8 +74,8 @@ public class PlaceRoad extends Command {
     @Override
     public String toString() {
         return "PlaceRoad{" +
-                "location=" + location +
-                ", available=" + available +
+                "location=" + roadLocation +
+                ", available=" + free +
                 '}';
     }
 
@@ -88,16 +86,16 @@ public class PlaceRoad extends Command {
 
         PlaceRoad placeRoad = (PlaceRoad) o;
 
-        if (available != placeRoad.available) return false;
-        if (location != null ? !location.equals(placeRoad.location) : placeRoad.location != null) return false;
+        if (free != placeRoad.free) return false;
+        if (roadLocation != null ? !roadLocation.equals(placeRoad.roadLocation) : placeRoad.roadLocation != null) return false;
 
         return true;
     }
 
     @Override
     public int hashCode() {
-        int result = location != null ? location.hashCode() : 0;
-        result = 31 * result + (available ? 1 : 0);
+        int result = roadLocation != null ? roadLocation.hashCode() : 0;
+        result = 31 * result + (free ? 1 : 0);
         return result;
     }
     //endregion
