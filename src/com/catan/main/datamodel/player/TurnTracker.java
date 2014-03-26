@@ -4,44 +4,44 @@ public class TurnTracker {
 
     //region Fields
     private final int _players = 4;
-    private Status _status;
-    private int _currentTurn;
+    private Status status;
+    private int currentTurn;
     //endregion
 
     public TurnTracker() {
-        this._status = Status.FirstRound;
+        this.status = Status.FirstRound;
     }
     public TurnTracker(int turn, Status status) {
-        this._status = status;
-        this._currentTurn = turn;
+        this.status = status;
+        this.currentTurn = turn;
     }
 
     //region Public Interface
 
     //region Turns
     public int getCurrentTurn() {
-        return this._currentTurn;
+        return this.currentTurn;
     }
     public void setCurrentTurn(int currentTurn) {
-        this._currentTurn = currentTurn;
+        this.currentTurn = currentTurn;
     }
     public boolean isLastPlayerTurn() {
-        return this._currentTurn == _players - 1;
+        return this.currentTurn == _players - 1;
     }
     public void advanceTurn() {
-        this._currentTurn = ((this._currentTurn + 1) % _players);
+        this.currentTurn = ((this.currentTurn + 1) % _players);
     }
     public void reverseAdvanceTurn() {
-        this._currentTurn = (Math.abs(this._currentTurn - 1) % _players);
+        this.currentTurn = (Math.abs(this.currentTurn - 1) % _players);
     }
     //endregion
 
     //region Status
     public Status getStatus() {
-        return this._status;
+        return this.status;
     }
     public void setStatus(Status status) {
-        this._status = status;
+        this.status = status;
     }
     //endregion
 

@@ -4,23 +4,23 @@ import com.catan.main.datamodel.hexgrid.hex.HexLocation;
 
 public class NormalHex extends CatanHex {
 
-    protected Resource landType;
+    protected Resource landtype;
 
     public NormalHex(HexLocation location, Resource resource) {
         super(location);
         this.isLand = true;
-        this.landType = resource;
+        this.landtype = resource;
     }
 
     public Resource getLandType() {
-        return this.landType;
+        return this.landtype;
     }
 
     //region Overrides
     @Override
     public String toString() {
         return "NormalHex{" +
-                "landType=" + landType +
+                "landType=" + landtype +
                 '}';
     }
     @Override
@@ -31,14 +31,14 @@ public class NormalHex extends CatanHex {
 
         NormalHex normalHex = (NormalHex) o;
 
-        if (landType != normalHex.landType) return false;
+        if (landtype != normalHex.landtype) return false;
 
         return true;
     }
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + (landType != null ? landType.hashCode() : 0);
+        result = 31 * result + (landtype != null ? landtype.hashCode() : 0);
         return result;
     }
     //endregion

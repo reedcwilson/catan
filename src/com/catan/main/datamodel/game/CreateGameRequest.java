@@ -6,7 +6,7 @@ public class CreateGameRequest {
     boolean randomTiles;
     boolean randomNumbers;
     boolean randomPorts;
-    public String name;
+    String name;
     //endregion
 
     public CreateGameRequest(boolean randomTiles, boolean randomNumbers, boolean randomPorts, String name) {
