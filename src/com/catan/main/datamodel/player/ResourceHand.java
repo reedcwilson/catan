@@ -64,19 +64,55 @@ public class ResourceHand extends Hand<Resource> {
     //region Overrides
     @Override
     protected Resource getInstance() {
-        return null;
+        return Resource.Brick;
     }
 
     @Override
-    public int get(Resource t) {
-        return 0;
+    public int get(Resource resource) {
+        switch (resource) {
+            case Brick:
+                return brick;
+            case Ore:
+                return ore;
+            case Wood:
+                return wood;
+            case Wheat:
+                return wheat;
+            case Sheep:
+                return sheep;
+            default:
+                return 0;
+        }
     }
 
     @Override
-    public void add(Resource t, int i) { }
+    public void add(Resource resource, int i) {
+        switch (resource) {
+            case Brick:
+                brick += i;
+                break;
+            case Ore:
+                ore += i;
+                break;
+            case Wood:
+                wood += i;
+                break;
+            case Wheat:
+                wheat += i;
+                break;
+            case Sheep:
+                sheep += i;
+                break;
+            default:
+                break;
+        }
+    }
+
 
     @Override
-    public int total() { return 0; }
+    public int total() {
+        return brick + ore + wood + wheat + sheep;
+    }
 
     @Override
     public String toString() {

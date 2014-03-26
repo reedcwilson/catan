@@ -5,8 +5,8 @@ import com.catan.main.datamodel.map.Resource;
 public class Bank extends ResourceHand {
 
     public Bank() {
-        for (Resource r : Resource.values()) {
-            add(r, 24);
+        for (Resource resource : Resource.values()) {
+            add(resource, 24);
         }
     }
     public Bank(ResourceHand resourceHand) {
