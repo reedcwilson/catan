@@ -12,31 +12,31 @@ import java.util.ArrayList;
 public class PlaceSettlement extends Command {
 
     //region Fields
-    private VertexLocation location;
-    private Boolean available;
+    private VertexLocation vertexLocation;
+    private Boolean free;
     //endregion
 
     public PlaceSettlement() {
     }
     public PlaceSettlement(VertexLocation vertexLocation, Integer ownerID, Boolean free) {
-        this.location = vertexLocation;
-        this.available = free;
+        this.vertexLocation = vertexLocation;
+        this.free = free;
         setPlayerIndex(ownerID.intValue());
     }
 
     //region Properties
-    public VertexLocation getLocation() {
-        return location;
+    public VertexLocation getVertexLocation() {
+        return vertexLocation;
     }
-    public void setLocation(VertexLocation location) {
-        this.location = location;
+    public void setVertexLocation(VertexLocation vertexLocation) {
+        this.vertexLocation = vertexLocation;
     }
 
-    public Boolean getAvailable() {
-        return available;
+    public Boolean getFree() {
+        return free;
     }
-    public void setAvailable(Boolean available) {
-        this.available = available;
+    public void setFree(Boolean free) {
+        this.free = free;
     }
     //endregion
 
@@ -51,8 +51,8 @@ public class PlaceSettlement extends Command {
     @Override
     public String toString() {
         return "PlaceSettlement{" +
-                "location=" + location +
-                ", available=" + available +
+                "location=" + vertexLocation +
+                ", available=" + free +
                 '}';
     }
 
@@ -63,16 +63,16 @@ public class PlaceSettlement extends Command {
 
         PlaceSettlement that = (PlaceSettlement) o;
 
-        if (available != null ? !available.equals(that.available) : that.available != null) return false;
-        if (location != null ? !location.equals(that.location) : that.location != null) return false;
+        if (free != null ? !free.equals(that.free) : that.free != null) return false;
+        if (vertexLocation != null ? !vertexLocation.equals(that.vertexLocation) : that.vertexLocation != null) return false;
 
         return true;
     }
 
     @Override
     public int hashCode() {
-        int result = location != null ? location.hashCode() : 0;
-        result = 31 * result + (available != null ? available.hashCode() : 0);
+        int result = vertexLocation != null ? vertexLocation.hashCode() : 0;
+        result = 31 * result + (free != null ? free.hashCode() : 0);
         return result;
     }
 
@@ -81,7 +81,7 @@ public class PlaceSettlement extends Command {
         Map map = model.getMap();
         TurnTracker tracker = model.getTurnTracker();
         Bank bank = model.getBank();
-        map.addSettlement(this.location, this.getPlayerIndex());
+        map.addSettlement(this.vertexLocation, this.getPlayerIndex());
 
         Player player = model.getPlayers()[this.getPlayerIndex()];
         if (model.getWinner().longValue() == -1L) {
@@ -91,7 +91,7 @@ public class PlaceSettlement extends Command {
             }
         }
         player.setSettlements(player.getSettlements() - 1);
-        if (!this.available.booleanValue()) {
+        if (!this.free.booleanValue()) {
             ResourceHand rh = new ResourceHand(0,0,0,0,0);
             rh.setWood(-1);
             rh.setBrick(-1);
@@ -100,7 +100,7 @@ public class PlaceSettlement extends Command {
             bank.giveResourcesToPlayer(model.getPlayers()[this.getPlayerIndex()], rh);
         }
         if (tracker.getStatus() == Status.SecondRound) {
-            ArrayList<Resource> resources = map.getLandTypeOfSurrounding(this.location);
+            ArrayList<Resource> resources = map.getLandTypeOfSurrounding(this.vertexLocation);
             ResourceHand rh = new ResourceHand(0,0,0,0,0);
             for (Resource res : resources) {
                 rh.set(res, 1);
