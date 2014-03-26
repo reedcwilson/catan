@@ -2,22 +2,19 @@ package com.catan.main.datamodel.hexgrid.base;
 
 public abstract class Value
 {
-    protected int worth = -1;
     protected int ownerID = -1;
 
     public Value() {}
 
-    public Value(int ownerID, int worth)
+    public Value(int ownerID)
     {
         this.ownerID = ownerID;
-        this.worth = worth;
     }
 
     public int getOwnerID()
     {
         return this.ownerID;
     }
-    public int getWorth() { return this.worth; }
 
     //region Overrides
 
@@ -25,7 +22,6 @@ public abstract class Value
     public String toString() {
         return "Value{" +
                 "ownerID=" + ownerID +
-                ", value=" + worth +
                 '}';
     }
 
@@ -37,15 +33,13 @@ public abstract class Value
         Value value1 = (Value) o;
 
         if (ownerID != value1.ownerID) return false;
-        if (worth != value1.worth) return false;
 
         return true;
     }
 
     @Override
     public int hashCode() {
-        int result = ownerID;
-        result = 31 * result + worth;
+        int result = ownerID * 31;
         return result;
     }
 //endregion

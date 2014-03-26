@@ -3,7 +3,7 @@ package com.catan.main.datamodel.player;
 public class TurnTracker {
 
     //region Fields
-    private final int _players = 4;
+    private static final int _players = 4;
     private Status status;
     private int currentTurn;
     //endregion

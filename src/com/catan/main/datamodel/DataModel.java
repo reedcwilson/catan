@@ -29,7 +29,7 @@ public class DataModel implements Cloneable {
     private int biggestArmy;
     private int longestRoad = -1;
     private Long winner;
-    private int version = 0;
+    private int revision = 0;
     //endregion
 
     public DataModel() {
@@ -51,8 +51,8 @@ public class DataModel implements Cloneable {
     public Player[] getPlayers() {
         return this.players;
     }
-    public int getVersion() {
-        return this.version;
+    public int getRevision() {
+        return this.revision;
     }
     //endregion
 
@@ -147,7 +147,7 @@ public class DataModel implements Cloneable {
     }
 
     public void advanceVersion() {
-        this.version += 1;
+        this.revision += 1;
     }
 
     public String toJSON() {
@@ -176,7 +176,7 @@ public class DataModel implements Cloneable {
                 ", biggestArmy=" + biggestArmy +
                 ", longestRoad=" + longestRoad +
                 ", winner=" + winner +
-                ", revision=" + version +
+                ", revision=" + revision +
                 '}';
     }
 
@@ -189,7 +189,7 @@ public class DataModel implements Cloneable {
 
         if (biggestArmy != that.biggestArmy) return false;
         if (longestRoad != that.longestRoad) return false;
-        if (version != that.version) return false;
+        if (revision != that.revision) return false;
         if (bank != null ? !bank.equals(that.bank) : that.bank != null) return false;
         if (chat != null ? !chat.equals(that.chat) : that.chat != null) return false;
         if (deck != null ? !deck.equals(that.deck) : that.deck != null) return false;
@@ -216,7 +216,7 @@ public class DataModel implements Cloneable {
         result = 31 * result + biggestArmy;
         result = 31 * result + longestRoad;
         result = 31 * result + (winner != null ? winner.hashCode() : 0);
-        result = 31 * result + version;
+        result = 31 * result + revision;
         return result;
     }
     //endregion
