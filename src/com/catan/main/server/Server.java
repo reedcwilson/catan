@@ -28,6 +28,7 @@ import java.util.Map;
 
 public class Server {
 
+    //region Fields
     private static final int SERVER_PORT_NUMBER = 8081;
     private static final int MAX_WAITING_CONNECTIONS = 10;
     private final String _serverErrorStr = "ERROR 500. Internal Server Error: ";
@@ -38,7 +39,9 @@ public class Server {
     private int _port;
     private HttpServer _server;
     private Gson _gson;
+    //endregion
 
+    //region Helper Methods
     private void respondWithString(HttpExchange exchange, String message, int code, String contentType) throws IOException {
         byte[] bytes = message.getBytes();
         exchange.getResponseHeaders().add("Content-Type", contentType);
@@ -53,6 +56,7 @@ public class Server {
         String response = model.toJSON();
         respondWithString(exchange, response, 200, _jsonStr);
     }
+    //endregion
 
     //region Handlers
 
@@ -802,6 +806,7 @@ public class Server {
 
     //endregion
 
+    //region Server Methods
     private Server(int p) {
         this._port = p;
         _gson = new Gson();
@@ -875,4 +880,5 @@ public class Server {
 
         this._server.start();
     }
+    //endregion
 }
