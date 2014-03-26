@@ -61,8 +61,8 @@ public class Map {
             int oldDesertIndex = numbers.indexOf(null);
             int lastIndex = numbers.size() - 1;
 
-            int elementToMove = ((Integer) numbers.get(newDesertIndex)).intValue();
-            int lastElement = ((Integer) numbers.get(lastIndex)).intValue();
+            int elementToMove = numbers.get(newDesertIndex).intValue();
+            int lastElement = numbers.get(lastIndex).intValue();
 
             numbers.set(oldDesertIndex, Integer.valueOf(lastElement));
             numbers.set(lastIndex, Integer.valueOf(elementToMove));
@@ -70,9 +70,9 @@ public class Map {
         }
         Map map = new Map(4);
         for (int spotIndex = 0; spotIndex < hexLocations.size(); spotIndex++) {
-            HexLocation location = (HexLocation) hexLocations.get(spotIndex);
-            Resource resource = (Resource) hexTypes.get(spotIndex);
-            Integer number = (Integer) numbers.get(spotIndex);
+            HexLocation location = hexLocations.get(spotIndex);
+            Resource resource = hexTypes.get(spotIndex);
+            Integer number = numbers.get(spotIndex);
             if (resource != null) {
                 map.setResourceHex(location.getX(), location.getY(), resource);
                 map.setNumber(location, number);
@@ -83,9 +83,9 @@ public class Map {
         }
         map.surroundWithWater();
         for (int count = 0; count < portTypes.size(); count++) {
-            EdgeLocation portLoc = (EdgeLocation) portLocations.get(count);
-            Resource portType = (Resource) portTypes.get(count);
-            map.setPort(portLoc.getX(), portLoc.getY(), (EdgeDirection) portLoc.getDirection(), portType);
+            EdgeLocation portLoc = portLocations.get(count);
+            Resource portType = portTypes.get(count);
+            map.setPort(portLoc.getX(), portLoc.getY(), portLoc.getDirection(), portType);
         }
         return map;
     }
