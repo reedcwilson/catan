@@ -84,7 +84,7 @@ public class Server {
 
                     respondWithString(exchange, _successStr, 200, "test/html");
                 } else {
-                    respondWithString(exchange, _clientErrorStr, 400, _textStr);
+                    respondWithString(exchange, "Invalid Username or Password", 400, _textStr);
                 }
             } catch (Exception e) {
                 // send server exception response header
