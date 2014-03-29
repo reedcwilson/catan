@@ -44,16 +44,21 @@ class ServerUtils {
 
         // default game 1
         Game game1 = createGame(new CreateGameRequest(true, true, true, "Default1"));
+        Game game2 = createGame(new CreateGameRequest(true, true, true, "Default2"));
+        try
+        {
         addUserToGame(user1, Color.blue, 0L);
         addUserToGame(user2, Color.brown, 0L);
         addUserToGame(user3, Color.orange, 0L);
         addUserToGame(user4, Color.red, 0L);
 
         // default game 2
-        Game game2 = createGame(new CreateGameRequest(true, true, true, "Default2"));
         addUserToGame(user1, Color.blue, 1L);
         addUserToGame(user2, Color.brown, 1L);
         addUserToGame(user3, Color.orange, 1L);
+        }
+        catch (Exception e) {
+        }
 
         // default game 3
         Game game3 = createGame(new CreateGameRequest(true, true, true, "Default3"));
@@ -179,13 +184,23 @@ class ServerUtils {
         return validateLogin(outsideUser.getName(), outsideUser.getPassword());
     }
 
-    public static boolean addUserToGame(User user, Color color, Long gameID) {
+    public static boolean addUserToGame(User user, Color color, Long gameID) throws Exception{
         Game g = _games.get(gameID);
         if (user == null) {
             LOGGER.log(Level.WARNING, "Unable to grab player info from cookie.");
             return false;
         }
         if (g != null) {
+            for(int i  = 0; i < 4; i++)
+            {
+                if(g.getModel().getPlayers()[i] != null)
+                {
+                    if(g.getModel().getPlayers()[i].getColor().equals(color))
+                    {
+                        throw new Exception("Someone has that color");
+                    }
+                }
+            }
             LOGGER.log(Level.FINE, user.toString());
             if (g.addPlayer(user.getPlayerID(), color, user.getName())) {
                 _games.put(g.getId(), g);

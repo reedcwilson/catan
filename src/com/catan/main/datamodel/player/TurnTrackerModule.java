@@ -7,8 +7,8 @@ import com.google.inject.*;
  */
 public class TurnTrackerModule {
 
-@Inject
 
-    
+
+
 
 }

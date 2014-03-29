@@ -55,7 +55,7 @@ public class PlaceCity extends Command {
     }
     @Override
     protected MessageLine getLog(DataModel model) {
-        String name = model.getPlayers()[model.getTurnTracker().getCurrentTurn()].getName();
+        String name = model.getPlayers()[this.getPlayerIndex()].getName();
         return new MessageLine(name, name + " upgraded to a city");
     }
 
