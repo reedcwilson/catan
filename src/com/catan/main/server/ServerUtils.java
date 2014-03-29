@@ -195,7 +195,7 @@ class ServerUtils {
             {
                 if(g.getModel().getPlayers()[i] != null)
                 {
-                    if(g.getModel().getPlayers()[i].getColor().equals(color))
+                    if(g.getModel().getPlayers()[i].getColor().equals(color) && !g.getModel().getPlayers()[i].getName().equals(user.getName()))
                     {
                         throw new Exception("Someone has that color");
                     }
