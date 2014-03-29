@@ -162,14 +162,14 @@ public class HexGrid {
         int y = ty - this.y0;
         return new HexLocation(x, y);
     }
-    private LazyLoader<VertexLocation, Vertex> initVertices() {
+    private LazyLoader initVertices() {
         return new LazyLoader() {
             protected Vertex getNewValue() {
                 return new Vertex(new VertexValue(-1, 0), null);
             }
         };
     }
-    private LazyLoader<EdgeLocation, Edge> initEdges() {
+    private LazyLoader initEdges() {
         return new LazyLoader() {
             protected Edge getNewValue() {
                 return new Edge(new EdgeValue(-1), null);

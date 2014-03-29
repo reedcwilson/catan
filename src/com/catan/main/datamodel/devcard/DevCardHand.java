@@ -67,7 +67,7 @@ public class DevCardHand extends Hand<DevCardType> {
             case Soldier:
                 return this.soldier;
         }
-        throw new RuntimeException("Impossible devcard request");
+        throw new RuntimeException("Invalid devcard request");
     }
     @Override
     public void add(DevCardType t, int i) {
@@ -88,7 +88,7 @@ public class DevCardHand extends Hand<DevCardType> {
                 this.soldier += i;
                 break;
             default:
-                throw new RuntimeException("Impossible devcard request");
+                throw new RuntimeException("Invalid devcard request");
         }
     }
     @Override
