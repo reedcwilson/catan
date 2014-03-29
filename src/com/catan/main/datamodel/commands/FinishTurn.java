@@ -36,16 +36,18 @@ public class FinishTurn extends Command {
     @Override
     public void action(DataModel model) {
         TurnTracker tracker = model.getTurnTracker();
-
-        Player[] players = model.getPlayers();
-        Player pl = players[this.getPlayerIndex()];
-        pl.getOldDevCards().addRange(pl.getNewDevCards());
-        pl.getNewDevCards().removeRange(pl.getNewDevCards());
-        pl.setPlayedDevCard(false);
-        for (int i = 0; i < players.length; i++) {
-            players[i].setDiscarded(false);
+        if(model.getTurnTracker().getCurrentTurn() == this.getPlayerIndex())
+        {
+            Player[] players = model.getPlayers();
+            Player pl = players[this.getPlayerIndex()];
+            pl.getOldDevCards().addRange(pl.getNewDevCards());
+            pl.getNewDevCards().removeRange(pl.getNewDevCards());
+            pl.setPlayedDevCard(false);
+            for (int i = 0; i < players.length; i++) {
+                players[i].setDiscarded(false);
+            }
+            setTrackerStatus(tracker);
         }
-        setTrackerStatus(tracker);
     }
     @Override
     protected MessageLine getLog(DataModel model) {
