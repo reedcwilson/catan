@@ -1,6 +1,6 @@
 package com.catan.main.datamodel.player;
 
-public class TurnTracker {
+public class TurnTracker implements TurnTrackerInterface{
 
     //region Fields
     private static final int _players = 4;

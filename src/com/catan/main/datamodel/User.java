@@ -1,6 +1,6 @@
 package com.catan.main.datamodel;
 
-public class User {
+public class User{
 
     //region Fields
     private String authentication;
