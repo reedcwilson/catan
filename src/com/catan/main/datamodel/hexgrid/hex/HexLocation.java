@@ -34,33 +34,33 @@ public class HexLocation {
         int y;
         switch (direction) {
             case NW:
-                x = 1;
+                x = -1;
                 y = 0;
                 z = -1;
                 break;
             case N:
                 x = 0;
-                y = 1;
+                y = -1;
                 z = -1;
                 break;
             case NE:
-                x = -1;
-                y = 1;
+                x = 1;
+                y = -1;
                 z = 0;
                 break;
             case SE:
-                x = -1;
+                x = 1;
                 y = 0;
                 z = 1;
                 break;
             case S:
                 x = 0;
-                y = -1;
+                y = 1;
                 z = 1;
                 break;
             case SW:
-                x = 1;
-                y = -1;
+                x = -1;
+                y = 1;
                 z = 0;
                 break;
             default:
