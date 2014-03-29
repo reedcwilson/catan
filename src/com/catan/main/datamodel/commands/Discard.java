@@ -26,7 +26,7 @@ public class Discard extends Command {
     }
 
     public int getPlayerIndex() {
-        return this.getPlayerIndex();
+        return super.getPlayerIndex();
     }
     public void setPlayerIndex(int playerIndex) {
         this.setPlayerIndex(playerIndex);
