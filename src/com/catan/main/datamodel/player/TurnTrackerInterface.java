@@ -1,8 +1,6 @@
 package com.catan.main.datamodel.player;
 
-/**
- * Created by jakeparkinson on 3/29/14.
- */
+
 public interface TurnTrackerInterface {
     public int getCurrentTurn();
     public void setCurrentTurn(int currentTurn);

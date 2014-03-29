@@ -7,6 +7,7 @@ import com.catan.main.datamodel.message.MessageLine;
 import com.catan.main.datamodel.player.Player;
 import com.catan.main.datamodel.player.Status;
 import com.catan.main.datamodel.player.TurnTracker;
+import com.catan.main.datamodel.player.TurnTrackerInterface;
 
 public class RobPlayer extends Command {
 
@@ -41,7 +42,7 @@ public class RobPlayer extends Command {
     //region Overrides
     @Override
     public void action(DataModel model) {
-        TurnTracker t = model.getTurnTracker();
+        TurnTrackerInterface t = model.getTurnTracker();
         Map m = model.getMap();
         if (this.victimIndex != -1) {
             Player[] players = model.getPlayers();

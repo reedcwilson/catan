@@ -2,9 +2,12 @@ package com.catan.main.datamodel.game;
 
 import com.catan.main.datamodel.DataModel;
 import com.catan.main.datamodel.CommandHistory;
+import com.catan.main.datamodel.devcard.DevCardDeck;
 import com.catan.main.datamodel.map.Map;
-import com.catan.main.datamodel.player.Color;
-import com.catan.main.datamodel.player.Player;
+import com.catan.main.datamodel.message.MessageBox;
+import com.catan.main.datamodel.player.*;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 
 public class Game {
 
@@ -30,8 +33,17 @@ public class Game {
     public static Game requestNewGame(CreateGameRequest request) {
         Player[] players = {null, null, null, null};
         Map map = Map.generateNewMap(request.randomTiles, request.randomNumbers, request.randomNumbers);
-
-        DataModel model = new DataModel(map, players);
+        Injector injector = Guice.createInjector(new TurnTrackerModule());
+        //DataModel model = new DataModel(map, players);
+        DataModel model =  injector.getInstance(DataModel.class);
+        model.setBank(new Bank());
+        model.setLog(new MessageBox());
+        model.setChat(new MessageBox());
+        model.setMap(map);
+        model.setPlayers(players);
+        model.setDeck(new DevCardDeck());
+        model.setBiggestArmy(2);
+        model.setWinner(Long.valueOf(-1L));
         Game game = new Game(null, request.getName(), model, new CommandHistory(true, false));
 
         return game;

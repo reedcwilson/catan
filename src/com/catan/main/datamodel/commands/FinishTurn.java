@@ -5,6 +5,7 @@ import com.catan.main.datamodel.message.MessageLine;
 import com.catan.main.datamodel.player.Player;
 import com.catan.main.datamodel.player.Status;
 import com.catan.main.datamodel.player.TurnTracker;
+import com.catan.main.datamodel.player.TurnTrackerInterface;
 
 public class FinishTurn extends Command {
 
@@ -12,7 +13,7 @@ public class FinishTurn extends Command {
     }
 
     //region Methods
-    private void setTrackerStatus(TurnTracker tracker) {
+    private void setTrackerStatus(TurnTrackerInterface tracker) {
         if (tracker.getStatus() == Status.FirstRound) {
             if (tracker.isLastPlayerTurn()) {
                 tracker.setStatus(Status.SecondRound);
@@ -35,7 +36,7 @@ public class FinishTurn extends Command {
     //region Overrides
     @Override
     public void action(DataModel model) {
-        TurnTracker tracker = model.getTurnTracker();
+        TurnTrackerInterface tracker = model.getTurnTracker();
         if(model.getTurnTracker().getCurrentTurn() == this.getPlayerIndex())
         {
             Player[] players = model.getPlayers();

@@ -33,7 +33,7 @@ public class RollDice extends Command {
 
     //region Helper Methods
     private void allocateResources(DataModel model) {
-        TurnTracker t = model.getTurnTracker();
+        TurnTrackerInterface t = model.getTurnTracker();
         Player[] players = model.getPlayers();
 
         Map m = model.getMap();
@@ -43,7 +43,7 @@ public class RollDice extends Command {
         b.giveResourcesToPlayers(rolledResources, players);
     }
     private void startDiscarding(DataModel model) {
-        TurnTracker t = model.getTurnTracker();
+        TurnTrackerInterface t = model.getTurnTracker();
         Player[] players = model.getPlayers();
         if (t.shouldDiscard(players)) {
             t.setStatus(Status.Discarding);

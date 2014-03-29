@@ -79,7 +79,7 @@ public class PlaceSettlement extends Command {
     @Override
     public void action(DataModel model) {
         Map map = model.getMap();
-        TurnTracker tracker = model.getTurnTracker();
+        TurnTrackerInterface tracker = model.getTurnTracker();
         Bank bank = model.getBank();
         map.addSettlement(this.vertexLocation, this.getPlayerIndex());
 

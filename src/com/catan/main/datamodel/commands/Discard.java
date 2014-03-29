@@ -2,10 +2,7 @@ package com.catan.main.datamodel.commands;
 
 import com.catan.main.datamodel.DataModel;
 import com.catan.main.datamodel.message.MessageLine;
-import com.catan.main.datamodel.player.Player;
-import com.catan.main.datamodel.player.ResourceHand;
-import com.catan.main.datamodel.player.Status;
-import com.catan.main.datamodel.player.TurnTracker;
+import com.catan.main.datamodel.player.*;
 
 public class Discard extends Command {
 
@@ -39,7 +36,7 @@ public class Discard extends Command {
     //region Overrides
     @Override
     public void action(DataModel model) {
-        TurnTracker t = model.getTurnTracker();
+        TurnTrackerInterface t = model.getTurnTracker();
         Player[] players = model.getPlayers();
 
         players[this.getPlayerIndex()].getResources().removeRange(this.discardedCards);

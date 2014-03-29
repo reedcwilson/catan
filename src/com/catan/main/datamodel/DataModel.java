@@ -3,11 +3,9 @@ package com.catan.main.datamodel;
 import com.catan.main.datamodel.devcard.DevCardDeck;
 import com.catan.main.datamodel.map.Map;
 import com.catan.main.datamodel.message.MessageBox;
-import com.catan.main.datamodel.player.Bank;
-import com.catan.main.datamodel.player.Player;
-import com.catan.main.datamodel.player.TradeOffer;
-import com.catan.main.datamodel.player.TurnTracker;
+import com.catan.main.datamodel.player.*;
 import com.google.gson.Gson;
+import com.google.inject.Inject;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.StaxDriver;
 
@@ -24,7 +22,7 @@ public class DataModel implements Cloneable {
     private MessageBox log;
     private MessageBox chat;
     private Bank bank;
-    private TurnTracker turnTracker;
+    private TurnTrackerInterface turnTracker;
     private TradeOffer tradeOffer;
     private int biggestArmy;
     private int longestRoad = -1;
@@ -35,21 +33,26 @@ public class DataModel implements Cloneable {
     public DataModel() {
         System.out.println("This constructor is only for compiling");
     }
-    public DataModel(Map map, Player[] players) {
-        this.log = new MessageBox();
-        this.chat = new MessageBox();
-        this.bank = new Bank();
-        this.map = map;
-        this.players = players;
-        this.turnTracker = new TurnTracker();
-        this.deck = new DevCardDeck();
-        this.biggestArmy = 2;
-        this.winner = Long.valueOf(-1L);
+
+    @Inject
+    public DataModel(TurnTrackerInterface turn) {
+        //this.log = new MessageBox();
+        //this.chat = new MessageBox();
+        //this.bank = new Bank();
+        //this.map = map;
+        //this.players = players;
+        this.turnTracker = turn;
+        //this.deck = new DevCardDeck();
+        //this.biggestArmy = 2;
+        //this.winner = Long.valueOf(-1L);
     }
 
     //region Invariants
     public Player[] getPlayers() {
         return this.players;
+    }
+    public void setPlayers(Player[] players){
+        this.players = players;
     }
     public int getRevision() {
         return this.revision;
@@ -129,12 +132,12 @@ public class DataModel implements Cloneable {
         this.winner = winner;
     }
 
-    public TurnTracker getTurnTracker() {
+    @Inject
+    public TurnTrackerInterface getTurnTracker() {
         return this.turnTracker;
     }
-    public void setTurnTracker(TurnTracker turnTracker) {
-        this.turnTracker = turnTracker;
-    }
+
+
     //endregion
 
     //region Methods
