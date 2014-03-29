@@ -560,6 +560,26 @@ public class Server {
     };
     //endregion
 
+    //region offerTrade
+    private HttpHandler robPlayerHandler = new HttpHandler() {
+
+        @Override
+        public void handle(HttpExchange exchange) throws IOException {
+
+            try {
+                handleCommand(exchange, RobPlayer.class);
+            } catch (Exception e) {
+
+                // send server exception response header
+                System.out.println(_serverErrorStr + e.getMessage());
+                e.printStackTrace();
+                respondWithString(exchange, _serverErrorStr, HttpURLConnection.HTTP_INTERNAL_ERROR, _textStr);
+            }
+            exchange.close();
+        }
+    };
+    //endregion
+
     //region maritimeTrade
     private HttpHandler maritimeTradeHandler = new HttpHandler() {
 
@@ -867,6 +887,7 @@ public class Server {
         this._server.createContext("/moves/buildSettlement", buildSettlementHandler);
         this._server.createContext("/moves/buildCity", buildCityHandler);
         this._server.createContext("/moves/offerTrade", offerTradeHandler);
+        this._server.createContext("/moves/robPlayer", robPlayerHandler);
         this._server.createContext("/moves/maritimeTrade", maritimeTradeHandler);
         this._server.createContext("/moves/finishTurn", finishTurnHandler);
         this._server.createContext("/moves/buyDevCard", buyDevCardHandler);
