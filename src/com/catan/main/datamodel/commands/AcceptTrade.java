@@ -21,16 +21,19 @@ public class AcceptTrade extends Command {
     public void setWillAccept(boolean willAccept) {
         this.willAccept = willAccept;
     }
+    private Player myreciever;
     //endregion
 
     //region Overrides
     @Override
     public void action(DataModel model) {
+        myreciever = model.getPlayers()[model.getTradeOffer().getReceiver()];
         if (this.willAccept) {
             TradeOffer t = model.getTradeOffer();
             Player[] players = model.getPlayers();
             Player sender = players[t.getSender()];
             Player receiver = players[t.getReceiver()];
+            myreciever = players[t.getReceiver()];
             sender.getResources().removeRange(t.getOffer());
             receiver.getResources().addRange(t.getOffer());
         }
@@ -39,9 +42,9 @@ public class AcceptTrade extends Command {
     @Override
     protected MessageLine getLog(DataModel model) {
         if (this.willAccept) {
-            return new MessageLine(model.getPlayers()[0].getName(), "The trade was accepted");
+            return new MessageLine(myreciever.getName(), "The trade was accepted");
         }
-        return new MessageLine(model.getPlayers()[0].getName(), "The trade was not accepted");
+        return new MessageLine(myreciever.getName(), "The trade was not accepted");
     }
     //endregion
 }
