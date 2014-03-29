@@ -29,7 +29,7 @@
 	
 	<!-- Directories containing testing files -->
     <property name="test" location="test" />
-	<property name="test-src" location="${test}/test-src"/>
+	<property name="test-src" location="${test}/src"/>
 	<property name="test-build" location="${test}/test-build"/>
 	<property name="test-reports" location="${test}/test-reports"/>
 
@@ -95,7 +95,6 @@
 
 	<target name="init" description="create build directories">
 		<tstamp />
-        <mkdir dir="${test-src}" />
 		<mkdir dir="${build-dir}" />
 		<mkdir dir="${test-build}"/>
 		<mkdir dir="${test-reports}"/>
@@ -116,7 +115,7 @@
 		 <javac srcdir="${test}" classpathref="all-classpath" destdir="${build-dir}" debug="true" includeantruntime="true" />
 	</target>
 
-	<target name="our-server" depends="test" description="run server on specified port">
+	<target name="our-server" depends="coverage" description="run server on specified port">
 	    <java classname="com.catan.main.server.Server" fork="yes">
 	      <classpath>
 	        <path refid="all-classpath"/>
