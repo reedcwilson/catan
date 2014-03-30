@@ -32,10 +32,10 @@ class ServerUtils {
 
     // static initializer
     static {
-        User user1 = new User("Sam", "sam", 0L);
-        User user2 = new User("Brooke", "brooke", 1L);
-        User user3 = new User("Pete", "pete", 2L);
-        User user4 = new User("Mark", "mark", 3L);
+        User user1 = new User("Koli", "koli", 0L);
+        User user2 = new User("Jake", "jake", 1L);
+        User user3 = new User("Matt", "matt", 2L);
+        User user4 = new User("Reed", "reed", 3L);
 
         _users.put(0L, user1);
         _users.put(1L, user2);
@@ -47,15 +47,15 @@ class ServerUtils {
         Game game2 = createGame(new CreateGameRequest(true, true, true, "Default2"));
         try
         {
-        addUserToGame(user1, Color.blue, 0L);
-        addUserToGame(user2, Color.brown, 0L);
-        addUserToGame(user3, Color.orange, 0L);
-        addUserToGame(user4, Color.red, 0L);
+            addUserToGame(user1, Color.blue, 0L);
+            addUserToGame(user2, Color.green, 0L);
+            addUserToGame(user3, Color.orange, 0L);
+            addUserToGame(user4, Color.white, 0L);
 
-        // default game 2
-        addUserToGame(user1, Color.blue, 1L);
-        addUserToGame(user2, Color.brown, 1L);
-        addUserToGame(user3, Color.orange, 1L);
+            // default game 2
+            addUserToGame(user1, Color.blue, 1L);
+            addUserToGame(user2, Color.green, 1L);
+            addUserToGame(user3, Color.white, 1L);
         }
         catch (Exception e) {
         }

@@ -41,6 +41,18 @@ public class PlaceRoad extends Command {
     public void setPlayerIndex(Integer playerIndex) {
         this.setPlayerIndex(playerIndex.intValue());
     }
+    private long getPlayerWithMostRoads(DataModel model) {
+        Player[] players = model.getPlayers();
+        Player playerWithMostRoads = players[0];
+        for (Player player : players) {
+            if (!player.equals(playerWithMostRoads) && player.getRoads() < playerWithMostRoads.getRoads()) {
+                playerWithMostRoads = player;
+            }
+        }
+        if (playerWithMostRoads.getRoads() < 11)
+            return playerWithMostRoads.getPlayerID();
+        return -1L;
+    }
     //endregion
 
     //region Overrides
@@ -50,18 +62,21 @@ public class PlaceRoad extends Command {
         Bank bank = model.getBank();
 
         map.addRoad(this.roadLocation, this.getPlayerIndex());
-        // TODO: modify most roads person
+        // TODO: add really cool symbols all over our files ♦♥♣♠
         Player player = model.getPlayers()[this.getPlayerIndex()];
-        if ((model.getWinner().longValue() == -1L) &&
-                (player.wonGame())) {
-            model.setWinner(player.getPlayerID());
-        }
         player.setRoads(player.getRoads() - 1);
         if (!this.free) {
             ResourceHand rh = new ResourceHand();
             rh.setWood(-1);
             rh.setBrick(-1);
             bank.giveResourcesToPlayer(model.getPlayers()[this.getPlayerIndex()], rh);
+        }
+        long mostRoadsPlayerIdx = getPlayerWithMostRoads(model);
+        if (mostRoadsPlayerIdx != -1) {
+            model.setLongestRoad((int)mostRoadsPlayerIdx);
+        }
+        if ((model.getWinner() == -1L) && (player.wonGame())) {
+            model.setWinner(player.getPlayerID());
         }
     }
 
