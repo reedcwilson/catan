@@ -5,6 +5,9 @@ import com.catan.main.datamodel.game.Game;
 import com.catan.main.datamodel.hexgrid.edge.Edge;
 import com.catan.main.datamodel.hexgrid.edge.EdgeDirection;
 import com.catan.main.datamodel.hexgrid.edge.EdgeLocation;
+import com.catan.main.datamodel.hexgrid.vertex.Vertex;
+import com.catan.main.datamodel.hexgrid.vertex.VertexDirection;
+import com.catan.main.datamodel.hexgrid.vertex.VertexLocation;
 import com.catan.main.server.Client;
 import com.catan.main.server.ServerUtils;
 import org.junit.*;
@@ -33,6 +36,9 @@ public class HexGridTests {
             EdgeLocation loc = new EdgeLocation(0, 0, EdgeDirection.NE);
             Edge edge = _game.getModel().getMap().getHexGrid().getEdge(loc);
             assertSame(edge.getLocation(), null);
+            //VertexLocation vertloc = new VertexLocation(0,0, VertexDirection.E);
+            //Vertex vert = _game.getModel().getMap().getHexGrid().getVertex(vertloc);
+            //assertSame(vert.getLocation(), null);
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
