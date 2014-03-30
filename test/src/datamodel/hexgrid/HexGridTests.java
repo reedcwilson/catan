@@ -7,8 +7,10 @@ import com.catan.main.datamodel.hexgrid.base.Location;
 import com.catan.main.datamodel.hexgrid.edge.Edge;
 import com.catan.main.datamodel.hexgrid.edge.EdgeDirection;
 import com.catan.main.datamodel.hexgrid.edge.EdgeLocation;
+import com.catan.main.datamodel.hexgrid.vertex.Vertex;
 import com.catan.main.datamodel.hexgrid.vertex.VertexDirection;
 import com.catan.main.datamodel.hexgrid.vertex.VertexLocation;
+import com.catan.main.datamodel.hexgrid.vertex.VertexValue;
 import com.catan.main.server.Client;
 import com.catan.main.server.ServerUtils;
 import org.junit.*;
@@ -53,6 +55,24 @@ public class HexGridTests {
             assertTrue(grid.getRadius() > 0);
             assertTrue(grid.getEdge(new EdgeLocation(0, 0, EdgeDirection.NW)) != null);
         } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    @Test
+    public void VertexTest()
+    {
+        try
+        {
+            VertexLocation loc = new VertexLocation(0, 0, VertexDirection.NE);
+            Vertex vertex = _game.getModel().getMap().getHexGrid().getVertex(loc);
+
+            Vertex vertex2 = new Vertex(new VertexValue(-1,0),loc);
+
+            assertTrue(vertex.getValue().equals(vertex2.getValue()));
+        }
+        catch (Exception e)
+        {
             System.out.println(e.getMessage());
         }
     }
