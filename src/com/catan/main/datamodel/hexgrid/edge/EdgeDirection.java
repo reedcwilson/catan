@@ -30,10 +30,12 @@ public enum EdgeDirection implements Direction<EdgeDirection> {
         throw new RuntimeException("Invalid direction");
     }
 
+    @Override
     public EdgeDirection rotate(int amount) {
         return numberToDirection((this.value + amount + 6) % 6);
     }
 
+    @Override
     public VertexDirection getVertex(int amount) {
         assert (amount != 0);
         int begin = VertexDirection.E.value;
@@ -42,6 +44,7 @@ public enum EdgeDirection implements Direction<EdgeDirection> {
         return VertexDirection.E.rotate(diff + amount + (amount < 0 ? 1 : 0));
     }
 
+    @Override
     public EdgeDirection getEdge(int amount) {
         return rotate(amount);
     }

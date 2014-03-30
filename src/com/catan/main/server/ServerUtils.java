@@ -22,7 +22,7 @@ import java.util.logging.Logger;
 
 enum ServerLogLevel { OFF, SEVERE, WARNING, INFO, CONFIG, FINE, FINER, FINEST, ALL }
 
-class ServerUtils {
+public class ServerUtils {
 
     private static Logger LOGGER = LogManager.getLogManager().getLogger("global");
     private static Map<Long, User> _users = new HashMap<Long, User>();

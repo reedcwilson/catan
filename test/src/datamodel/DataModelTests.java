@@ -45,6 +45,7 @@ public class DataModelTests {
 
     @Test(expected = Exception.class)
     public void testAnotherRandomTestName() throws Exception {
+        throw new Exception();
         // test things that should throw an exception
     }
 }

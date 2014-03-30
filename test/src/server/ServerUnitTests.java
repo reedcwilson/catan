@@ -5,14 +5,6 @@ import static org.junit.Assert.* ;
 
 public class ServerUnitTests {
 
-    @Before
-    public void setup() {
-    }
-
-    @After
-    public void teardown() {
-    }
-
     @Test
     public void test_1() {
         assertEquals("OK", "OK");
@@ -23,10 +15,11 @@ public class ServerUnitTests {
     public static void main(String[] args) {
 
         String[] testClasses = new String[] {
-                "src.server.ServerUnitTests",
-                "src.datamodel.DataModel"
+                "src.server.ServerUnitTests"
+//                "src.server.ServerUnitTests",
+//                "src.datamodel.DataModelTests",
+//                "src.datamodel.hexgrid.HexGridTests"
         };
-
         org.junit.runner.JUnitCore.main(testClasses);
     }
 
