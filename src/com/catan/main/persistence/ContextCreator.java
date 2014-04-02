@@ -1,14 +1,18 @@
 package com.catan.main.persistence;
 
-public class ContextFactory {
+public class ContextCreator {
     private FileContext fileContext;
     private DatabaseContext databaseContext;
     private ContextType contextType;
 
-    public ContextFactory(ContextType contextType) {
+    public ContextCreator(ContextType contextType) {
         this.contextType = contextType;
     }
 
+    /**
+     * returns a DataContext that can be used to persist data
+     * @return DataContext
+     */
     public DataContext getDataContext() {
         switch (contextType) {
             case FILE:
@@ -20,6 +24,11 @@ public class ContextFactory {
         }
     }
 
+    /**
+     * returns a DataContext that can be used to persist data using the given ContextType
+     * @param type ContextType
+     * @return DataContext
+     */
     public DataContext getDataContext(ContextType type) {
         switch (type) {
             case FILE:
