@@ -24,7 +24,8 @@ CREATE TABLE game
 CREATE TABLE command
 (
 	id integer not null primary key autoincrement,
-	command blob not null
+	command blob not null,
+	game_id integer not null
 );
 
 
