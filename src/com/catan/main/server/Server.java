@@ -11,6 +11,8 @@ import com.catan.main.datamodel.commands.*;
 import com.catan.main.datamodel.game.CreateGameRequest;
 import com.catan.main.datamodel.game.Game;
 import com.catan.main.datamodel.player.Color;
+import com.catan.main.persistence.ContextCreator;
+import com.catan.main.persistence.DataContext;
 import com.google.gson.reflect.TypeToken;
 import com.sun.net.httpserver.Headers;
 import com.google.gson.Gson;
@@ -830,6 +832,7 @@ public class Server {
 
     //region Server Methods
     private Server(int p) {
+        DataContext dataContext = new ContextCreator(ContextCreator.ContextType.DATABASE).getDataContext();
         this._port = p;
         _gson = new Gson();
     }

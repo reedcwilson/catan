@@ -58,5 +58,5 @@ public class ContextCreator {
         return fileContext;
     }
 
-    enum ContextType { FILE, DATABASE }
+    public enum ContextType { FILE, DATABASE }
 }
