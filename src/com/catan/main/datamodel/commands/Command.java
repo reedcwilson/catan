@@ -1,11 +1,13 @@
 package com.catan.main.datamodel.commands;
 
 import com.catan.main.datamodel.DataModel;
+import com.catan.main.datamodel.PersistenceModel;
 import com.catan.main.datamodel.message.MessageLine;
 
-public abstract class Command {
+public abstract class Command implements PersistenceModel {
 
     //region Fields
+    private Long id;
     private String type;
     private int playerIndex;
     //endregion
@@ -20,6 +22,15 @@ public abstract class Command {
     //endregion
 
     //region Properties
+    @Override
+    public Long getId() {
+        return id;
+    }
+    @Override
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public String getType() {
         return this.type;
     }

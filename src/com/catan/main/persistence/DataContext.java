@@ -3,33 +3,33 @@ package com.catan.main.persistence;
 public abstract class DataContext<ResultObject, PreparedStatement> {
 
     //region Fields
-    private CommandAccess commandAccess;
-    private UserAccess userAccess;
-    private GameAccess gameAccess;
+    private IAccess commandAccess;
+    private IAccess userAccess;
+    private IAccess gameAccess;
     //endregion
 
     //region Properties
-    public CommandAccess getCommandAccess() {
+    public IAccess getCommandAccess() {
         return commandAccess;
     }
 
-    public void setCommandAccess(CommandAccess commandAccess) {
+    public void setCommandAccess(IAccess commandAccess) {
         this.commandAccess = commandAccess;
     }
 
-    public UserAccess getUserAccess() {
+    public IAccess getUserAccess() {
         return userAccess;
     }
 
-    public void setUserAccess(UserAccess userAccess) {
+    public void setUserAccess(IAccess userAccess) {
         this.userAccess = userAccess;
     }
 
-    public GameAccess getGameAccess() {
+    public IAccess getGameAccess() {
         return gameAccess;
     }
 
-    public void setGameAccess(GameAccess gameAccess) {
+    public void setGameAccess(IAccess gameAccess) {
         this.gameAccess = gameAccess;
     }
     //endregion

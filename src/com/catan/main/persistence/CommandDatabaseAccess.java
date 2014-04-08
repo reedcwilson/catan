@@ -2,54 +2,95 @@ package com.catan.main.persistence;
 
 import com.catan.main.datamodel.commands.Command;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 
-public class CommandDatabaseAccess extends CommandAccess {
+public class CommandDatabaseAccess extends DatabaseAccess<Command> {
+
+    public CommandDatabaseAccess(DatabaseContext dataContext) {
+        super(dataContext);
+    }
 
     /**
-     * a get method which returns a Command with the given id
-     * @param id int the id of the desired Command
-     * @return Command
+     * prepares the sql statement with the appropriate select parameters
+     * @return PreparedStatement
      */
     @Override
-    public Command get(int id) {
+    protected PreparedStatement getSelectStatement() {
         return null;
     }
 
     /**
-     * a get method which returns all Command
-     * @return List of Command objects
+     * prepares the sql statement with select parameters for a single get
+     * @param id the id
+     * @return PreparedStatement
+     * @throws DataAccessException
      */
     @Override
-    public List<Command> getAll() {
+    protected PreparedStatement getSingleSelectStatement(int id)
+            throws DataAccessException {
         return null;
     }
 
     /**
-     * an insert method which adds the given Command object to database
-     * @param command Command the object to insert
-     * @return int the id of the inserted object
+     * prepares the sql statement with the appropriate insert parameters
+     * @param input the input object
+     * @return PreparedStatement
+     * @throws DataAccessException
      */
     @Override
-    public int insert(Command command) {
-        return 0;
+    protected PreparedStatement getInsertStatement(Command input)
+            throws DataAccessException {
+        return null;
     }
 
     /**
-     * a delete method which removes the given Command from the database
-     * @param command Command the object to delete
+     * prepares the sql statement with the appropriate update parameters
+     * @param input the input object
+     * @return PreparedStatement
+     * @throws DataAccessException
      */
     @Override
-    public void delete(Command command) {
-
+    protected PreparedStatement getUpdateStatement(Command input)
+            throws DataAccessException {
+        return null;
     }
 
     /**
-     * an update method which updates the given Command in the database
-     * @param command Command the object to update
+     * prepares the sql statement with the appropriate delete parameters
+     * @param input the input object
+     * @return PreparedStatement
+     * @throws DataAccessException
      */
     @Override
-    public void update(Command command) {
+    protected PreparedStatement getDeleteStatement(Command input)
+            throws DataAccessException {
+        return null;
+    }
 
+    /**
+     * checks all of the parameters of the object to verify their validity
+     * @param input the input object
+     * @return PreparedStatement
+     */
+    @Override
+    protected boolean checkParameters(Command input) {
+        return false;
+    }
+
+    /**
+     * initializes an object of type T with given resultSet
+     * @param reader the reader
+     * @param list the list
+     * @return T
+     * @throws DataAccessException
+     * @throws SQLException
+     */
+    @Override
+    protected Command initialize(ResultSet reader, List<Command> list)
+            throws DataAccessException, SQLException {
+        return null;
     }
 }
