@@ -66,11 +66,15 @@ public class DataModelTests {
             Player[] players = {null, null, null, null};
             DataModel model = injector.getInstance(DataModel.class);
             model.setBank(new Bank());
+            DataModel cloney = _game.getModel().clone();
+            assertFalse(_game.getModel().equals(model));
+
             assertTrue(model != null);
             assertTrue(model.getTurnTracker().getClass() == MockTurnTracker.class);
 
             assertTrue(_game.getModel().getPlayers() != model.getPlayers());
             assertTrue(model.getBank() !=  null);
+
 
 
 
