@@ -1,16 +1,32 @@
-package com.catan.main.persistence;
+package com.catan.main.persistence.database;
 
-import com.catan.main.datamodel.commands.Command;
+import com.catan.main.datamodel.User;
+import com.catan.main.persistence.DataAccess;
+import com.catan.main.persistence.DataAccessException;
+import com.catan.main.persistence.ObjectCreator;
+import com.catan.main.persistence.UserAccess;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.List;
 
-public class CommandDatabaseAccess extends DatabaseAccess<Command> {
+public class UserDatabaseAccess extends UserAccess<ResultSet, PreparedStatement> {
 
-    public CommandDatabaseAccess(DatabaseContext dataContext) {
-        super(dataContext);
+    private DatabaseContext dataContext;
+    private UserDatabaseCreator creator;
+
+    public UserDatabaseAccess(DatabaseContext dataContext) {
+        this.dataContext = dataContext;
+        creator = new UserDatabaseCreator();
+    }
+
+    @Override
+    public DatabaseContext getDataContext() {
+        return dataContext;
+    }
+
+    @Override
+    public ObjectCreator<User, ResultSet> getObjectCreator() {
+        return creator;
     }
 
     /**
@@ -26,7 +42,7 @@ public class CommandDatabaseAccess extends DatabaseAccess<Command> {
      * prepares the sql statement with select parameters for a single get
      * @param id the id
      * @return PreparedStatement
-     * @throws DataAccessException
+     * @throws com.catan.main.persistence.DataAccessException
      */
     @Override
     protected PreparedStatement getSingleSelectStatement(int id)
@@ -41,7 +57,7 @@ public class CommandDatabaseAccess extends DatabaseAccess<Command> {
      * @throws DataAccessException
      */
     @Override
-    protected PreparedStatement getInsertStatement(Command input)
+    protected PreparedStatement getInsertStatement(User input)
             throws DataAccessException {
         return null;
     }
@@ -53,7 +69,7 @@ public class CommandDatabaseAccess extends DatabaseAccess<Command> {
      * @throws DataAccessException
      */
     @Override
-    protected PreparedStatement getUpdateStatement(Command input)
+    protected PreparedStatement getUpdateStatement(User input)
             throws DataAccessException {
         return null;
     }
@@ -65,7 +81,7 @@ public class CommandDatabaseAccess extends DatabaseAccess<Command> {
      * @throws DataAccessException
      */
     @Override
-    protected PreparedStatement getDeleteStatement(Command input)
+    protected PreparedStatement getDeleteStatement(User input)
             throws DataAccessException {
         return null;
     }
@@ -76,21 +92,7 @@ public class CommandDatabaseAccess extends DatabaseAccess<Command> {
      * @return PreparedStatement
      */
     @Override
-    protected boolean checkParameters(Command input) {
+    protected boolean checkParameters(User input) {
         return false;
-    }
-
-    /**
-     * initializes an object of type T with given resultSet
-     * @param reader the reader
-     * @param list the list
-     * @return T
-     * @throws DataAccessException
-     * @throws SQLException
-     */
-    @Override
-    protected Command initialize(ResultSet reader, List<Command> list)
-            throws DataAccessException, SQLException {
-        return null;
     }
 }

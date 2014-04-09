@@ -7,6 +7,7 @@ import com.catan.main.datamodel.devcard.DevCardDeck;
 import com.catan.main.datamodel.map.Map;
 import com.catan.main.datamodel.message.MessageBox;
 import com.catan.main.datamodel.player.*;
+import com.catan.main.persistence.DataAccessException;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 
@@ -22,7 +23,7 @@ public class Game implements PersistenceModel {
     private CommandHistory history;
     //endregion
 
-    public Game(Long id, String title, DataModel model, CommandHistory configuredHistory) {
+    public Game(Long id, String title, DataModel model, CommandHistory configuredHistory) throws DataAccessException {
         this.id = id;
         this.title = title;
         setModel(model);
@@ -31,7 +32,7 @@ public class Game implements PersistenceModel {
         this.history.executeAll(model);
     }
 
-    public static Game requestNewGame(CreateGameRequest request) {
+    public static Game requestNewGame(CreateGameRequest request) throws DataAccessException {
         Player[] players = {null, null, null, null};
         Map map = Map.generateNewMap(request.randomTiles, request.randomNumbers, request.randomNumbers);
         Injector injector = Guice.createInjector(new TurnTrackerModule());

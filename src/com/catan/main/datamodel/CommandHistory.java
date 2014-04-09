@@ -1,6 +1,7 @@
 package com.catan.main.datamodel;
 
 import com.catan.main.datamodel.commands.Command;
+import com.catan.main.persistence.DataAccessException;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
@@ -48,7 +49,7 @@ public class CommandHistory {
         return new Gson().toJson(this);
     }
 
-    public boolean execute(DataModel model, Command c) {
+    public boolean execute(DataModel model, Command c) throws DataAccessException {
         this.commands.add(c);
         if (this.verbose) {
             c.log(model);
@@ -57,7 +58,7 @@ public class CommandHistory {
         model.advanceVersion();
         return true;
     }
-    public void executeAll(DataModel model) {
+    public void executeAll(DataModel model) throws DataAccessException {
         for (Command c : this.commands) {
             execute(model, c);
         }

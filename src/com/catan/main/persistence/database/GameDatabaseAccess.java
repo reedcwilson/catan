@@ -1,18 +1,31 @@
-package com.catan.main.persistence;
+package com.catan.main.persistence.database;
 
-import com.catan.main.datamodel.User;
-import com.catan.main.datamodel.commands.Command;
 import com.catan.main.datamodel.game.Game;
+import com.catan.main.persistence.*;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
-public class GameDatabaseAccess extends DatabaseAccess<Game>  {
+public class GameDatabaseAccess extends GameAccess<ResultSet, PreparedStatement> {
+
+    private DatabaseContext dataContext;
+    private GameDatabaseCreator creator;
 
     public GameDatabaseAccess(DatabaseContext dataContext) {
-        super(dataContext);
+        this.dataContext = dataContext;
+        creator = new GameDatabaseCreator();
+    }
+
+    @Override
+    public DataContext getDataContext() {
+        return dataContext;
+    }
+
+    @Override
+    public ObjectCreator<Game, ResultSet> getObjectCreator() {
+        return creator;
     }
 
     /**
@@ -28,7 +41,7 @@ public class GameDatabaseAccess extends DatabaseAccess<Game>  {
      * prepares the sql statement with select parameters for a single get
      * @param id the id
      * @return PreparedStatement
-     * @throws DataAccessException
+     * @throws com.catan.main.persistence.DataAccessException
      */
     @Override
     protected PreparedStatement getSingleSelectStatement(int id)
@@ -80,19 +93,5 @@ public class GameDatabaseAccess extends DatabaseAccess<Game>  {
     @Override
     protected boolean checkParameters(Game input) {
         return false;
-    }
-
-    /**
-     * initializes an object of type T with given resultSet
-     * @param reader the reader
-     * @param list the list
-     * @return T
-     * @throws DataAccessException
-     * @throws java.sql.SQLException
-     */
-    @Override
-    protected Game initialize(ResultSet reader, List<Game> list)
-            throws DataAccessException, SQLException {
-        return null;
     }
 }

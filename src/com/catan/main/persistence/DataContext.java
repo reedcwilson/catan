@@ -2,36 +2,12 @@ package com.catan.main.persistence;
 
 public abstract class DataContext<ResultObject, PreparedStatement> {
 
-    //region Fields
-    private IAccess commandAccess;
-    private IAccess userAccess;
-    private IAccess gameAccess;
-    //endregion
-
     //region Properties
-    public IAccess getCommandAccess() {
-        return commandAccess;
-    }
+    public abstract CommandAccess getCommandAccess();
 
-    public void setCommandAccess(IAccess commandAccess) {
-        this.commandAccess = commandAccess;
-    }
+    public abstract UserAccess getUserAccess();
 
-    public IAccess getUserAccess() {
-        return userAccess;
-    }
-
-    public void setUserAccess(IAccess userAccess) {
-        this.userAccess = userAccess;
-    }
-
-    public IAccess getGameAccess() {
-        return gameAccess;
-    }
-
-    public void setGameAccess(IAccess gameAccess) {
-        this.gameAccess = gameAccess;
-    }
+    public abstract GameAccess getGameAccess();
     //endregion
 
     //region Public Interface
@@ -84,5 +60,5 @@ public abstract class DataContext<ResultObject, PreparedStatement> {
 
     //endregion
 
-    enum MethodType { SELECT, INSERT, UPDATE, DELETE }
+    public enum MethodType { SELECT, INSERT, UPDATE, DELETE }
 }
