@@ -1,6 +1,6 @@
 package com.catan.main.datamodel;
 
-public class User{
+public class User implements PersistenceModel{
 
     //region Fields
     private String authentication;
@@ -45,10 +45,12 @@ public class User{
         this.password = password;
     }
 
-    public Long getPlayerID() {
+    @Override
+    public Long getId() {
         return this.playerID;
     }
-    public void setPlayerID(Long playerID) {
+    @Override
+    public void setId(Long playerID) {
         this.playerID = playerID;
     }
     //endregion

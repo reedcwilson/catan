@@ -1,54 +1,98 @@
 package com.catan.main.persistence;
 
+import com.catan.main.datamodel.User;
+import com.catan.main.datamodel.commands.Command;
 import com.catan.main.datamodel.game.Game;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 
-public class GameDatabaseAccess extends GameAccess {
+public class GameDatabaseAccess extends DatabaseAccess<Game>  {
+
+    public GameDatabaseAccess(DatabaseContext dataContext) {
+        super(dataContext);
+    }
+
     /**
-     * a get method which returns a Game with the given id
-     * @param id int the id of the desired Game
-     * @return Game
+     * prepares the sql statement with the appropriate select parameters
+     * @return PreparedStatement
      */
     @Override
-    public Game get(int id) {
+    protected PreparedStatement getSelectStatement() {
         return null;
     }
 
     /**
-     * a get method which returns all Games
-     * @return List of Game objects
+     * prepares the sql statement with select parameters for a single get
+     * @param id the id
+     * @return PreparedStatement
+     * @throws DataAccessException
      */
     @Override
-    public List<Game> getAll() {
+    protected PreparedStatement getSingleSelectStatement(int id)
+            throws DataAccessException {
         return null;
     }
 
     /**
-     * an insert method which adds the given Game to database
-     * @param game Game the Game to insert
-     * @return int the id of the inserted object
+     * prepares the sql statement with the appropriate insert parameters
+     * @param input the input object
+     * @return PreparedStatement
+     * @throws DataAccessException
      */
     @Override
-    public int insert(Game game) {
-        return 0;
+    protected PreparedStatement getInsertStatement(Game input)
+            throws DataAccessException {
+        return null;
     }
 
     /**
-     * a delete method which removes the given Game from the database
-     * @param game Game the Game to delete
+     * prepares the sql statement with the appropriate update parameters
+     * @param input the input object
+     * @return PreparedStatement
+     * @throws DataAccessException
      */
     @Override
-    public void delete(Game game) {
-
+    protected PreparedStatement getUpdateStatement(Game input)
+            throws DataAccessException {
+        return null;
     }
 
     /**
-     * an update method which updates the given Game in the database
-     * @param game Game the Game to update
+     * prepares the sql statement with the appropriate delete parameters
+     * @param input the input object
+     * @return PreparedStatement
+     * @throws DataAccessException
      */
     @Override
-    public void update(Game game) {
+    protected PreparedStatement getDeleteStatement(Game input)
+            throws DataAccessException {
+        return null;
+    }
 
+    /**
+     * checks all of the parameters of the object to verify their validity
+     * @param input the input object
+     * @return PreparedStatement
+     */
+    @Override
+    protected boolean checkParameters(Game input) {
+        return false;
+    }
+
+    /**
+     * initializes an object of type T with given resultSet
+     * @param reader the reader
+     * @param list the list
+     * @return T
+     * @throws DataAccessException
+     * @throws java.sql.SQLException
+     */
+    @Override
+    protected Game initialize(ResultSet reader, List<Game> list)
+            throws DataAccessException, SQLException {
+        return null;
     }
 }

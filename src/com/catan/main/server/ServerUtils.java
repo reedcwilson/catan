@@ -159,10 +159,10 @@ public class ServerUtils {
 
     public static User registerUser(User newUser) {
         if ((canRegister(newUser.getName())) && (
-                (newUser.getPlayerID() == null) || (_users.get(newUser.getPlayerID()) == null))) {
+                (newUser.getId() == null) || (_users.get(newUser.getId()) == null))) {
             newUser.generateAuthentication();
-            newUser.setPlayerID(getUserId());
-            _users.put(newUser.getPlayerID(), newUser);
+            newUser.setId(getUserId());
+            _users.put(newUser.getId(), newUser);
             return newUser;
         }
         return null;
@@ -202,7 +202,7 @@ public class ServerUtils {
                 }
             }
             LOGGER.log(Level.FINE, user.toString());
-            if (g.addPlayer(user.getPlayerID(), color, user.getName())) {
+            if (g.addPlayer(user.getId(), color, user.getName())) {
                 _games.put(g.getId(), g);
                 return true;
             }

@@ -1,9 +1,27 @@
 package com.catan.main.persistence;
 
+import java.io.File;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
 public class DatabaseContext extends DataContext<ResultSet, PreparedStatement> {
+
+    //region Fields
+    private String dbName = "data" + File.separator + "catan.sqlite";
+    private String connectionUrl = "jdbc:sqlite:" + dbName;
+    private Connection connection;
+    //endregion
+
+    //region Properties
+    public Connection getConnection() {
+        return connection;
+    }
+    private void setConnection(Connection connection) {
+        this.connection = connection;
+    }
+    //endregion
+
     //region Public Interface
 
     /**
@@ -11,7 +29,13 @@ public class DatabaseContext extends DataContext<ResultSet, PreparedStatement> {
      */
     @Override
     public void initialize() {
-
+        try {
+            // register the driver
+            Class.forName("org.sqlite.JDBC");
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+            System.exit(1);
+        }
     }
 
     /**

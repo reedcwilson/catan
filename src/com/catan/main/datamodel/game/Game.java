@@ -2,6 +2,7 @@ package com.catan.main.datamodel.game;
 
 import com.catan.main.datamodel.DataModel;
 import com.catan.main.datamodel.CommandHistory;
+import com.catan.main.datamodel.PersistenceModel;
 import com.catan.main.datamodel.devcard.DevCardDeck;
 import com.catan.main.datamodel.map.Map;
 import com.catan.main.datamodel.message.MessageBox;
@@ -9,7 +10,7 @@ import com.catan.main.datamodel.player.*;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 
-public class Game {
+public class Game implements PersistenceModel {
 
     private static final int _players = 4;
 
@@ -57,9 +58,11 @@ public class Game {
     public void setTitle(String title) {
         this.title = title;
     }
+    @Override
     public Long getId() {
         return id;
     }
+    @Override
     public void setId(Long id) {
         this.id = id;
     }

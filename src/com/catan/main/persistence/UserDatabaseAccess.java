@@ -1,55 +1,97 @@
 package com.catan.main.persistence;
 
 import com.catan.main.datamodel.User;
+import com.catan.main.datamodel.game.Game;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 
-public class UserDatabaseAccess extends UserAccess {
+public class UserDatabaseAccess extends DatabaseAccess<User> {
+
+    public UserDatabaseAccess(DatabaseContext dataContext) {
+        super(dataContext);
+    }
 
     /**
-     * a get method which returns a User with the given id
-     * @param id int the id of the desired User
-     * @return User
+     * prepares the sql statement with the appropriate select parameters
+     * @return PreparedStatement
      */
     @Override
-    public User get(int id) {
+    protected PreparedStatement getSelectStatement() {
         return null;
     }
 
     /**
-     * a get method which returns all Users
-     * @return List of Users
+     * prepares the sql statement with select parameters for a single get
+     * @param id the id
+     * @return PreparedStatement
+     * @throws DataAccessException
      */
     @Override
-    public List getAll() {
+    protected PreparedStatement getSingleSelectStatement(int id)
+            throws DataAccessException {
         return null;
     }
 
     /**
-     * an insert method which adds the given User to database
-     * @param user User the User to insert
-     * @return int the id of the inserted User
+     * prepares the sql statement with the appropriate insert parameters
+     * @param input the input object
+     * @return PreparedStatement
+     * @throws DataAccessException
      */
     @Override
-    public int insert(User user) {
-        return 0;
+    protected PreparedStatement getInsertStatement(User input)
+            throws DataAccessException {
+        return null;
     }
 
     /**
-     * a delete method which removes the given User from the database
-     * @param user User the User to delete
+     * prepares the sql statement with the appropriate update parameters
+     * @param input the input object
+     * @return PreparedStatement
+     * @throws DataAccessException
      */
     @Override
-    public void delete(User user) {
-
+    protected PreparedStatement getUpdateStatement(User input)
+            throws DataAccessException {
+        return null;
     }
 
     /**
-     * an update method which updates the given User in the database
-     * @param user User the User to update
+     * prepares the sql statement with the appropriate delete parameters
+     * @param input the input object
+     * @return PreparedStatement
+     * @throws DataAccessException
      */
     @Override
-    public void update(User user) {
+    protected PreparedStatement getDeleteStatement(User input)
+            throws DataAccessException {
+        return null;
+    }
 
+    /**
+     * checks all of the parameters of the object to verify their validity
+     * @param input the input object
+     * @return PreparedStatement
+     */
+    @Override
+    protected boolean checkParameters(User input) {
+        return false;
+    }
+
+    /**
+     * initializes an object of type T with given resultSet
+     * @param reader the reader
+     * @param list the list
+     * @return T
+     * @throws DataAccessException
+     * @throws java.sql.SQLException
+     */
+    @Override
+    protected User initialize(ResultSet reader, List<User> list)
+            throws DataAccessException, SQLException {
+        return null;
     }
 }
