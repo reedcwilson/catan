@@ -52,12 +52,21 @@ public class Server {
         exchange.getResponseBody().write(bytes);
     }
     private void handleCommand(HttpExchange exchange, Class type) throws IOException, DataAccessException {
+        ServerUtils.dataContext.startTransaction();
         String json = ServerUtils.streamToString(exchange.getRequestBody());
         DataModel model = ServerUtils.getModel(exchange);
         Command command = (Command)_gson.fromJson(json, type);
         command.execute(model);
         String response = model.toJSON();
         respondWithString(exchange, response, 200, _jsonStr);
+        ServerUtils.dataContext.endTransaction(true);
+    }
+    private void handleServerException(HttpExchange exchange, Exception e) throws IOException {
+        // send server exception response header
+        System.out.println(_serverErrorStr + e.getMessage());
+        e.printStackTrace();
+        respondWithString(exchange, _serverErrorStr, HttpURLConnection.HTTP_INTERNAL_ERROR, _textStr);
+        ServerUtils.dataContext.endTransaction(false);
     }
     //endregion
 
@@ -107,6 +116,7 @@ public class Server {
         public void handle(HttpExchange exchange) throws IOException {
 
             try {
+                ServerUtils.dataContext.startTransaction();
                 Map<String, String> values = ServerUtils.getValuesFromForm(exchange);
                 String username = values.get("username");
                 String password = values.get("password");
@@ -125,11 +135,13 @@ public class Server {
                 } else {
                     respondWithString(exchange, _clientErrorStr + "Register unsuccessful. Username may not be unique", 400, _textStr);
                 }
+                ServerUtils.dataContext.endTransaction(true);
             } catch (Exception e) {
                 // send server exception response header
                 System.out.println(_serverErrorStr + e.getMessage());
                 e.printStackTrace();
                 respondWithString(exchange, _serverErrorStr, 500, _textStr);
+                ServerUtils.dataContext.endTransaction(false);
             }
             exchange.close();
         }
@@ -166,6 +178,7 @@ public class Server {
         public void handle(HttpExchange exchange) throws IOException {
 
             try {
+                ServerUtils.dataContext.startTransaction();
                 Map<String, String> values = ServerUtils.getValuesFromForm(exchange);
 
                 CreateGameRequest request = new CreateGameRequest(
@@ -177,10 +190,9 @@ public class Server {
                 GsonGame game = new GsonGame(ServerUtils.createGame(request));
                 String gameStr = new Gson().toJson(game);
                 respondWithString(exchange, gameStr, 200, _jsonStr);
+                ServerUtils.dataContext.endTransaction(true);
             } catch (Exception e) {
-                System.out.println(_serverErrorStr + e.getMessage());
-                e.printStackTrace();
-                respondWithString(exchange, _serverErrorStr, HttpURLConnection.HTTP_INTERNAL_ERROR, _textStr);
+                handleServerException(exchange, e);
             }
             exchange.close();
         }
@@ -194,6 +206,7 @@ public class Server {
         public void handle(HttpExchange exchange) throws IOException {
 
             try {
+                ServerUtils.dataContext.startTransaction();
                 Map<String, String> values = ServerUtils.getValuesFromForm(exchange);
                 Long gameId = Long.parseLong(values.get("id"));
                 Color color = Color.valueOf(values.get("color"));
@@ -204,10 +217,9 @@ public class Server {
                 } else {
                     respondWithString(exchange, _clientErrorStr + "The game is full.", 400, _textStr);
                 }
+                ServerUtils.dataContext.endTransaction(true);
             } catch (Exception e) {
-                System.out.println(_serverErrorStr + e.getMessage());
-                e.printStackTrace();
-                respondWithString(exchange, _serverErrorStr, HttpURLConnection.HTTP_INTERNAL_ERROR, _textStr);
+                handleServerException(exchange, e);
             }
             exchange.close();
         }
@@ -260,7 +272,7 @@ public class Server {
         public void handle(HttpExchange exchange) throws IOException {
 
             try {
-
+                ServerUtils.dataContext.startTransaction();
                 Client client = ServerUtils.getClient(exchange);
                 Game game = ServerUtils.getGame(client.getGameID());
                 if (!ServerUtils.resetGame(client) || game == null) {
@@ -269,12 +281,11 @@ public class Server {
                 String response = game.getModel().toJSON();
                 exchange.getResponseHeaders().set("Content-Type", _jsonStr);
                 respondWithString(exchange, response, 200, _jsonStr);
+                ServerUtils.dataContext.endTransaction(true);
             } catch (Exception e) {
 
                 // send server exception response header
-                System.out.println(_serverErrorStr + e.getMessage());
-                e.printStackTrace();
-                respondWithString(exchange, _serverErrorStr, HttpURLConnection.HTTP_INTERNAL_ERROR, _textStr);
+                handleServerException(exchange, e);
             }
             exchange.close();
         }
@@ -316,6 +327,7 @@ public class Server {
 
             try {
                 // TODO: I am really unsure about this one
+                ServerUtils.dataContext.startTransaction();
                 String requestString = ServerUtils.streamToString(exchange.getRequestBody());
                 List<Command> commands = _gson.fromJson(requestString, new TypeToken() {}.getType());
                 Client client = ServerUtils.getClient(exchange);
@@ -326,12 +338,11 @@ public class Server {
                 }
                 String response = game.getModel().toJSON();
                 respondWithString(exchange, response, 200, _jsonStr);
+                ServerUtils.dataContext.endTransaction(true);
             } catch (Exception e) {
 
                 // send server exception response header
-                System.out.println(_serverErrorStr + e.getMessage());
-                e.printStackTrace();
-                respondWithString(exchange, _serverErrorStr, HttpURLConnection.HTTP_INTERNAL_ERROR, _textStr);
+                handleServerException(exchange, e);
             }
             exchange.close();
         }
@@ -414,11 +425,9 @@ public class Server {
             try {
                 handleCommand(exchange, SendChat.class);
             } catch (Exception e) {
+                handleServerException(exchange, e);
 
-                // send server exception response header
-                System.out.println(_serverErrorStr + e.getMessage());
-                e.printStackTrace();
-                respondWithString(exchange, _serverErrorStr, HttpURLConnection.HTTP_INTERNAL_ERROR, _textStr);
+
             }
             exchange.close();
         }
@@ -436,9 +445,7 @@ public class Server {
             } catch (Exception e) {
 
                 // send server exception response header
-                System.out.println(_serverErrorStr + e.getMessage());
-                e.printStackTrace();
-                respondWithString(exchange, _serverErrorStr, HttpURLConnection.HTTP_INTERNAL_ERROR, _textStr);
+                handleServerException(exchange, e);
             }
             exchange.close();
         }
@@ -456,9 +463,7 @@ public class Server {
             } catch (Exception e) {
 
                 // send server exception response header
-                System.out.println(_serverErrorStr + e.getMessage());
-                e.printStackTrace();
-                respondWithString(exchange, _serverErrorStr, HttpURLConnection.HTTP_INTERNAL_ERROR, _textStr);
+                handleServerException(exchange, e);
             }
             exchange.close();
         }
@@ -476,9 +481,7 @@ public class Server {
             } catch (Exception e) {
 
                 // send server exception response header
-                System.out.println(_serverErrorStr + e.getMessage());
-                e.printStackTrace();
-                respondWithString(exchange, _serverErrorStr, HttpURLConnection.HTTP_INTERNAL_ERROR, _textStr);
+                handleServerException(exchange, e);
             }
             exchange.close();
         }
@@ -496,9 +499,7 @@ public class Server {
             } catch (Exception e) {
 
                 // send server exception response header
-                System.out.println(_serverErrorStr + e.getMessage());
-                e.printStackTrace();
-                respondWithString(exchange, _serverErrorStr, HttpURLConnection.HTTP_INTERNAL_ERROR, _textStr);
+                handleServerException(exchange, e);
             }
             exchange.close();
         }
@@ -516,9 +517,7 @@ public class Server {
             } catch (Exception e) {
 
                 // send server exception response header
-                System.out.println(_serverErrorStr + e.getMessage());
-                e.printStackTrace();
-                respondWithString(exchange, _serverErrorStr, HttpURLConnection.HTTP_INTERNAL_ERROR, _textStr);
+                handleServerException(exchange, e);
             }
             exchange.close();
         }
@@ -536,9 +535,7 @@ public class Server {
             } catch (Exception e) {
 
                 // send server exception response header
-                System.out.println(_serverErrorStr + e.getMessage());
-                e.printStackTrace();
-                respondWithString(exchange, _serverErrorStr, HttpURLConnection.HTTP_INTERNAL_ERROR, _textStr);
+                handleServerException(exchange, e);
             }
             exchange.close();
         }
@@ -556,9 +553,7 @@ public class Server {
             } catch (Exception e) {
 
                 // send server exception response header
-                System.out.println(_serverErrorStr + e.getMessage());
-                e.printStackTrace();
-                respondWithString(exchange, _serverErrorStr, HttpURLConnection.HTTP_INTERNAL_ERROR, _textStr);
+                handleServerException(exchange, e);
             }
             exchange.close();
         }
@@ -576,9 +571,7 @@ public class Server {
             } catch (Exception e) {
 
                 // send server exception response header
-                System.out.println(_serverErrorStr + e.getMessage());
-                e.printStackTrace();
-                respondWithString(exchange, _serverErrorStr, HttpURLConnection.HTTP_INTERNAL_ERROR, _textStr);
+                handleServerException(exchange, e);
             }
             exchange.close();
         }
@@ -596,9 +589,7 @@ public class Server {
             } catch (Exception e) {
 
                 // send server exception response header
-                System.out.println(_serverErrorStr + e.getMessage());
-                e.printStackTrace();
-                respondWithString(exchange, _serverErrorStr, HttpURLConnection.HTTP_INTERNAL_ERROR, _textStr);
+                handleServerException(exchange, e);
             }
             exchange.close();
         }
@@ -616,9 +607,7 @@ public class Server {
             } catch (Exception e) {
 
                 // send server exception response header
-                System.out.println(_serverErrorStr + e.getMessage());
-                e.printStackTrace();
-                respondWithString(exchange, _serverErrorStr, HttpURLConnection.HTTP_INTERNAL_ERROR, _textStr);
+                handleServerException(exchange, e);
             }
             exchange.close();
         }
@@ -636,9 +625,7 @@ public class Server {
             } catch (Exception e) {
 
                 // send server exception response header
-                System.out.println(_serverErrorStr + e.getMessage());
-                e.printStackTrace();
-                respondWithString(exchange, _serverErrorStr, HttpURLConnection.HTTP_INTERNAL_ERROR, _textStr);
+                handleServerException(exchange, e);
             }
             exchange.close();
         }
@@ -656,9 +643,7 @@ public class Server {
             } catch (Exception e) {
 
                 // send server exception response header
-                System.out.println(_serverErrorStr + e.getMessage());
-                e.printStackTrace();
-                respondWithString(exchange, _serverErrorStr, HttpURLConnection.HTTP_INTERNAL_ERROR, _textStr);
+                handleServerException(exchange, e);
             }
             exchange.close();
         }
@@ -677,9 +662,7 @@ public class Server {
             } catch (Exception e) {
 
                 // send server exception response header
-                System.out.println(_serverErrorStr + e.getMessage());
-                e.printStackTrace();
-                respondWithString(exchange, _serverErrorStr, HttpURLConnection.HTTP_INTERNAL_ERROR, _textStr);
+                handleServerException(exchange, e);
             }
             exchange.close();
         }
@@ -697,9 +680,7 @@ public class Server {
             } catch (Exception e) {
 
                 // send server exception response header
-                System.out.println(_serverErrorStr + e.getMessage());
-                e.printStackTrace();
-                respondWithString(exchange, _serverErrorStr, HttpURLConnection.HTTP_INTERNAL_ERROR, _textStr);
+                handleServerException(exchange, e);
             }
             exchange.close();
         }
@@ -717,9 +698,7 @@ public class Server {
             } catch (Exception e) {
 
                 // send server exception response header
-                System.out.println(_serverErrorStr + e.getMessage());
-                e.printStackTrace();
-                respondWithString(exchange, _serverErrorStr, HttpURLConnection.HTTP_INTERNAL_ERROR, _textStr);
+                handleServerException(exchange, e);
             }
             exchange.close();
         }
@@ -737,9 +716,7 @@ public class Server {
             } catch (Exception e) {
 
                 // send server exception response header
-                System.out.println(_serverErrorStr + e.getMessage());
-                e.printStackTrace();
-                respondWithString(exchange, _serverErrorStr, HttpURLConnection.HTTP_INTERNAL_ERROR, _textStr);
+                handleServerException(exchange, e);
             }
             exchange.close();
         }

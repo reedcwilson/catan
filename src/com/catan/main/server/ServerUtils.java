@@ -5,19 +5,18 @@ import com.catan.main.datamodel.User;
 import com.catan.main.datamodel.game.CreateGameRequest;
 import com.catan.main.datamodel.game.Game;
 import com.catan.main.datamodel.player.Color;
-import com.catan.main.persistence.*;
+import com.catan.main.persistence.ContextCreator;
+import com.catan.main.persistence.DataAccessException;
+import com.catan.main.persistence.DataContext;
+import com.catan.main.persistence.DataUtils;
 import com.google.gson.Gson;
 import com.sun.net.httpserver.HttpExchange;
-import cs340.data.simplesql.ConMan;
-import cs340.data.simplesql.SimpleObjectTable;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URLDecoder;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -31,7 +30,7 @@ enum ServerLogLevel {OFF, SEVERE, WARNING, INFO, CONFIG, FINE, FINER, FINEST, AL
 public class ServerUtils {
 
     private static Logger LOGGER = LogManager.getLogManager().getLogger("global");
-    private static DataContext dataContext = ContextCreator.getDataContext(ContextCreator.ContextType.DATABASE);
+    public static DataContext dataContext = ContextCreator.getDataContext(ContextCreator.ContextType.DATABASE);
 //    private static Map<Long, User> _users = new HashMap<Long, User>();
 //    private static Map<Long, Game> _games = new HashMap<Long, Game>();
 //    private static Long _userId = 4L;
@@ -69,10 +68,15 @@ public class ServerUtils {
             addUserToGame(user2, Color.green, 1L);
             addUserToGame(user3, Color.white, 1L);
         } catch (Exception e) {
+            DataUtils.crashOnException(e);
         }
 
         // default game 3
+        try {
         Game game3 = createGame(new CreateGameRequest(true, true, true, "Default3"));
+        } catch (Exception e) {
+            DataUtils.crashOnException(e);
+        }
     }
 
 //    private static Long getUserId() {
@@ -166,7 +170,7 @@ public class ServerUtils {
 
     public static User registerUser(User newUser) throws DataAccessException {
         if ((canRegister(newUser.getName())) && (
-                (newUser.getId() == null) || (dataContext.getUserAccess().get((int)newUser.getId().longValue()) == null))) {
+                (newUser.getId() == null) || (dataContext.getUserAccess().get((int) newUser.getId().longValue()) == null))) {
             newUser.generateAuthentication();
             dataContext.getUserAccess().insert(newUser);
             return newUser;
@@ -191,7 +195,7 @@ public class ServerUtils {
     }
 
     public static boolean addUserToGame(User user, Color color, long gameID) throws Exception {
-        Game g = (Game)dataContext.getGameAccess().get((int)gameID);
+        Game g = (Game) dataContext.getGameAccess().get((int) gameID);
         if (user == null) {
             LOGGER.log(Level.WARNING, "Unable to grab player info from cookie.");
             return false;
@@ -213,27 +217,19 @@ public class ServerUtils {
         return false;
     }
 
-    public static Game createGame(CreateGameRequest request) {
+    public static Game createGame(CreateGameRequest request) throws DataAccessException {
         Game g = Game.requestNewGame(request);
-        try {
-            g.setId((long) dataContext.getGameAccess().insert(g));
-        } catch (DataAccessException e) {
-            DataUtils.crashOnException(e);
-        }
+        g.setId((long) dataContext.getGameAccess().insert(g));
         return g;
     }
 
-    public static boolean resetGame(Client client) {
-        int gameId = (int)client.getGameID();
-        try {
-            Game game = (Game)dataContext.getGameAccess().get(gameId);
-            if (game != null) {
-                game.reset();
-                dataContext.getGameAccess().update(game);
-                return true;
-            }
-        } catch (DataAccessException e) {
-            DataUtils.crashOnException(e);
+    public static boolean resetGame(Client client) throws DataAccessException {
+        int gameId = (int) client.getGameID();
+        Game game = (Game) dataContext.getGameAccess().get(gameId);
+        if (game != null) {
+            game.reset();
+            dataContext.getGameAccess().update(game);
+            return true;
         }
         return false;
     }
@@ -248,7 +244,7 @@ public class ServerUtils {
     }
 
     public static User getPlayerInfo(long playerId) throws DataAccessException {
-        return (User)dataContext.getUserAccess().get((int) playerId);
+        return (User) dataContext.getUserAccess().get((int) playerId);
     }
 
     public static User getPlayerInfo(String username) throws DataAccessException {
@@ -262,6 +258,6 @@ public class ServerUtils {
     }
 
     public static Game getGame(long gameId) throws DataAccessException {
-        return (Game)dataContext.getGameAccess().get((int) gameId);
+        return (Game) dataContext.getGameAccess().get((int) gameId);
     }
 }

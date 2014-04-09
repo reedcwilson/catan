@@ -10,7 +10,7 @@ import java.util.Scanner;
 public class DatabaseContext extends DataContext<ResultSet, PreparedStatement> {
 
     //region Fields
-    private String dbName = "data" + File.separator + "catan.sqlite";
+    private String dbName = "catan.sqlite";
     private String connectionUrl = "jdbc:sqlite:" + dbName;
     private Connection connection;
     private CommandDatabaseAccess commandAccess;
@@ -72,7 +72,7 @@ public class DatabaseContext extends DataContext<ResultSet, PreparedStatement> {
         Scanner scanner = null;
         try {
             startTransaction();
-            scanner = new Scanner(new File("data/drop_create_tables.txt"));
+            scanner = new Scanner(new File("database.txt"));
             while (scanner.hasNextLine()) {
                 stat = connection.createStatement();
                 String sql = scanner.nextLine();
