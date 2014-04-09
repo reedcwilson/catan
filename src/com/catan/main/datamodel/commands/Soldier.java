@@ -5,6 +5,7 @@ import com.catan.main.datamodel.devcard.DevCardType;
 import com.catan.main.datamodel.hexgrid.hex.HexLocation;
 import com.catan.main.datamodel.message.MessageLine;
 import com.catan.main.datamodel.player.Player;
+import com.catan.main.persistence.DataAccessException;
 
 public class Soldier extends DevCard {
 
@@ -40,7 +41,7 @@ public class Soldier extends DevCard {
 
     //region Overrides
     @Override
-    protected void playDevCard(DataModel model) {
+    protected void playDevCard(DataModel model) throws DataAccessException {
         int currentBiggest = model.getBiggestArmy();
         int playerArmy = model.getPlayers()[this.getPlayerIndex()].getSoldiers();
         Player currentPlayer = model.getPlayers()[this.getPlayerIndex()];

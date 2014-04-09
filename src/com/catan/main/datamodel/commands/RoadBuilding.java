@@ -4,6 +4,7 @@ import com.catan.main.datamodel.DataModel;
 import com.catan.main.datamodel.devcard.DevCardType;
 import com.catan.main.datamodel.hexgrid.edge.EdgeLocation;
 import com.catan.main.datamodel.message.MessageLine;
+import com.catan.main.persistence.DataAccessException;
 
 public class RoadBuilding extends DevCard {
 
@@ -39,7 +40,7 @@ public class RoadBuilding extends DevCard {
 
     //region Overrides
     @Override
-    protected void playDevCard(DataModel model) {
+    protected void playDevCard(DataModel model) throws DataAccessException {
         new PlaceRoad(this.spot1, Integer.valueOf(this.getPlayerIndex()), Boolean.valueOf(true)).execute(model);
         new PlaceRoad(this.spot2, Integer.valueOf(this.getPlayerIndex()), Boolean.valueOf(true)).execute(model);
         model.getPlayers()[this.getPlayerIndex()].setPlayedDevCard(true);

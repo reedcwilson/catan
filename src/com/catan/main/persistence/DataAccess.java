@@ -1,11 +1,7 @@
 package com.catan.main.persistence;
 
 import com.catan.main.datamodel.PersistenceModel;
-import com.catan.main.persistence.*;
 
-//import java.sql.PreparedStatement;
-//import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 public abstract class DataAccess<T extends PersistenceModel, ResultObject, PreparedStatement> {
@@ -78,7 +74,7 @@ public abstract class DataAccess<T extends PersistenceModel, ResultObject, Prepa
      */
     public T get(int id) throws DataAccessException {
         if (isDirty) {
-            return getObjectCreator().initialize((ResultObject)getDataContext().get(getSingleSelectStatement(id)));
+            return getObjectCreator().initialize((ResultObject) getDataContext().get(getSingleSelectStatement(id)));
         }
         return null;
     }

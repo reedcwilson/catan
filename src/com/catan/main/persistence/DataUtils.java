@@ -6,4 +6,10 @@ public class DataUtils {
         ex.printStackTrace();
         System.exit(1);
     }
+    public static boolean checkArgument(int id) {
+        return id > -1;
+    }
+    public static boolean checkArgument(Object obj) {
+        return obj != null;
+    }
 }
