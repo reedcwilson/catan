@@ -12,6 +12,7 @@ import com.catan.main.datamodel.game.CreateGameRequest;
 import com.catan.main.datamodel.game.Game;
 import com.catan.main.datamodel.player.Color;
 import com.catan.main.persistence.ContextCreator;
+import com.catan.main.persistence.DataAccessException;
 import com.catan.main.persistence.DataContext;
 import com.google.gson.reflect.TypeToken;
 import com.sun.net.httpserver.Headers;
@@ -50,7 +51,7 @@ public class Server {
         exchange.sendResponseHeaders(code, bytes.length);
         exchange.getResponseBody().write(bytes);
     }
-    private void handleCommand(HttpExchange exchange, Class type) throws IOException {
+    private void handleCommand(HttpExchange exchange, Class type) throws IOException, DataAccessException {
         String json = ServerUtils.streamToString(exchange.getRequestBody());
         DataModel model = ServerUtils.getModel(exchange);
         Command command = (Command)_gson.fromJson(json, type);
@@ -832,7 +833,7 @@ public class Server {
 
     //region Server Methods
     private Server(int p) {
-        DataContext dataContext = new ContextCreator(ContextCreator.ContextType.DATABASE).getDataContext();
+        DataContext dataContext = ContextCreator.getDataContext(ContextCreator.ContextType.DATABASE);
         this._port = p;
         _gson = new Gson();
     }

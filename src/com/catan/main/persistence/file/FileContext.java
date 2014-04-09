@@ -1,8 +1,25 @@
-package com.catan.main.persistence;
+package com.catan.main.persistence.file;
+
+import com.catan.main.persistence.*;
 
 public class FileContext extends DataContext<FileResult, FileCommandStatement> {
 
     //region Public Interface
+
+    @Override
+    public CommandAccess getCommandAccess() {
+        return null;
+    }
+
+    @Override
+    public UserAccess getUserAccess() {
+        return null;
+    }
+
+    @Override
+    public GameAccess getGameAccess() {
+        return null;
+    }
 
     /**
      * performs any single use initialization
