@@ -110,8 +110,8 @@ public class CommandDatabaseAccess extends CommandAccess<ResultSet, PreparedStat
             PreparedStatement stat = null;
             try {
                 stat = dataContext.getConnection().prepareStatement(updateSql);
-//                stat.setBlob(1, input.toBlob());
-//                stat.setInt(2, input.getGameId().intValue());
+                stat.setBytes(1, input.getBytes());
+                stat.setInt(2, input.getGameId().intValue());
                 stat.setInt(3, input.getId().intValue());
             } catch (SQLException e) {
                 DataUtils.crashOnException(e);

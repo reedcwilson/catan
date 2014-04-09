@@ -8,10 +8,13 @@ import com.catan.main.datamodel.map.Map;
 import com.catan.main.datamodel.message.MessageBox;
 import com.catan.main.datamodel.player.*;
 import com.catan.main.persistence.DataAccessException;
+import com.catan.main.persistence.DataUtils;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 
-public class Game implements PersistenceModel {
+import java.io.Serializable;
+
+public class Game implements PersistenceModel, Serializable {
 
     private static final int _players = 4;
 
@@ -66,6 +69,11 @@ public class Game implements PersistenceModel {
     @Override
     public void setId(Long id) {
         this.id = id;
+    }
+
+    @Override
+    public byte[] getBytes() {
+        return DataUtils.serialize(this);
     }
 
     public DataModel getModel() {
