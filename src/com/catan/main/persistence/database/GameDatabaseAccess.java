@@ -10,6 +10,12 @@ import java.util.List;
 
 public class GameDatabaseAccess extends GameAccess<ResultSet, PreparedStatement> {
 
+    private static final String singleSelectSql = "SELECT * FROM Game where id=?";
+    private static final String selectSql = "SELECT * FROM Game";
+    private static final String updateSql = "UPDATE Game SET commandIndex=?, currentBlob=?, originalBlob=? where id=?";
+    private static final String insertSql = "INSERT INTO Game ('commandIndex', 'currentBlob', 'originalBlob') VALUES (?, ?, ?)";
+    private static final String deleteSql = "DELETE FROM Game WHERE id=?";
+
     private DatabaseContext dataContext;
     private GameDatabaseCreator creator;
 
@@ -34,7 +40,13 @@ public class GameDatabaseAccess extends GameAccess<ResultSet, PreparedStatement>
      */
     @Override
     protected PreparedStatement getSelectStatement() {
-        return null;
+        PreparedStatement stat = null;
+        try {
+            stat = dataContext.getConnection().prepareStatement(selectSql);
+        } catch (SQLException e) {
+            DataUtils.crashOnException(e);
+        }
+        return stat;
     }
 
     /**
@@ -44,9 +56,19 @@ public class GameDatabaseAccess extends GameAccess<ResultSet, PreparedStatement>
      * @throws com.catan.main.persistence.DataAccessException
      */
     @Override
-    protected PreparedStatement getSingleSelectStatement(int id)
-            throws DataAccessException {
-        return null;
+    protected PreparedStatement getSingleSelectStatement(int id) throws DataAccessException {
+        if (DataUtils.checkArgument(id)) {
+            PreparedStatement stat = null;
+            try {
+                stat = dataContext.getConnection().prepareStatement(singleSelectSql);
+                stat.setInt(1, id);
+            } catch (SQLException e) {
+                DataUtils.crashOnException(e);
+            }
+            return stat;
+        } else {
+            throw new DataAccessException("Invalid id given.");
+        }
     }
 
     /**
@@ -56,9 +78,19 @@ public class GameDatabaseAccess extends GameAccess<ResultSet, PreparedStatement>
      * @throws DataAccessException
      */
     @Override
-    protected PreparedStatement getInsertStatement(Game input)
-            throws DataAccessException {
-        return null;
+    protected PreparedStatement getInsertStatement(Game input) throws DataAccessException {
+        if (checkParameters(input)) {
+            PreparedStatement stat = null;
+            try {
+                stat = dataContext.getConnection().prepareStatement(insertSql);
+                stat.setInt(1, input.getId().intValue());
+            } catch (SQLException e) {
+                DataUtils.crashOnException(e);
+            }
+            return stat;
+        } else {
+            throw new DataAccessException("Invalid command parameters. Could not save to database");
+        }
     }
 
     /**
@@ -68,9 +100,21 @@ public class GameDatabaseAccess extends GameAccess<ResultSet, PreparedStatement>
      * @throws DataAccessException
      */
     @Override
-    protected PreparedStatement getUpdateStatement(Game input)
-            throws DataAccessException {
-        return null;
+    protected PreparedStatement getUpdateStatement(Game input) throws DataAccessException {
+        if (checkParameters(input)) {
+            PreparedStatement stat = null;
+            try {
+                stat = dataContext.getConnection().prepareStatement(updateSql);
+//                stat.setBlob(1, input.toBlob());
+//                stat.setInt(2, input.getGameId().intValue());
+                stat.setInt(3, input.getId().intValue());
+            } catch (SQLException e) {
+                DataUtils.crashOnException(e);
+            }
+            return stat;
+        } else {
+            throw new DataAccessException("Invalid command parameters. Could not save to database");
+        }
     }
 
     /**
@@ -80,9 +124,19 @@ public class GameDatabaseAccess extends GameAccess<ResultSet, PreparedStatement>
      * @throws DataAccessException
      */
     @Override
-    protected PreparedStatement getDeleteStatement(Game input)
-            throws DataAccessException {
-        return null;
+    protected PreparedStatement getDeleteStatement(Game input) throws DataAccessException {
+        PreparedStatement stat = null;
+        if (checkParameters(input)) {
+            try {
+                stat = dataContext.getConnection().prepareStatement(deleteSql);
+                stat.setInt(1, input.getId().intValue());
+            } catch (SQLException e) {
+                DataUtils.crashOnException(e);
+            }
+            return stat;
+        } else {
+            throw new DataAccessException("Invalid command parameters. Could not save to database");
+        }
     }
 
     /**
@@ -92,6 +146,6 @@ public class GameDatabaseAccess extends GameAccess<ResultSet, PreparedStatement>
      */
     @Override
     protected boolean checkParameters(Game input) {
-        return false;
+        return DataUtils.checkArgument(input) && DataUtils.checkArgument((input.getId()));// && DataUtils.checkArgument(input.getGameId());
     }
 }
