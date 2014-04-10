@@ -5,6 +5,10 @@ import com.catan.main.datamodel.User;
 import com.catan.main.datamodel.game.CreateGameRequest;
 import com.catan.main.datamodel.game.Game;
 import com.catan.main.datamodel.player.Color;
+import com.catan.main.persistence.ContextCreator;
+import com.catan.main.persistence.DataAccessException;
+import com.catan.main.persistence.DataContext;
+import com.catan.main.persistence.DataUtils;
 import com.google.gson.Gson;
 import com.sun.net.httpserver.HttpExchange;
 
@@ -15,38 +19,45 @@ import java.io.InputStreamReader;
 import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
-enum ServerLogLevel { OFF, SEVERE, WARNING, INFO, CONFIG, FINE, FINER, FINEST, ALL }
+enum ServerLogLevel {OFF, SEVERE, WARNING, INFO, CONFIG, FINE, FINER, FINEST, ALL}
 
 public class ServerUtils {
 
     private static Logger LOGGER = LogManager.getLogManager().getLogger("global");
-    private static Map<Long, User> _users = new HashMap<Long, User>();
-    private static Map<Long, Game> _games = new HashMap<Long, Game>();
-    private static Long _userId = 4L;
-    private static Long _gameId = 0L;
+    public static DataContext dataContext = ContextCreator.getDataContext(ContextCreator.ContextType.DATABASE);
+//    private static Map<Long, User> _users = new HashMap<Long, User>();
+//    private static Map<Long, Game> _games = new HashMap<Long, Game>();
+//    private static Long _userId = 4L;
+//    private static Long _gameId = 0L;
 
     // static initializer
     static {
-        User user1 = new User("Koli", "koli", 0L);
-        User user2 = new User("Jake", "jake", 1L);
-        User user3 = new User("Matt", "matt", 2L);
-        User user4 = new User("Reed", "reed", 3L);
+        User user1 = new User("Koli", "koli");
+        User user2 = new User("Jake", "jake");
+        User user3 = new User("Matt", "matt");
+        User user4 = new User("Reed", "reed");
 
-        _users.put(0L, user1);
-        _users.put(1L, user2);
-        _users.put(2L, user3);
-        _users.put(3L, user4);
+        try {
+            dataContext.startTransaction();
+            user1.setId((long) dataContext.getUserAccess().insert(user1));
+            user2.setId((long) dataContext.getUserAccess().insert(user2));
+            user3.setId((long) dataContext.getUserAccess().insert(user3));
+            user4.setId((long) dataContext.getUserAccess().insert(user4));
+        } catch (Exception e) {
+            DataUtils.crashOnException(e);
+        }
 
         // default game 1
-        Game game1 = createGame(new CreateGameRequest(true, true, true, "Default1"));
-        Game game2 = createGame(new CreateGameRequest(true, true, true, "Default2"));
-        try
-        {
+        try {
+            Game game1 = createGame(new CreateGameRequest(true, true, true, "Default1"));
+            Game game2 = createGame(new CreateGameRequest(true, true, true, "Default2"));
+
             addUserToGame(user1, Color.blue, 0L);
             addUserToGame(user2, Color.green, 0L);
             addUserToGame(user3, Color.orange, 0L);
@@ -56,28 +67,28 @@ public class ServerUtils {
             addUserToGame(user1, Color.blue, 1L);
             addUserToGame(user2, Color.green, 1L);
             addUserToGame(user3, Color.white, 1L);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
+            DataUtils.crashOnException(e);
         }
 
         // default game 3
+        try {
         Game game3 = createGame(new CreateGameRequest(true, true, true, "Default3"));
-
-        _games.put(0L, game1);
-        _games.put(1L, game2);
-        _games.put(2L, game3);
+        } catch (Exception e) {
+            DataUtils.crashOnException(e);
+        }
     }
 
-    private static Long getUserId() {
-        return _userId++;
-    }
+//    private static Long getUserId() {
+//        return _userId++;
+//    }
 
-    private static Long getGameId() {
-        return _gameId++;
-    }
+//    private static Long getGameId() {
+//        return _gameId++;
+//    }
 
     public static Map<String, String> getCookies(HttpExchange exchange) {
-        HashMap<String, String> cookiesMap = new HashMap();
+        HashMap<String, String> cookiesMap = new HashMap<String, String>();
         String cookiesStr = exchange.getRequestHeaders().getFirst("cookie");
         if (cookiesStr != null) {
             String[] cookies = cookiesStr.split("; ");
@@ -98,7 +109,7 @@ public class ServerUtils {
     }
 
     public static Map<String, String> decodeUri(String uri) {
-        HashMap<String, String> parameters = new HashMap();
+        HashMap<String, String> parameters = new HashMap<String, String>();
         if (uri != null) {
             String[] pairings = uri.split("&");
             for (String qPair : pairings) {
@@ -151,28 +162,27 @@ public class ServerUtils {
         return sb.toString();
     }
 
-    public static  DataModel getModel(HttpExchange exchange) {
+    public static DataModel getModel(HttpExchange exchange) throws DataAccessException {
         Client client = ServerUtils.getClient(exchange);
         Game game = getGame(client.getGameID());
         return game.getModel();
     }
 
-    public static User registerUser(User newUser) {
+    public static User registerUser(User newUser) throws DataAccessException {
         if ((canRegister(newUser.getName())) && (
-                (newUser.getPlayerID() == null) || (_users.get(newUser.getPlayerID()) == null))) {
+                (newUser.getId() == null) || (dataContext.getUserAccess().get((int) newUser.getId().longValue()) == null))) {
             newUser.generateAuthentication();
-            newUser.setPlayerID(getUserId());
-            _users.put(newUser.getPlayerID(), newUser);
+            dataContext.getUserAccess().insert(newUser);
             return newUser;
         }
         return null;
     }
 
-    public static boolean canRegister(String name) {
+    public static boolean canRegister(String name) throws DataAccessException {
         return getPlayerInfo(name) == null;
     }
 
-    public static User validateLogin(String username, String password) {
+    public static User validateLogin(String username, String password) throws DataAccessException {
         User player = getPlayerInfo(username);
         if ((player != null) && (password.equals(player.getPassword()))) {
             return player;
@@ -180,69 +190,66 @@ public class ServerUtils {
         return null;
     }
 
-    public static User validateUser(User outsideUser) {
+    public static User validateUser(User outsideUser) throws DataAccessException {
         return validateLogin(outsideUser.getName(), outsideUser.getPassword());
     }
 
-    public static boolean addUserToGame(User user, Color color, Long gameID) throws Exception{
-        Game g = _games.get(gameID);
+    public static boolean addUserToGame(User user, Color color, long gameID) throws Exception {
+        Game g = (Game) dataContext.getGameAccess().get((int) gameID);
         if (user == null) {
             LOGGER.log(Level.WARNING, "Unable to grab player info from cookie.");
             return false;
         }
         if (g != null) {
-            for(int i  = 0; i < 4; i++)
-            {
-                if(g.getModel().getPlayers()[i] != null)
-                {
-                    if(g.getModel().getPlayers()[i].getColor().equals(color) && !g.getModel().getPlayers()[i].getName().equals(user.getName()))
-                    {
+            for (int i = 0; i < 4; i++) {
+                if (g.getModel().getPlayers()[i] != null) {
+                    if (g.getModel().getPlayers()[i].getColor().equals(color) && !g.getModel().getPlayers()[i].getName().equals(user.getName())) {
                         throw new Exception("Someone has that color");
                     }
                 }
             }
             LOGGER.log(Level.FINE, user.toString());
-            if (g.addPlayer(user.getPlayerID(), color, user.getName())) {
-                _games.put(g.getId(), g);
+            if (g.addPlayer(user.getId(), color, user.getName())) {
+                dataContext.getGameAccess().update(g);
                 return true;
             }
         }
         return false;
     }
 
-    public static Game createGame(CreateGameRequest request) {
+    public static Game createGame(CreateGameRequest request) throws DataAccessException {
         Game g = Game.requestNewGame(request);
-        g.setId(getGameId());
-        _games.put(g.getId(), g);
+        g.setId((long) dataContext.getGameAccess().insert(g));
         return g;
     }
 
-    public static boolean resetGame(Client client) {
-        Long gameId = client.getGameID();
-        Game game = _games.get(gameId);
+    public static boolean resetGame(Client client) throws DataAccessException {
+        int gameId = (int) client.getGameID();
+        Game game = (Game) dataContext.getGameAccess().get(gameId);
         if (game != null) {
-            Game updated = game;
-            updated.reset();
-            _games.put(gameId, updated);
+            game.reset();
+            dataContext.getGameAccess().update(game);
             return true;
         }
         return false;
     }
 
-    public static ArrayList<GsonGame> getGames() {
+    public static ArrayList<GsonGame> getGames() throws DataAccessException {
         ArrayList<GsonGame> gameStubs = new ArrayList<GsonGame>();
-        for (Game game : _games.values()) {
+        List<Game> games = dataContext.getGameAccess().getAll();
+        for (Game game : games) {
             gameStubs.add(new GsonGame(game));
         }
         return gameStubs;
     }
 
-    public static User getPlayerInfo(Long playerId) {
-        return _users.get(playerId);
+    public static User getPlayerInfo(long playerId) throws DataAccessException {
+        return (User) dataContext.getUserAccess().get((int) playerId);
     }
 
-    public static User getPlayerInfo(String username) {
-        for (User user : _users.values()) {
+    public static User getPlayerInfo(String username) throws DataAccessException {
+        List<User> users = dataContext.getUserAccess().getAll();
+        for (User user : users) {
             if (user.getName().equals(username)) {
                 return user;
             }
@@ -250,7 +257,7 @@ public class ServerUtils {
         return null;
     }
 
-    public static Game getGame(Long gameId) {
-        return _games.get(gameId);
+    public static Game getGame(long gameId) throws DataAccessException {
+        return (Game) dataContext.getGameAccess().get((int) gameId);
     }
 }

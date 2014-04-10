@@ -47,10 +47,10 @@ public class HexGridTests {
             int radius = grid.getRadius();
             assertTrue(grid.getY0() > -radius && grid.getY0() < radius && grid.getX0() > -radius && grid.getX0() < radius);
 //            assertTrue(grid.getLocations() != null && !grid.getLocations().isEmpty());
-            System.out.println(grid.toString());
+            assertTrue(!grid.toString().equals(""));
             int code = grid.hashCode();
             assertTrue(code != 0 || code != 1);
-            assertTrue(!grid.equals(grid));
+            assertTrue(grid.equals(grid));
             assertTrue(grid.getVertex(new VertexLocation(0,0, VertexDirection.NW)) != null);
             assertTrue(grid.getRadius() > 0);
             assertTrue(grid.getEdge(new EdgeLocation(0, 0, EdgeDirection.NW)) != null);

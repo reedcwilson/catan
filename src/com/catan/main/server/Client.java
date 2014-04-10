@@ -17,7 +17,7 @@ public class Client {
         this.timestamp = timestamp;
     }
     public Client(User user) {
-        this.playerID = user.getPlayerID();
+        this.playerID = user.getId();
         this.gameID = null;
         this.timestamp = "";
     }
