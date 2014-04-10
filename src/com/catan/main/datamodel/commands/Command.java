@@ -5,14 +5,18 @@ import com.catan.main.datamodel.PersistenceModel;
 import com.catan.main.datamodel.message.MessageLine;
 import com.catan.main.persistence.DataAccessException;
 import com.catan.main.persistence.DataContext;
+import com.catan.main.persistence.DataUtils;
 
-public abstract class Command implements PersistenceModel {
+import java.io.Serializable;
+
+public abstract class Command implements PersistenceModel, Serializable {
 
     //region Fields
     private DataContext dataContext;
     private Long id;
     private String type;
     private int playerIndex;
+    private Long gameId;
     //endregion
 
     public Command() {
@@ -32,6 +36,15 @@ public abstract class Command implements PersistenceModel {
     @Override
     public void setId(Long id) {
         this.id = id;
+    }
+
+    @Override
+    public byte[] getBytes() {
+        return DataUtils.serialize(this);
+    }
+
+    public Long getGameId() {
+        return gameId;
     }
 
     public String getType() {
@@ -63,8 +76,9 @@ public abstract class Command implements PersistenceModel {
         }
     }
 
-    public void initialize(DataContext dataContext) {
+    public void initialize(DataContext dataContext, Long gameId) {
         this.dataContext = dataContext;
+        this.gameId = gameId;
     }
     //endregion
 }

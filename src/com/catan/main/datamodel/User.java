@@ -1,6 +1,10 @@
 package com.catan.main.datamodel;
 
-public class User implements PersistenceModel{
+import com.catan.main.persistence.DataUtils;
+
+import java.io.Serializable;
+
+public class User implements PersistenceModel, Serializable {
 
     //region Fields
     private String authentication;
@@ -52,6 +56,11 @@ public class User implements PersistenceModel{
     @Override
     public void setId(Long playerID) {
         this.playerID = playerID;
+    }
+
+    @Override
+    public byte[] getBytes() {
+        return DataUtils.serialize(this);
     }
     //endregion
 
