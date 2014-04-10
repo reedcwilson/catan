@@ -13,7 +13,7 @@ public class GameDatabaseAccess extends GameAccess<ResultSet, PreparedStatement>
     private static final String singleSelectSql = "SELECT * FROM Game where id=?";
     private static final String selectSql = "SELECT * FROM Game";
     private static final String updateSql = "UPDATE Game SET commandIndex=?, currentBlob=?, originalBlob=? where id=?";
-    private static final String insertSql = "INSERT INTO Game ('commandIndex', 'currentBlob', 'originalBlob') VALUES (?, ?, ?)";
+    private static final String insertSql = "INSERT INTO Game ('commandIndex', 'currentBlob') VALUES (?, ?)";
     private static final String deleteSql = "DELETE FROM Game WHERE id=?";
 
     private DatabaseContext dataContext;
@@ -83,7 +83,10 @@ public class GameDatabaseAccess extends GameAccess<ResultSet, PreparedStatement>
             PreparedStatement stat = null;
             try {
                 stat = dataContext.getConnection().prepareStatement(insertSql);
-                stat.setInt(1, input.getId().intValue());
+                // TODO: load the appropriate values into prepared statement
+//                stat.setInt(1, input.getCommandId().intValue());
+                stat.setBytes(2, DataUtils.serialize(input));
+                stat.setBytes(3, DataUtils.serialize(input));
             } catch (SQLException e) {
                 DataUtils.crashOnException(e);
             }
@@ -105,9 +108,10 @@ public class GameDatabaseAccess extends GameAccess<ResultSet, PreparedStatement>
             PreparedStatement stat = null;
             try {
                 stat = dataContext.getConnection().prepareStatement(updateSql);
-//                stat.setBlob(1, input.toBlob());
-//                stat.setInt(2, input.getGameId().intValue());
-                stat.setInt(3, input.getId().intValue());
+                // TODO: load the appropriate values into prepared statement
+//                stat.setInt(1, input.getCommandId().intValue());
+                stat.setBytes(2, DataUtils.serialize(input));
+                stat.setInt(4, input.getId().intValue());
             } catch (SQLException e) {
                 DataUtils.crashOnException(e);
             }
@@ -146,6 +150,6 @@ public class GameDatabaseAccess extends GameAccess<ResultSet, PreparedStatement>
      */
     @Override
     protected boolean checkParameters(Game input) {
-        return DataUtils.checkArgument(input) && DataUtils.checkArgument((input.getId()));// && DataUtils.checkArgument(input.getGameId());
+        return DataUtils.checkArgument(input) && DataUtils.checkArgument(input.getId());
     }
 }

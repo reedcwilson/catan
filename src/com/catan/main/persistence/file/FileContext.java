@@ -2,7 +2,7 @@ package com.catan.main.persistence.file;
 
 import com.catan.main.persistence.*;
 
-public class FileContext extends DataContext<FileResult, FileCommandStatement> {
+public class FileContext extends DataContext<FileResult, FileOperationStatement> {
 
     //region Public Interface
 
@@ -56,23 +56,23 @@ public class FileContext extends DataContext<FileResult, FileCommandStatement> {
 
     /**
      * performs a get operation based on the given command and timeout
-     * @param fileCommandStatement command to execute
+     * @param fileOperationStatement command to execute
      * @param timeout length of time before throwing an exception
      * @return ResultSet an object of the parameter type (T)
      */
     @Override
-    public FileResult get(FileCommandStatement fileCommandStatement, int timeout) {
+    public FileResult get(FileOperationStatement fileOperationStatement, int timeout) {
         return null;
     }
 
     /**
      * executes the given command based on the methodType
-     * @param fileCommandStatement command to execute
+     * @param fileOperationStatement command to execute
      * @param methodType MethodType (update, insert, delete)
      * @return rows affected or id of inserted object
      */
     @Override
-    public int execute(FileCommandStatement fileCommandStatement, MethodType methodType) {
+    public int execute(FileOperationStatement fileOperationStatement, MethodType methodType) {
         return 0;
     }
     //endregion
