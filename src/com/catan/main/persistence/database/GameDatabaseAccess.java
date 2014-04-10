@@ -83,7 +83,10 @@ public class GameDatabaseAccess extends GameAccess<ResultSet, PreparedStatement>
             PreparedStatement stat = null;
             try {
                 stat = dataContext.getConnection().prepareStatement(insertSql);
-                stat.setInt(1, input.getId().intValue());
+                // TODO: load the appropriate values into prepared statement
+//                stat.setInt(1, input.getCommandId().intValue());
+                stat.setBytes(2, DataUtils.serialize(input));
+//                stat.setBytes(3, DataUtils.serialize(ServerUtils.getOriginalGame()));
             } catch (SQLException e) {
                 DataUtils.crashOnException(e);
             }
@@ -105,9 +108,11 @@ public class GameDatabaseAccess extends GameAccess<ResultSet, PreparedStatement>
             PreparedStatement stat = null;
             try {
                 stat = dataContext.getConnection().prepareStatement(updateSql);
-//                stat.setBlob(1, input.toBlob());
-//                stat.setInt(2, input.getGameId().intValue());
-                stat.setInt(3, input.getId().intValue());
+                // TODO: load the appropriate values into prepared statement
+//                stat.setInt(1, input.getCommandId().intValue());
+                stat.setBytes(2, DataUtils.serialize(input));
+//                stat.setBytes(3, DataUtils.serialize(ServerUtils.getOriginalGame()));
+                stat.setInt(4, input.getId().intValue());
             } catch (SQLException e) {
                 DataUtils.crashOnException(e);
             }
@@ -146,6 +151,6 @@ public class GameDatabaseAccess extends GameAccess<ResultSet, PreparedStatement>
      */
     @Override
     protected boolean checkParameters(Game input) {
-        return DataUtils.checkArgument(input) && DataUtils.checkArgument((input.getId()));// && DataUtils.checkArgument(input.getGameId());
+        return DataUtils.checkArgument(input) && DataUtils.checkArgument(input.getId());
     }
 }
