@@ -52,8 +52,15 @@ public class FinishTurn extends Command {
     }
     @Override
     protected MessageLine getLog(DataModel model) {
-        String name = model.getPlayers()[this.getPlayerIndex()].getName();
-        return new MessageLine(name, name + "'s turn just ended");
+        if(model.getTurnTracker().getCurrentTurn() == this.getPlayerIndex())
+        {
+            String name = model.getPlayers()[this.getPlayerIndex()].getName();
+            return new MessageLine(name, name + "'s turn just ended");
+        }
+        else
+        {
+            return null;
+        }
     }
     //endregion
 }
