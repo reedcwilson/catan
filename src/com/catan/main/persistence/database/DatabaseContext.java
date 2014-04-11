@@ -72,7 +72,7 @@ public class DatabaseContext extends DataContext<ResultSet, PreparedStatement> {
         Scanner scanner = null;
         try {
             startTransaction();
-            scanner = new Scanner(new File("database.txt"));
+            scanner = new Scanner(new File("createtables.txt"));
             while (scanner.hasNextLine()) {
                 stat = connection.createStatement();
                 String sql = scanner.nextLine();

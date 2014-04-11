@@ -2,6 +2,7 @@ package com.catan.main.server;
 
 import com.catan.main.datamodel.DataModel;
 import com.catan.main.datamodel.User;
+import com.catan.main.datamodel.UserToGame;
 import com.catan.main.datamodel.game.CreateGameRequest;
 import com.catan.main.datamodel.game.Game;
 import com.catan.main.datamodel.player.Color;
@@ -31,10 +32,6 @@ public class ServerUtils {
 
     private static Logger LOGGER = LogManager.getLogManager().getLogger("global");
     public static DataContext dataContext = ContextCreator.getDataContext(ContextCreator.ContextType.DATABASE);
-//    private static Map<Long, User> _users = new HashMap<Long, User>();
-//    private static Map<Long, Game> _games = new HashMap<Long, Game>();
-//    private static Long _userId = 4L;
-//    private static Long _gameId = 0L;
 
     // static initializer
     static {
@@ -78,14 +75,6 @@ public class ServerUtils {
             DataUtils.crashOnException(e);
         }
     }
-
-//    private static Long getUserId() {
-//        return _userId++;
-//    }
-
-//    private static Long getGameId() {
-//        return _gameId++;
-//    }
 
     public static Map<String, String> getCookies(HttpExchange exchange) {
         HashMap<String, String> cookiesMap = new HashMap<String, String>();
@@ -211,6 +200,8 @@ public class ServerUtils {
             LOGGER.log(Level.FINE, user.toString());
             if (g.addPlayer(user.getId(), color, user.getName())) {
                 dataContext.getGameAccess().update(g);
+                UserToGame userGameCombo = new UserToGame(g, user);
+                dataContext.getUserToGameAccess().insert(userGameCombo);
                 return true;
             }
         }
