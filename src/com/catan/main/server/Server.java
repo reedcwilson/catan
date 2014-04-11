@@ -1,6 +1,3 @@
-/**
- *
- */
 package com.catan.main.server;
 
 import com.catan.main.datamodel.DataModel;
@@ -34,6 +31,7 @@ public class Server {
     //region Fields
     private static final int SERVER_PORT_NUMBER = 8081;
     private static final int MAX_WAITING_CONNECTIONS = 10;
+    private static final int OPERATIONS_TILL_SAVE = 10;
     private final String _serverErrorStr = "ERROR 500. Internal Server Error: ";
     private final String _successStr = "Success!";
     private final String _clientErrorStr = "ERROR 400. Client Error: ";
@@ -42,6 +40,8 @@ public class Server {
     private int _port;
     private HttpServer _server;
     private Gson _gson;
+    private int executesBetweenSaves;
+    private int currentExecuteIndex = 0;
     //endregion
 
     //region Helper Methods
@@ -56,10 +56,19 @@ public class Server {
         String json = ServerUtils.streamToString(exchange.getRequestBody());
         DataModel model = ServerUtils.getModel(exchange);
         Command command = (Command)_gson.fromJson(json, type);
+        Client client = ServerUtils.getClient(exchange);
+        Game game = ServerUtils.getGame(client.getGameID());
+        command.initialize(ServerUtils.dataContext, game.getId());
         command.execute(model);
+        persistGame(game);
         String response = model.toJSON();
         respondWithString(exchange, response, 200, _jsonStr);
         ServerUtils.dataContext.endTransaction(true);
+    }
+    private void persistGame(Game game) throws DataAccessException {
+        if (executesBetweenSaves == (currentExecuteIndex = (++currentExecuteIndex % executesBetweenSaves + 1))) {
+            ServerUtils.dataContext.getGameAccess().update(game);
+        }
     }
     private void handleServerException(HttpExchange exchange, Exception e) throws IOException {
         // send server exception response header
@@ -809,20 +818,22 @@ public class Server {
     //endregion
 
     //region Server Methods
-    private Server(int p) {
+    private Server(int p, int s) {
         DataContext dataContext = ContextCreator.getDataContext(ContextCreator.ContextType.DATABASE);
         this._port = p;
+        this.executesBetweenSaves = s;
         _gson = new Gson();
     }
 
     public static void main(String[] args) {
 
         if (args.length < 1 || args[0].isEmpty())
-            new Server(SERVER_PORT_NUMBER).run();
+            new Server(SERVER_PORT_NUMBER, OPERATIONS_TILL_SAVE).run();
         else {
             try {
                 int port = Integer.parseInt(args[0]);
-                Server server = new Server(port);
+                int saveNum = Integer.parseInt(args[1]);
+                Server server = new Server(port, saveNum);
                 System.out.println("Running server on port: " + port);
                 server.run();
             } catch (NumberFormatException e) {
@@ -830,7 +841,7 @@ public class Server {
                         .println("Could not parse command line argument as port number. "
                                 + "Running server as default port: 8081 "
                                 + e.getMessage());
-                new Server(SERVER_PORT_NUMBER).run();
+                new Server(SERVER_PORT_NUMBER, OPERATIONS_TILL_SAVE).run();
             }
         }
     }

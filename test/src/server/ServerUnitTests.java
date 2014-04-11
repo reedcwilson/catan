@@ -15,10 +15,9 @@ public class ServerUnitTests {
     public static void main(String[] args) {
 
         String[] testClasses = new String[] {
-                "src.server.ServerUnitTests"
-//                "src.server.ServerUnitTests",
-//                "src.datamodel.DataModelTests",
-//                "src.datamodel.hexgrid.HexGridTests"
+                "src.server.ServerUnitTests",
+                "src.datamodel.DataModelTests",
+                "src.datamodel.hexgrid.HexGridTests"
         };
         org.junit.runner.JUnitCore.main(testClasses);
     }
