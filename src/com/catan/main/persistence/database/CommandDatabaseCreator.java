@@ -11,7 +11,9 @@ public class CommandDatabaseCreator extends DatabaseCreator<Command> {
     @Override
     public Command initialize(ResultSet reader) throws DataAccessException {
         try {
-            return (Command)DataUtils.deserialize(reader.getBytes(2));
+            Command command = (Command)DataUtils.deserialize(reader.getBytes(2));
+            command.setId((long)reader.getInt(1));
+            return command;
         } catch (SQLException e) {
             DataUtils.crashOnException(e);
         }

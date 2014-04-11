@@ -12,7 +12,7 @@ import java.io.Serializable;
 public abstract class Command implements PersistenceModel, Serializable {
 
     //region Fields
-    private DataContext dataContext;
+    private transient DataContext dataContext;
     private Long id;
     private String type;
     private int playerIndex;

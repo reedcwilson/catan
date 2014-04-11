@@ -87,7 +87,8 @@ public class CommandDatabaseAccess extends CommandAccess<PreparedStatement> {
             PreparedStatement stat = null;
             try {
                 stat = dataContext.getConnection().prepareStatement(insertSql);
-                stat.setInt(1, input.getId().intValue());
+                stat.setBytes(1, input.getBytes());
+                stat.setInt(2, input.getGameId().intValue());
             } catch (SQLException e) {
                 DataUtils.crashOnException(e);
             }
