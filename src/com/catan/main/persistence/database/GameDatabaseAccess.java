@@ -9,14 +9,15 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
-public class GameDatabaseAccess extends GameAccess<ResultSet, PreparedStatement> {
+public class GameDatabaseAccess extends GameAccess<PreparedStatement> {
 
     private static final String singleSelectSql = "SELECT * FROM Game where id=?";
     private static final String selectSql = "SELECT * FROM Game";
-    private static final String updateSql = "UPDATE Game SET commandIndex=?, currentBlob=?, originalBlob=? where id=?";
-    private static final String insertSql = "INSERT INTO Game ('commandIndex', 'currentBlob') VALUES (?, ?)";
+    private static final String updateSql = "UPDATE Game SET commandIndex=?, currentBlob=? where id=?";
+    private static final String insertSql = "INSERT INTO Game ('commandIndex', 'currentBlob', 'originalblob') VALUES (?, ?, ?)";
     private static final String deleteSql = "DELETE FROM Game WHERE id=?";
-    private static final String latestCommand = "SELECT id FROM Command WHERE game_id = ? ORDER BY id DESC LIMIT 1";
+    private static final String latestCommand = "SELECT * FROM Command WHERE game_id = ? ORDER BY id DESC LIMIT 1";
+    private static final String selectWithUsers = "select * from game inner join usertogame on game.id = usertogame.game_id inner join user on usertogame.user_id = user.id where game.id = ?";
 
     private DatabaseContext dataContext;
     private GameDatabaseCreator creator;
@@ -38,6 +39,7 @@ public class GameDatabaseAccess extends GameAccess<ResultSet, PreparedStatement>
 
     /**
      * prepares the sql statement with the appropriate select parameters
+     *
      * @return PreparedStatement
      */
     @Override
@@ -53,6 +55,7 @@ public class GameDatabaseAccess extends GameAccess<ResultSet, PreparedStatement>
 
     /**
      * prepares the sql statement with select parameters for a single get
+     *
      * @param id the id
      * @return PreparedStatement
      * @throws com.catan.main.persistence.DataAccessException
@@ -75,6 +78,7 @@ public class GameDatabaseAccess extends GameAccess<ResultSet, PreparedStatement>
 
     /**
      * prepares the sql statement with the appropriate insert parameters
+     *
      * @param input the input object
      * @return PreparedStatement
      * @throws DataAccessException
@@ -86,8 +90,7 @@ public class GameDatabaseAccess extends GameAccess<ResultSet, PreparedStatement>
             try {
                 stat = dataContext.getConnection().prepareStatement(insertSql);
                 // get the latest command id
-                ResultSet reader = dataContext.get(getLatestCommand(input));
-                stat.setInt(1, reader.getInt(1));
+                stat.setInt(1, -1);
                 stat.setBytes(2, DataUtils.serialize(input));
                 stat.setBytes(3, DataUtils.serialize(input));
             } catch (SQLException e) {
@@ -101,6 +104,7 @@ public class GameDatabaseAccess extends GameAccess<ResultSet, PreparedStatement>
 
     /**
      * prepares the sql statement with the appropriate update parameters
+     *
      * @param input the input object
      * @return PreparedStatement
      * @throws DataAccessException
@@ -112,10 +116,14 @@ public class GameDatabaseAccess extends GameAccess<ResultSet, PreparedStatement>
             try {
                 stat = dataContext.getConnection().prepareStatement(updateSql);
                 // get the latest command id
-                ResultSet reader = dataContext.get(getLatestCommand(input));
-                stat.setInt(1, reader.getInt(1));
+                List<Command> commands = dataContext.get(getLatestCommand(input), dataContext.getCommandAccess().getObjectCreator());
+                if (commands != null && commands.size() > 0) {
+                    stat.setInt(1, commands.get(0).getId().intValue());
+                } else {
+                    stat.setInt(1, -1);
+                }
                 stat.setBytes(2, DataUtils.serialize(input));
-                stat.setInt(4, input.getId().intValue());
+                stat.setInt(3, input.getId().intValue());
             } catch (SQLException e) {
                 DataUtils.crashOnException(e);
             }
@@ -127,6 +135,7 @@ public class GameDatabaseAccess extends GameAccess<ResultSet, PreparedStatement>
 
     /**
      * prepares the sql statement with the appropriate delete parameters
+     *
      * @param input the input object
      * @return PreparedStatement
      * @throws DataAccessException
@@ -149,18 +158,22 @@ public class GameDatabaseAccess extends GameAccess<ResultSet, PreparedStatement>
 
     /**
      * checks all of the parameters of the object to verify their validity
+     *
      * @param input the input object
      * @return PreparedStatement
      */
     @Override
     protected boolean checkParameters(Game input) {
-        return DataUtils.checkArgument(input) && DataUtils.checkArgument(input.getId());
+        return DataUtils.checkArgument(input);
     }
 
     private PreparedStatement getLatestCommand(Game game) throws SQLException {
-        PreparedStatement stat = null;
-        stat = dataContext.getConnection().prepareStatement(latestCommand);
-        stat.setInt(1, game.getId().intValue());
-        return stat;
+        if (game.getId() != null) {
+            PreparedStatement stat;
+            stat = dataContext.getConnection().prepareStatement(latestCommand);
+            stat.setInt(1, game.getId().intValue());
+            return stat;
+        }
+        return null;
     }
 }

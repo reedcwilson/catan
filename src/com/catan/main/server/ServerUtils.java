@@ -2,7 +2,6 @@ package com.catan.main.server;
 
 import com.catan.main.datamodel.DataModel;
 import com.catan.main.datamodel.User;
-import com.catan.main.datamodel.UserToGame;
 import com.catan.main.datamodel.game.CreateGameRequest;
 import com.catan.main.datamodel.game.Game;
 import com.catan.main.datamodel.player.Color;
@@ -30,51 +29,62 @@ enum ServerLogLevel {OFF, SEVERE, WARNING, INFO, CONFIG, FINE, FINER, FINEST, AL
 
 public class ServerUtils {
 
-    private static Logger LOGGER = LogManager.getLogManager().getLogger("global");
     public static DataContext dataContext = ContextCreator.getDataContext(ContextCreator.ContextType.DATABASE);
 
     // static initializer
     static {
-        User user1 = new User("Koli", "koli");
-        User user2 = new User("Jake", "jake");
-        User user3 = new User("Matt", "matt");
-        User user4 = new User("Reed", "reed");
 
         try {
-            dataContext.startTransaction();
-            user1.setId((long) dataContext.getUserAccess().insert(user1));
-            user2.setId((long) dataContext.getUserAccess().insert(user2));
-            user3.setId((long) dataContext.getUserAccess().insert(user3));
-            user4.setId((long) dataContext.getUserAccess().insert(user4));
-        } catch (Exception e) {
-            DataUtils.crashOnException(e);
-        }
+            if (dataContext.getUserAccess().getAll().size() < 1) {
 
-        // default game 1
-        try {
-            Game game1 = createGame(new CreateGameRequest(true, true, true, "Default1"));
-            Game game2 = createGame(new CreateGameRequest(true, true, true, "Default2"));
+                User user1 = new User("Koli", "koli");
+                User user2 = new User("Jake", "jake");
+                User user3 = new User("Matt", "matt");
+                User user4 = new User("Reed", "reed");
 
-            addUserToGame(user1, Color.blue, 0L);
-            addUserToGame(user2, Color.green, 0L);
-            addUserToGame(user3, Color.orange, 0L);
-            addUserToGame(user4, Color.white, 0L);
+                try {
+                    user1.setId((long) dataContext.getUserAccess().insert(user1));
+                    user2.setId((long) dataContext.getUserAccess().insert(user2));
+                    user3.setId((long) dataContext.getUserAccess().insert(user3));
+                    user4.setId((long) dataContext.getUserAccess().insert(user4));
+                } catch (Exception e) {
+                    DataUtils.crashOnException(e);
+                }
 
-            // default game 2
-            addUserToGame(user1, Color.blue, 1L);
-            addUserToGame(user2, Color.green, 1L);
-            addUserToGame(user3, Color.white, 1L);
-        } catch (Exception e) {
-            DataUtils.crashOnException(e);
-        }
+                // default game 1
+                try {
+                    Game game1 = createGame(new CreateGameRequest(true, true, true, "Default1"));
+                    Game game2 = createGame(new CreateGameRequest(true, true, true, "Default2"));
 
-        // default game 3
-        try {
-        Game game3 = createGame(new CreateGameRequest(true, true, true, "Default3"));
-        } catch (Exception e) {
-            DataUtils.crashOnException(e);
+                    dataContext.endTransaction(true);
+                    dataContext.startTransaction();
+
+                    addUserToGame(user1, Color.blue, 1L);
+                    addUserToGame(user2, Color.green, 1L);
+                    addUserToGame(user3, Color.orange, 1L);
+                    addUserToGame(user4, Color.white, 1L);
+
+                    // default game 2
+                    addUserToGame(user1, Color.blue, 2L);
+                    addUserToGame(user2, Color.green, 2L);
+                    addUserToGame(user3, Color.white, 2L);
+                } catch (Exception e) {
+                    DataUtils.crashOnException(e);
+                }
+
+                // default game 3
+                try {
+                    Game game3 = createGame(new CreateGameRequest(true, true, true, "Default3"));
+                } catch (Exception e) {
+                    DataUtils.crashOnException(e);
+                }
+            }
+        } catch (Exception ex) {
+            DataUtils.crashOnException(ex);
         }
     }
+
+    private static Logger LOGGER = LogManager.getLogManager().getLogger("global");
 
     public static Map<String, String> getCookies(HttpExchange exchange) {
         HashMap<String, String> cookiesMap = new HashMap<String, String>();
@@ -197,11 +207,11 @@ public class ServerUtils {
                     }
                 }
             }
-            LOGGER.log(Level.FINE, user.toString());
+            if (LOGGER != null) {
+                LOGGER.log(Level.FINE, user.toString());
+            }
             if (g.addPlayer(user.getId(), color, user.getName())) {
                 dataContext.getGameAccess().update(g);
-                UserToGame userGameCombo = new UserToGame(g, user);
-                dataContext.getUserToGameAccess().insert(userGameCombo);
                 return true;
             }
         }

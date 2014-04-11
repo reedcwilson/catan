@@ -2,7 +2,9 @@ package com.catan.main.datamodel.player;
 
 import com.catan.main.datamodel.map.Resource;
 
-public class Bank extends ResourceHand {
+import java.io.Serializable;
+
+public class Bank extends ResourceHand implements Serializable {
 
     public Bank() {
         for (Resource resource : Resource.values()) {

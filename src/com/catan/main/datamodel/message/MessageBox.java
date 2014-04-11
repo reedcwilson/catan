@@ -1,9 +1,10 @@
 package com.catan.main.datamodel.message;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MessageBox {
+public class MessageBox implements Serializable {
 
     List<MessageLine> lines;
 

@@ -7,7 +7,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class UserDatabaseAccess extends UserAccess<ResultSet, PreparedStatement> {
+public class UserDatabaseAccess extends UserAccess<PreparedStatement> {
 
     private static final String singleSelectSql = "SELECT * FROM User where id=?";
     private static final String selectSql = "SELECT * FROM User";
@@ -146,6 +146,6 @@ public class UserDatabaseAccess extends UserAccess<ResultSet, PreparedStatement>
      */
     @Override
     protected boolean checkParameters(User input) {
-        return DataUtils.checkArgument(input) && DataUtils.checkArgument(input.getId()) && DataUtils.checkArgument(input.getName()) && DataUtils.checkArgument(input.getPassword());
+        return DataUtils.checkArgument(input) && DataUtils.checkArgument(input.getName()) && DataUtils.checkArgument(input.getPassword());
     }
 }

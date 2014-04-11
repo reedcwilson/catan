@@ -1,6 +1,10 @@
 package com.catan.main.persistence;
 
-public abstract class DataContext<ResultObject, PreparedStatement> {
+import com.catan.main.datamodel.PersistenceModel;
+
+import java.util.List;
+
+public abstract class DataContext<T extends PersistenceModel, PreparedStatement> {
 
     //region Properties
     public abstract CommandAccess getCommandAccess();
@@ -20,7 +24,7 @@ public abstract class DataContext<ResultObject, PreparedStatement> {
     /**
      * creates tables or does any other initialization that may need to be done multiple times
      */
-    public abstract void initializeDataStore();
+    public abstract void initializeDataStore() throws DataAccessException;
 
     /**
      * starts a transaction that can be rolled back
@@ -38,8 +42,8 @@ public abstract class DataContext<ResultObject, PreparedStatement> {
      * @param statement prepared statement or command
      * @return an object of the parameter type (T)
      */
-    public ResultObject get(PreparedStatement statement) {
-        return get(statement, 150);
+    public List<T> get(PreparedStatement statement, ObjectCreator creator) throws DataAccessException {
+        return get(statement, 15, creator);
     }
 
     /**
@@ -48,7 +52,7 @@ public abstract class DataContext<ResultObject, PreparedStatement> {
      * @param timeout length of time before throwing an exception
      * @return an object of the parameter type (T)
      */
-    public abstract ResultObject get(PreparedStatement statement, int timeout);
+    public abstract List<T> get(PreparedStatement statement, int timeout, ObjectCreator creator) throws DataAccessException;
 
     /**
      * executes the given command or statement based on the methodType

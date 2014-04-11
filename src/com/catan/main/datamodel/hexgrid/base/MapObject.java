@@ -2,7 +2,9 @@ package com.catan.main.datamodel.hexgrid.base;
 
 import com.catan.main.datamodel.hexgrid.hex.HexLocation;
 
-public class MapObject<L extends HexLocation, V extends Value> {
+import java.io.Serializable;
+
+public class MapObject<L extends HexLocation, V extends Value> implements Serializable {
     protected V value;
     protected L location;
 

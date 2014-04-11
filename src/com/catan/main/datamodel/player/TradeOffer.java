@@ -1,6 +1,8 @@
 package com.catan.main.datamodel.player;
 
-public class TradeOffer {
+import java.io.Serializable;
+
+public class TradeOffer implements Serializable {
 
     //region Fields
     private int sender;

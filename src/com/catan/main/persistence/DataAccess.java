@@ -2,15 +2,20 @@ package com.catan.main.persistence;
 
 import com.catan.main.datamodel.PersistenceModel;
 
+import java.io.Closeable;
 import java.util.List;
 
-public abstract class DataAccess<T extends PersistenceModel, ResultObject, PreparedStatement> {
+public abstract class DataAccess<T extends PersistenceModel, PreparedStatement> {
 
     //region Fields
     private PreparedStatement statement;
     private List<T> objects;
     private boolean isDirty;
     //endregion
+
+    public DataAccess() {
+        isDirty = true;
+    }
 
     //region Properties
 
@@ -22,7 +27,7 @@ public abstract class DataAccess<T extends PersistenceModel, ResultObject, Prepa
     /**
      * @return ObjectCreator the initializer of choice
      */
-    public abstract ObjectCreator<T, ResultObject> getObjectCreator();
+    public abstract ObjectCreator getObjectCreator();
 
     /**
      * @return the statement
@@ -45,7 +50,7 @@ public abstract class DataAccess<T extends PersistenceModel, ResultObject, Prepa
         return objects;
     }
 
-    private void setObjects(List<T> objects) {
+    public void setObjects(List<T> objects) {
         isDirty = false;
         this.objects = objects;
     }
@@ -60,7 +65,7 @@ public abstract class DataAccess<T extends PersistenceModel, ResultObject, Prepa
      */
     public List<T> getAll() throws DataAccessException {
         if (isDirty) {
-            setObjects(getObjectCreator().initializeMany((ResultObject) getDataContext().get(getSelectStatement())));
+            setObjects(getDataContext().get(getSelectStatement(), getObjectCreator()));
         }
         return objects;
     }
@@ -74,7 +79,12 @@ public abstract class DataAccess<T extends PersistenceModel, ResultObject, Prepa
      */
     public T get(int id) throws DataAccessException {
         if (isDirty) {
-            return getObjectCreator().initialize((ResultObject) getDataContext().get(getSingleSelectStatement(id)));
+            setObjects(getDataContext().get(getSingleSelectStatement(id), getObjectCreator()));
+        }
+        for (T t : objects) {
+            if (t.getId().intValue() == id) {
+                return t;
+            }
         }
         return null;
     }

@@ -1,6 +1,8 @@
 package com.catan.main.datamodel;
 
-public abstract class Hand<T extends Enum<T>> {
+import java.io.Serializable;
+
+public abstract class Hand<T extends Enum<T>> implements Serializable {
 
     public Hand() { }
 

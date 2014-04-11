@@ -1,6 +1,8 @@
 package com.catan.main.datamodel.message;
 
-public class MessageLine {
+import java.io.Serializable;
+
+public class MessageLine implements Serializable {
 
     String source;
     String message;

@@ -3,7 +3,9 @@ package com.catan.main.datamodel.player;
 import com.catan.main.datamodel.Hand;
 import com.catan.main.datamodel.map.Resource;
 
-public class ResourceHand extends Hand<Resource> {
+import java.io.Serializable;
+
+public class ResourceHand extends Hand<Resource> implements Serializable {
 
     //region Fields
     private int brick;

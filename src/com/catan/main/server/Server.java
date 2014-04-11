@@ -40,6 +40,7 @@ public class Server {
     private int _port;
     private HttpServer _server;
     private Gson _gson;
+    DataContext dataContext;
     private int executesBetweenSaves;
     private int currentExecuteIndex = 0;
     //endregion
@@ -52,22 +53,22 @@ public class Server {
         exchange.getResponseBody().write(bytes);
     }
     private void handleCommand(HttpExchange exchange, Class type) throws IOException, DataAccessException {
-        ServerUtils.dataContext.startTransaction();
+        dataContext.startTransaction();
         String json = ServerUtils.streamToString(exchange.getRequestBody());
         DataModel model = ServerUtils.getModel(exchange);
         Command command = (Command)_gson.fromJson(json, type);
         Client client = ServerUtils.getClient(exchange);
         Game game = ServerUtils.getGame(client.getGameID());
-        command.initialize(ServerUtils.dataContext, game.getId());
+        command.initialize(dataContext, game.getId());
         command.execute(model);
         persistGame(game);
         String response = model.toJSON();
         respondWithString(exchange, response, 200, _jsonStr);
-        ServerUtils.dataContext.endTransaction(true);
+        dataContext.endTransaction(true);
     }
     private void persistGame(Game game) throws DataAccessException {
         if (executesBetweenSaves == (currentExecuteIndex = (++currentExecuteIndex % executesBetweenSaves + 1))) {
-            ServerUtils.dataContext.getGameAccess().update(game);
+            dataContext.getGameAccess().update(game);
         }
     }
     private void handleServerException(HttpExchange exchange, Exception e) throws IOException {
@@ -75,7 +76,7 @@ public class Server {
         System.out.println(_serverErrorStr + e.getMessage());
         e.printStackTrace();
         respondWithString(exchange, _serverErrorStr, HttpURLConnection.HTTP_INTERNAL_ERROR, _textStr);
-        ServerUtils.dataContext.endTransaction(false);
+        dataContext.endTransaction(false);
     }
     //endregion
 
@@ -90,7 +91,7 @@ public class Server {
         public void handle(HttpExchange exchange) throws IOException {
 
             try {
-
+                dataContext.startTransaction();
                 Map<String, String> values = ServerUtils.getValuesFromForm(exchange);
                 String username = values.get("username");
                 String password = values.get("password");
@@ -107,11 +108,13 @@ public class Server {
                 } else {
                     respondWithString(exchange, "Invalid Username or Password", 400, _textStr);
                 }
+                dataContext.endTransaction(true);
             } catch (Exception e) {
                 // send server exception response header
                 System.out.println(_serverErrorStr + e.getMessage());
                 e.printStackTrace();
                 respondWithString(exchange, _serverErrorStr, HttpURLConnection.HTTP_INTERNAL_ERROR, _textStr);
+                dataContext.endTransaction(false);
             }
             exchange.close();
         }
@@ -125,7 +128,7 @@ public class Server {
         public void handle(HttpExchange exchange) throws IOException {
 
             try {
-                ServerUtils.dataContext.startTransaction();
+                dataContext.startTransaction();
                 Map<String, String> values = ServerUtils.getValuesFromForm(exchange);
                 String username = values.get("username");
                 String password = values.get("password");
@@ -144,13 +147,13 @@ public class Server {
                 } else {
                     respondWithString(exchange, _clientErrorStr + "Register unsuccessful. Username may not be unique", 400, _textStr);
                 }
-                ServerUtils.dataContext.endTransaction(true);
+                dataContext.endTransaction(true);
             } catch (Exception e) {
                 // send server exception response header
                 System.out.println(_serverErrorStr + e.getMessage());
                 e.printStackTrace();
                 respondWithString(exchange, _serverErrorStr, 500, _textStr);
-                ServerUtils.dataContext.endTransaction(false);
+                dataContext.endTransaction(false);
             }
             exchange.close();
         }
@@ -168,12 +171,15 @@ public class Server {
         public void handle(HttpExchange exchange) throws IOException {
 
             try {
+                dataContext.startTransaction();
                 String response = new Gson().toJson(ServerUtils.getGames());
                 respondWithString(exchange, response, 200, _jsonStr);
+                dataContext.endTransaction(true);
             } catch (Exception e) {
                 System.out.println(_serverErrorStr + e.getMessage());
                 e.printStackTrace();
                 respondWithString(exchange, _serverErrorStr, HttpURLConnection.HTTP_INTERNAL_ERROR, _textStr);
+                dataContext.endTransaction(false);
             }
             exchange.close();
         }
@@ -187,7 +193,7 @@ public class Server {
         public void handle(HttpExchange exchange) throws IOException {
 
             try {
-                ServerUtils.dataContext.startTransaction();
+                dataContext.startTransaction();
                 Map<String, String> values = ServerUtils.getValuesFromForm(exchange);
 
                 CreateGameRequest request = new CreateGameRequest(
@@ -199,7 +205,7 @@ public class Server {
                 GsonGame game = new GsonGame(ServerUtils.createGame(request));
                 String gameStr = new Gson().toJson(game);
                 respondWithString(exchange, gameStr, 200, _jsonStr);
-                ServerUtils.dataContext.endTransaction(true);
+                dataContext.endTransaction(true);
             } catch (Exception e) {
                 handleServerException(exchange, e);
             }
@@ -215,7 +221,7 @@ public class Server {
         public void handle(HttpExchange exchange) throws IOException {
 
             try {
-                ServerUtils.dataContext.startTransaction();
+                dataContext.startTransaction();
                 Map<String, String> values = ServerUtils.getValuesFromForm(exchange);
                 Long gameId = Long.parseLong(values.get("id"));
                 Color color = Color.valueOf(values.get("color"));
@@ -226,7 +232,7 @@ public class Server {
                 } else {
                     respondWithString(exchange, _clientErrorStr + "The game is full.", 400, _textStr);
                 }
-                ServerUtils.dataContext.endTransaction(true);
+                dataContext.endTransaction(true);
             } catch (Exception e) {
                 handleServerException(exchange, e);
             }
@@ -246,7 +252,7 @@ public class Server {
         public void handle(HttpExchange exchange) throws IOException {
 
             try {
-
+                dataContext.startTransaction();
                 Client client = ServerUtils.getClient(exchange);
                 Game game = ServerUtils.getGame(client.getGameID());
                 String versionString = ServerUtils.decodeUri(exchange.getRequestURI().getQuery()).get("revision");
@@ -262,12 +268,14 @@ public class Server {
                 } else {
                     respondWithString(exchange, _clientErrorStr + "no game found", 400, _textStr);
                 }
+                dataContext.endTransaction(true);
             } catch (Exception e) {
 
                 // send server exception response header
                 System.out.println(_serverErrorStr + e.getMessage());
                 e.printStackTrace();
                 respondWithString(exchange, _serverErrorStr, HttpURLConnection.HTTP_INTERNAL_ERROR, _textStr);
+                dataContext.endTransaction(false);
             }
             exchange.close();
         }
@@ -281,7 +289,7 @@ public class Server {
         public void handle(HttpExchange exchange) throws IOException {
 
             try {
-                ServerUtils.dataContext.startTransaction();
+                dataContext.startTransaction();
                 Client client = ServerUtils.getClient(exchange);
                 Game game = ServerUtils.getGame(client.getGameID());
                 if (!ServerUtils.resetGame(client) || game == null) {
@@ -290,7 +298,7 @@ public class Server {
                 String response = game.getModel().toJSON();
                 exchange.getResponseHeaders().set("Content-Type", _jsonStr);
                 respondWithString(exchange, response, 200, _jsonStr);
-                ServerUtils.dataContext.endTransaction(true);
+                dataContext.endTransaction(true);
             } catch (Exception e) {
 
                 // send server exception response header
@@ -308,6 +316,7 @@ public class Server {
         public void handle(HttpExchange exchange) throws IOException {
 
             try {
+                dataContext.startTransaction();
                 Client client = ServerUtils.getClient(exchange);
                 Game game = ServerUtils.getGame(client.getGameID());
                 if (game == null) {
@@ -316,12 +325,14 @@ public class Server {
                     String response = _gson.toJson(game.getHistory().getCommands());
                     respondWithString(exchange, response, 200, _jsonStr);
                 }
+                dataContext.endTransaction(true);
             } catch (Exception e) {
 
                 // send server exception response header
                 System.out.println(_serverErrorStr + e.getMessage());
                 e.printStackTrace();
                 respondWithString(exchange, _serverErrorStr, HttpURLConnection.HTTP_INTERNAL_ERROR, _textStr);
+                dataContext.endTransaction(false);
             }
             exchange.close();
         }
@@ -336,7 +347,7 @@ public class Server {
 
             try {
                 // TODO: I am really unsure about this one
-                ServerUtils.dataContext.startTransaction();
+                dataContext.startTransaction();
                 String requestString = ServerUtils.streamToString(exchange.getRequestBody());
                 List<Command> commands = _gson.fromJson(requestString, new TypeToken() {}.getType());
                 Client client = ServerUtils.getClient(exchange);
@@ -347,11 +358,12 @@ public class Server {
                 }
                 String response = game.getModel().toJSON();
                 respondWithString(exchange, response, 200, _jsonStr);
-                ServerUtils.dataContext.endTransaction(true);
+                dataContext.endTransaction(true);
             } catch (Exception e) {
 
                 // send server exception response header
                 handleServerException(exchange, e);
+                dataContext.endTransaction(false);
             }
             exchange.close();
         }
@@ -819,7 +831,7 @@ public class Server {
 
     //region Server Methods
     private Server(int p, int s) {
-        DataContext dataContext = ContextCreator.getDataContext(ContextCreator.ContextType.DATABASE);
+        dataContext = ContextCreator.getDataContext(ContextCreator.ContextType.DATABASE);
         this._port = p;
         this.executesBetweenSaves = s;
         _gson = new Gson();

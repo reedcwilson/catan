@@ -14,9 +14,10 @@ import com.catan.main.datamodel.hexgrid.vertex.VertexLocation;
 import com.catan.main.datamodel.hexgrid.vertex.VertexValue;
 import com.catan.main.datamodel.player.ResourceHand;
 
+import java.io.Serializable;
 import java.util.*;
 
-public class Map {
+public class Map implements Serializable {
 
     //region Static Fields
     private static Resource[] HEX_TYPES = {Resource.Ore, Resource.Wheat, Resource.Wood, Resource.Ore, Resource.Wheat, Resource.Sheep, Resource.Wheat, Resource.Sheep, Resource.Wood, Resource.Brick, null, Resource.Brick, Resource.Sheep, Resource.Sheep, Resource.Wood, Resource.Brick, Resource.Ore, Resource.Wood, Resource.Wheat};

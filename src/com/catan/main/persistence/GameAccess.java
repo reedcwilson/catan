@@ -2,5 +2,5 @@ package com.catan.main.persistence;
 
 import com.catan.main.datamodel.game.Game;
 
-public abstract class GameAccess<ResuoltObject, PreparedStatement> extends DataAccess<Game, ResuoltObject, PreparedStatement> {
+public abstract class GameAccess<PreparedStatement> extends DataAccess<Game, PreparedStatement> {
 }

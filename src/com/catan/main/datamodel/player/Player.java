@@ -3,7 +3,9 @@ package com.catan.main.datamodel.player;
 import com.catan.main.datamodel.devcard.DevCardHand;
 import com.catan.main.datamodel.map.Resource;
 
-public class Player {
+import java.io.Serializable;
+
+public class Player implements Serializable {
 
     private static final int _pointsToWin = 10;
 

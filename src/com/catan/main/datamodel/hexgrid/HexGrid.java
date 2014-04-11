@@ -14,11 +14,12 @@ import com.catan.main.datamodel.hexgrid.vertex.VertexValue;
 import com.catan.main.datamodel.map.CatanHex;
 import com.catan.main.datamodel.LazyLoader;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 
-public class HexGrid {
+public class HexGrid implements Serializable {
 
     //region Fields
     Hex[][] hexes;

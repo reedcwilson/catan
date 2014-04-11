@@ -1,15 +1,18 @@
 package com.catan.main.persistence.database;
 
+import com.catan.main.datamodel.PersistenceModel;
 import com.catan.main.persistence.*;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.sql.*;
+import java.util.List;
 import java.util.Scanner;
 
-public class DatabaseContext extends DataContext<ResultSet, PreparedStatement> {
+public class DatabaseContext<T extends PersistenceModel> extends DataContext<T, PreparedStatement> {
 
     //region Fields
+    private final String tablesExist = "SELECT name FROM sqlite_master WHERE type='table' AND name != 'sqlite_sequence'";
     private String dbName = "catan.sqlite";
     private String connectionUrl = "jdbc:sqlite:" + dbName;
     private Connection connection;
@@ -98,6 +101,18 @@ public class DatabaseContext extends DataContext<ResultSet, PreparedStatement> {
     }
 
     /**
+     * makes sure that the database has tables
+     * @return true if tables exist
+     * @throws SQLException
+     */
+    public boolean dataStoreExist() throws SQLException {
+        try (PreparedStatement stat = getTablesExistsStatement()) {
+            ResultSet reader = getConnection().createStatement().executeQuery(tablesExist);
+            return reader.next();
+        }
+    }
+
+    /**
      * starts a transaction that can be rolled back
      */
     @Override
@@ -143,15 +158,21 @@ public class DatabaseContext extends DataContext<ResultSet, PreparedStatement> {
      * @return ResultSet an object of the parameter type (T)
      */
     @Override
-    public ResultSet get(PreparedStatement preparedStatement, int timeout) {
+    public List<T> get(PreparedStatement preparedStatement, int timeout, ObjectCreator creator) throws DataAccessException {
         ResultSet rs = null;
         try {
             preparedStatement.setQueryTimeout(timeout);
-            rs = preparedStatement.executeQuery();
+            return creator.initializeMany(preparedStatement.executeQuery());
         } catch (SQLException e) {
             DataUtils.crashOnException(e);
+        } finally {
+            try {
+                preparedStatement.close();
+            } catch (Exception ex) {
+                DataUtils.crashOnException(ex);
+            }
         }
-        return rs;
+        return null;
     }
 
     /**
@@ -168,6 +189,12 @@ public class DatabaseContext extends DataContext<ResultSet, PreparedStatement> {
             rowsAffected = preparedStatement.executeUpdate();
         } catch (SQLException e) {
             DataUtils.crashOnException(e);
+        } finally {
+            try {
+                preparedStatement.close();
+            } catch (Exception ex) {
+                DataUtils.crashOnException(ex);
+            }
         }
         if (methodType == MethodType.INSERT) {
             return getId();
@@ -198,6 +225,16 @@ public class DatabaseContext extends DataContext<ResultSet, PreparedStatement> {
             }
         }
         return id;
+    }
+
+    private PreparedStatement getTablesExistsStatement() {
+        PreparedStatement stat = null;
+        try {
+            stat = getConnection().prepareStatement(tablesExist);
+        } catch (SQLException e) {
+            DataUtils.crashOnException(e);
+        }
+        return stat;
     }
     //endregion
 }

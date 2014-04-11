@@ -1,12 +1,15 @@
 package com.catan.main.datamodel.game;
 
-import com.catan.main.datamodel.DataModel;
 import com.catan.main.datamodel.CommandHistory;
+import com.catan.main.datamodel.DataModel;
 import com.catan.main.datamodel.PersistenceModel;
 import com.catan.main.datamodel.devcard.DevCardDeck;
 import com.catan.main.datamodel.map.Map;
 import com.catan.main.datamodel.message.MessageBox;
-import com.catan.main.datamodel.player.*;
+import com.catan.main.datamodel.player.Bank;
+import com.catan.main.datamodel.player.Color;
+import com.catan.main.datamodel.player.Player;
+import com.catan.main.datamodel.player.TurnTrackerModule;
 import com.catan.main.persistence.DataAccessException;
 import com.catan.main.persistence.DataUtils;
 import com.google.inject.Guice;
@@ -40,7 +43,7 @@ public class Game implements PersistenceModel, Serializable {
         Map map = Map.generateNewMap(request.randomTiles, request.randomNumbers, request.randomNumbers);
         Injector injector = Guice.createInjector(new TurnTrackerModule());
         //DataModel model = new DataModel(map, players);
-        DataModel model =  injector.getInstance(DataModel.class);
+        DataModel model = injector.getInstance(DataModel.class);
         model.setBank(new Bank());
         model.setLog(new MessageBox());
         model.setChat(new MessageBox());
@@ -59,13 +62,16 @@ public class Game implements PersistenceModel, Serializable {
     public String getTitle() {
         return title;
     }
+
     public void setTitle(String title) {
         this.title = title;
     }
+
     @Override
     public Long getId() {
         return id;
     }
+
     @Override
     public void setId(Long id) {
         this.id = id;
@@ -79,9 +85,11 @@ public class Game implements PersistenceModel, Serializable {
     public DataModel getModel() {
         return this.model;
     }
+
     public void setModel(DataModel model) {
         this.model = model;
     }
+
     public void setDefaultModel(DataModel model) {
         this.start = model.clone();
     }
@@ -90,6 +98,7 @@ public class Game implements PersistenceModel, Serializable {
         int turnIndex = getTurnIndex(playerId);
         return turnIndex == -1 ? false : addPlayer(playerId, color, playerName, turnIndex);
     }
+
     private boolean addPlayer(Long playerId, Color color, String playerName, int turnIndex) {
         Player p = this.model.getPlayers()[turnIndex];
         if ((p == null) || (p.getPlayerID().longValue() == -1L)) {
@@ -127,6 +136,7 @@ public class Game implements PersistenceModel, Serializable {
         p.update(c);
         return true;
     }
+
     private boolean addPlayer(Player player, int turnIndex) {
         this.model.getPlayers()[turnIndex] = player;
         return true;

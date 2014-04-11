@@ -2,7 +2,9 @@ package com.catan.main.datamodel.hexgrid.hex;
 
 import com.catan.main.datamodel.hexgrid.edge.EdgeDirection;
 
-public class HexLocation {
+import java.io.Serializable;
+
+public class HexLocation implements Serializable {
     public int x;
     public int y;
 

@@ -1,8 +1,11 @@
 package com.catan.main.persistence.file;
 
+import com.catan.main.datamodel.PersistenceModel;
 import com.catan.main.persistence.*;
 
-public class FileContext extends DataContext<FileResult, FileOperationStatement> {
+import java.util.List;
+
+public class FileContext<T extends PersistenceModel> extends DataContext<T, FileOperationStatement> {
 
     //region Public Interface
 
@@ -61,7 +64,7 @@ public class FileContext extends DataContext<FileResult, FileOperationStatement>
      * @return ResultSet an object of the parameter type (T)
      */
     @Override
-    public FileResult get(FileOperationStatement fileOperationStatement, int timeout) {
+    public List<T> get(FileOperationStatement fileOperationStatement, int timeout, ObjectCreator creator) {
         return null;
     }
 

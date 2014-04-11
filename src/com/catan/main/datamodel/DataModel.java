@@ -9,9 +9,10 @@ import com.google.inject.Inject;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.StaxDriver;
 
+import java.io.Serializable;
 import java.util.Arrays;
 
-public class DataModel implements Cloneable {
+public class DataModel implements Cloneable, Serializable {
 
     private static final int _startingArmy = 2;
 

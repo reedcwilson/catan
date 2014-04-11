@@ -1,6 +1,8 @@
 package com.catan.main.datamodel.hexgrid.base;
 
-public abstract class Value
+import java.io.Serializable;
+
+public abstract class Value implements Serializable
 {
     protected int ownerID = -1;
 

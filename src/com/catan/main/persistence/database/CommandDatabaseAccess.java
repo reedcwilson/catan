@@ -7,7 +7,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class CommandDatabaseAccess extends CommandAccess<ResultSet, PreparedStatement> {
+public class CommandDatabaseAccess extends CommandAccess<PreparedStatement> {
 
     private static final String singleSelectSql = "SELECT * FROM Command where id=?";
     private static final String selectSql = "SELECT * FROM Command";
@@ -153,6 +153,6 @@ public class CommandDatabaseAccess extends CommandAccess<ResultSet, PreparedStat
      */
     @Override
     protected boolean checkParameters(Command input) {
-        return DataUtils.checkArgument(input) && DataUtils.checkArgument((input.getId()));// && DataUtils.checkArgument(input.getGameId());
+        return DataUtils.checkArgument(input);
     }
 }

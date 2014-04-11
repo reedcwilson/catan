@@ -8,9 +8,10 @@ import com.catan.main.datamodel.hexgrid.vertex.VertexDirection;
 import com.catan.main.datamodel.hexgrid.vertex.VertexLocation;
 import com.catan.main.datamodel.hexgrid.vertex.VertexValue;
 
+import java.io.Serializable;
 import java.util.Arrays;
 
-public class Hex implements Cloneable {
+public class Hex implements Cloneable, Serializable {
 
     protected HexLocation location;
     protected Vertex[] vertexes;

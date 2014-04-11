@@ -4,9 +4,10 @@ import com.catan.main.datamodel.commands.Command;
 import com.catan.main.persistence.DataAccessException;
 import com.google.gson.Gson;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class CommandHistory {
+public class CommandHistory implements Serializable {
 
     //region Fields
     private boolean strict;

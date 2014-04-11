@@ -3,6 +3,7 @@ package com.catan.main.datamodel.map;
 import com.catan.main.datamodel.hexgrid.hex.Hex;
 import com.catan.main.datamodel.hexgrid.hex.HexLocation;
 
+import java.io.Serializable;
 import java.util.Arrays;
 
 public class CatanHex extends Hex {
