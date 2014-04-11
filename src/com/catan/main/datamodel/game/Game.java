@@ -104,7 +104,7 @@ public class Game implements PersistenceModel, Serializable {
         if ((p == null) || (p.getPlayerID().longValue() == -1L)) {
             return addPlayer(new Player(playerId, turnIndex, color, playerName), turnIndex);
         }
-        if (p.getPlayerID() == playerId) {
+        if (p.getPlayerID().equals(playerId)) {
             return updatePlayer(this.model.getPlayers()[turnIndex], color);
         }
         return false;
@@ -125,7 +125,7 @@ public class Game implements PersistenceModel, Serializable {
     //region Helper Methods
     private int getTurnIndex(Long targetIndex) {
         for (int i = 0; i < _players; i++) {
-            if ((this.model.getPlayers()[i] == null) || (this.model.getPlayers()[i].getPlayerID() == targetIndex)) {
+            if ((this.model.getPlayers()[i] == null) || (this.model.getPlayers()[i].getPlayerID().equals(targetIndex))) {
                 return i;
             }
         }
