@@ -1,0 +1,4 @@
+CREATE TABLE user (id integer not null primary key autoincrement, name text not null, password text not null );
+CREATE TABLE game(id integer not null primary key autoincrement, commandindex integer not null,	currentblob blob not null, originalblob blob not null );
+CREATE TABLE command(id integer not null primary key autoincrement, command blob not null, game_id integer not null);
+CREATE TABLE usertogame(id integer not null primary key autoincrement, user_id integer not null, game_id integer not null, user_color text not null);
