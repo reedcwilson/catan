@@ -1,5 +1,6 @@
 package com.catan.main.persistence.database;
 
+import com.catan.main.datamodel.commands.Command;
 import com.catan.main.datamodel.game.Game;
 import com.catan.main.persistence.*;
 
@@ -15,6 +16,7 @@ public class GameDatabaseAccess extends GameAccess<ResultSet, PreparedStatement>
     private static final String updateSql = "UPDATE Game SET commandIndex=?, currentBlob=?, originalBlob=? where id=?";
     private static final String insertSql = "INSERT INTO Game ('commandIndex', 'currentBlob') VALUES (?, ?)";
     private static final String deleteSql = "DELETE FROM Game WHERE id=?";
+    private static final String latestCommand = "SELECT id FROM Command WHERE game_id = ? ORDER BY id DESC LIMIT 1";
 
     private DatabaseContext dataContext;
     private GameDatabaseCreator creator;
@@ -83,8 +85,9 @@ public class GameDatabaseAccess extends GameAccess<ResultSet, PreparedStatement>
             PreparedStatement stat = null;
             try {
                 stat = dataContext.getConnection().prepareStatement(insertSql);
-                // TODO: load the appropriate values into prepared statement
-//                stat.setInt(1, input.getCommandId().intValue());
+                // get the latest command id
+                ResultSet reader = dataContext.get(getLatestCommand(input));
+                stat.setInt(1, reader.getInt(1));
                 stat.setBytes(2, DataUtils.serialize(input));
                 stat.setBytes(3, DataUtils.serialize(input));
             } catch (SQLException e) {
@@ -108,8 +111,9 @@ public class GameDatabaseAccess extends GameAccess<ResultSet, PreparedStatement>
             PreparedStatement stat = null;
             try {
                 stat = dataContext.getConnection().prepareStatement(updateSql);
-                // TODO: load the appropriate values into prepared statement
-//                stat.setInt(1, input.getCommandId().intValue());
+                // get the latest command id
+                ResultSet reader = dataContext.get(getLatestCommand(input));
+                stat.setInt(1, reader.getInt(1));
                 stat.setBytes(2, DataUtils.serialize(input));
                 stat.setInt(4, input.getId().intValue());
             } catch (SQLException e) {
@@ -151,5 +155,12 @@ public class GameDatabaseAccess extends GameAccess<ResultSet, PreparedStatement>
     @Override
     protected boolean checkParameters(Game input) {
         return DataUtils.checkArgument(input) && DataUtils.checkArgument(input.getId());
+    }
+
+    private PreparedStatement getLatestCommand(Game game) throws SQLException {
+        PreparedStatement stat = null;
+        stat = dataContext.getConnection().prepareStatement(latestCommand);
+        stat.setInt(1, game.getId().intValue());
+        return stat;
     }
 }
