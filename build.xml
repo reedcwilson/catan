@@ -9,6 +9,7 @@
 	<property name="requests.arg" value="ug" />
     <property name="wipe" value="false" />
     <property name="saves" value="10" />
+    <property name="storage" value="sqlite" />
 
 
 	<!-- Base output folder -->
@@ -128,6 +129,7 @@
           <arg value="${port}" />
           <arg value="${saves}" />
           <arg value="${wipe}" />
+          <arg value="${storage}" />
 	      <assertions>
 	        <enable/>
 	      </assertions>

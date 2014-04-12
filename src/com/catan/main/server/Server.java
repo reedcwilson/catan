@@ -830,23 +830,32 @@ public class Server {
     //endregion
 
     //region Server Methods
-    private Server(int p, int s) {
-        dataContext = ContextCreator.getDataContext(ContextCreator.ContextType.DATABASE);
+    private Server(int p, int s, ContextCreator.ContextType storageType) {
+        dataContext = ContextCreator.getDataContext(storageType);
         this._port = p;
         this.executesBetweenSaves = s;
         _gson = new Gson();
     }
 
+    public static ContextCreator.ContextType parseStorage(String type) {
+        if(type.equals("file"))
+        {
+            return ContextCreator.ContextType.FILE;
+        }
+        return ContextCreator.ContextType.DATABASE;
+    }
+
     public static void main(String[] args) {
+        ContextCreator.ContextType storageType = parseStorage(args[3].toString());
         Server server;
         if (args.length < 1 || args[0].isEmpty())
-            new Server(SERVER_PORT_NUMBER, OPERATIONS_TILL_SAVE).run();
+            new Server(SERVER_PORT_NUMBER, OPERATIONS_TILL_SAVE, storageType).run();
         else {
             try {
                 int port = Integer.parseInt(args[0]);
                 int saveNum = Integer.parseInt(args[1]);
-                server = new Server(port, saveNum);
-                System.out.println("Running server on port: " + port);
+                server = new Server(port, saveNum, storageType);
+                System.out.println("Running server on port: " + port + " as " + storageType);
                 if(Boolean.parseBoolean(args[2])){
                     server.resetDataContext();
                     System.out.println("Reset Server");
@@ -856,9 +865,9 @@ public class Server {
             } catch (NumberFormatException e) {
                 System.out
                         .println("Could not parse command line argument as port number. "
-                                + "Running server as default port: 8081 "
+                                + "Running server as default port: 8081 as " + storageType
                                 + e.getMessage());
-                server = new Server(SERVER_PORT_NUMBER, OPERATIONS_TILL_SAVE);
+                server = new Server(SERVER_PORT_NUMBER, OPERATIONS_TILL_SAVE, storageType);
                 if(Boolean.parseBoolean(args[2])){
                     server.resetDataContext();
                     System.out.println("Reset Server");
