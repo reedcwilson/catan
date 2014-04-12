@@ -28,7 +28,7 @@ public class DataModelTests {
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
-        // all things you want to do only once (i.e. initialize database driver)
+        // all things you want to do only once (i.e. initialize sqlite driver)
         injector = Guice.createInjector(new AbstractModule() {
 
             @Override

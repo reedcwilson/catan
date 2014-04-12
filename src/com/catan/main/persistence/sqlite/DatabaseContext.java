@@ -1,4 +1,4 @@
-package com.catan.main.persistence.database;
+package com.catan.main.persistence.sqlite;
 
 import com.catan.main.datamodel.PersistenceModel;
 import com.catan.main.persistence.*;
@@ -101,7 +101,7 @@ public class DatabaseContext<T extends PersistenceModel> extends DataContext<T, 
     }
 
     /**
-     * makes sure that the database has tables
+     * makes sure that the sqlite has tables
      * @return true if tables exist
      * @throws SQLException
      */

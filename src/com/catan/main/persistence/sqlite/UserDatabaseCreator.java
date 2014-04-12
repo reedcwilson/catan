@@ -1,4 +1,4 @@
-package com.catan.main.persistence.database;
+package com.catan.main.persistence.sqlite;
 
 import com.catan.main.datamodel.User;
 import com.catan.main.persistence.DataAccessException;

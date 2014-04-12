@@ -1,6 +1,6 @@
 package com.catan.main.persistence;
 
-import com.catan.main.persistence.database.DatabaseContext;
+import com.catan.main.persistence.sqlite.DatabaseContext;
 import com.catan.main.persistence.file.FileContext;
 
 public class ContextCreator {

@@ -1,30 +1,26 @@
-package com.catan.main.persistence.database;
+package com.catan.main.persistence.sqlite;
 
-import com.catan.main.datamodel.commands.Command;
-import com.catan.main.datamodel.game.Game;
+import com.catan.main.datamodel.User;
 import com.catan.main.persistence.*;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.List;
 
-public class GameDatabaseAccess extends GameAccess<PreparedStatement> {
+public class UserDatabaseAccess extends UserAccess<PreparedStatement> {
 
-    private static final String singleSelectSql = "SELECT * FROM Game where id=?";
-    private static final String selectSql = "SELECT * FROM Game";
-    private static final String updateSql = "UPDATE Game SET commandIndex=?, currentBlob=? where id=?";
-    private static final String insertSql = "INSERT INTO Game ('commandIndex', 'currentBlob', 'originalblob') VALUES (?, ?, ?)";
-    private static final String deleteSql = "DELETE FROM Game WHERE id=?";
-    private static final String latestCommand = "SELECT * FROM Command WHERE game_id = ? ORDER BY id DESC LIMIT 1";
-    private static final String selectWithUsers = "select * from game inner join usertogame on game.id = usertogame.game_id inner join user on usertogame.user_id = user.id where game.id = ?";
+    private static final String singleSelectSql = "SELECT * FROM User where id=?";
+    private static final String selectSql = "SELECT * FROM User";
+    private static final String updateSql = "UPDATE User SET name=?, password=? where id=?";
+    private static final String insertSql = "INSERT INTO User ('name', 'password') VALUES (?, ?)";
+    private static final String deleteSql = "DELETE FROM User WHERE id=?";
 
     private DatabaseContext dataContext;
-    private GameDatabaseCreator creator;
+    private UserDatabaseCreator creator;
 
-    public GameDatabaseAccess(DatabaseContext dataContext) {
+    public UserDatabaseAccess(DatabaseContext dataContext) {
         this.dataContext = dataContext;
-        creator = new GameDatabaseCreator();
+        creator = new UserDatabaseCreator();
     }
 
     @Override
@@ -33,13 +29,12 @@ public class GameDatabaseAccess extends GameAccess<PreparedStatement> {
     }
 
     @Override
-    public ObjectCreator<Game, ResultSet> getObjectCreator() {
+    public ObjectCreator<User, ResultSet> getObjectCreator() {
         return creator;
     }
 
     /**
      * prepares the sql statement with the appropriate select parameters
-     *
      * @return PreparedStatement
      */
     @Override
@@ -55,7 +50,6 @@ public class GameDatabaseAccess extends GameAccess<PreparedStatement> {
 
     /**
      * prepares the sql statement with select parameters for a single get
-     *
      * @param id the id
      * @return PreparedStatement
      * @throws com.catan.main.persistence.DataAccessException
@@ -78,70 +72,59 @@ public class GameDatabaseAccess extends GameAccess<PreparedStatement> {
 
     /**
      * prepares the sql statement with the appropriate insert parameters
-     *
      * @param input the input object
      * @return PreparedStatement
      * @throws DataAccessException
      */
     @Override
-    protected PreparedStatement getInsertStatement(Game input) throws DataAccessException {
+    protected PreparedStatement getInsertStatement(User input) throws DataAccessException {
         if (checkParameters(input)) {
             PreparedStatement stat = null;
             try {
                 stat = dataContext.getConnection().prepareStatement(insertSql);
-                // get the latest command id
-                stat.setInt(1, -1);
-                stat.setBytes(2, DataUtils.serialize(input));
-                stat.setBytes(3, DataUtils.serialize(input));
+                stat.setString(1, input.getName());
+                stat.setString(2, input.getPassword());
             } catch (SQLException e) {
                 DataUtils.crashOnException(e);
             }
             return stat;
         } else {
-            throw new DataAccessException("Invalid command parameters. Could not save to database");
+            throw new DataAccessException("Invalid command parameters. Could not save to sqlite");
         }
     }
 
     /**
      * prepares the sql statement with the appropriate update parameters
-     *
      * @param input the input object
      * @return PreparedStatement
      * @throws DataAccessException
      */
     @Override
-    protected PreparedStatement getUpdateStatement(Game input) throws DataAccessException {
+    protected PreparedStatement getUpdateStatement(User input) throws DataAccessException {
         if (checkParameters(input)) {
             PreparedStatement stat = null;
             try {
                 stat = dataContext.getConnection().prepareStatement(updateSql);
-                // get the latest command id
-                List<Command> commands = dataContext.get(getLatestCommand(input), dataContext.getCommandAccess().getObjectCreator());
-                if (commands != null && commands.size() > 0) {
-                    stat.setInt(1, commands.get(0).getId().intValue());
-                } else {
-                    stat.setInt(1, -1);
-                }
-                stat.setBytes(2, DataUtils.serialize(input));
+                stat.setString(1, input.getName());
+                stat.setString(2, input.getPassword());
                 stat.setInt(3, input.getId().intValue());
             } catch (SQLException e) {
                 DataUtils.crashOnException(e);
             }
             return stat;
         } else {
-            throw new DataAccessException("Invalid command parameters. Could not save to database");
+            throw new DataAccessException("Invalid command parameters. Could not save to sqlite");
         }
     }
 
     /**
      * prepares the sql statement with the appropriate delete parameters
-     *
      * @param input the input object
      * @return PreparedStatement
      * @throws DataAccessException
      */
     @Override
-    protected PreparedStatement getDeleteStatement(Game input) throws DataAccessException {
+    protected PreparedStatement getDeleteStatement(User input) throws DataAccessException {
         PreparedStatement stat = null;
         if (checkParameters(input)) {
             try {
@@ -152,28 +135,17 @@ public class GameDatabaseAccess extends GameAccess<PreparedStatement> {
             }
             return stat;
         } else {
-            throw new DataAccessException("Invalid command parameters. Could not save to database");
+            throw new DataAccessException("Invalid command parameters. Could not save to sqlite");
         }
     }
 
     /**
      * checks all of the parameters of the object to verify their validity
-     *
      * @param input the input object
      * @return PreparedStatement
      */
     @Override
-    protected boolean checkParameters(Game input) {
-        return DataUtils.checkArgument(input);
-    }
-
-    private PreparedStatement getLatestCommand(Game game) throws SQLException {
-        if (game.getId() != null) {
-            PreparedStatement stat;
-            stat = dataContext.getConnection().prepareStatement(latestCommand);
-            stat.setInt(1, game.getId().intValue());
-            return stat;
-        }
-        return null;
+    protected boolean checkParameters(User input) {
+        return DataUtils.checkArgument(input) && DataUtils.checkArgument(input.getName()) && DataUtils.checkArgument(input.getPassword());
     }
 }
