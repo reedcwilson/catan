@@ -847,6 +847,7 @@ public class Server {
                 int saveNum = Integer.parseInt(args[1]);
                 Server server = new Server(port, saveNum);
                 System.out.println("Running server on port: " + port);
+                System.out.println(saveNum + " commands per saved game");
                 server.run();
             } catch (NumberFormatException e) {
                 System.out
