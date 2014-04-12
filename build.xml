@@ -8,6 +8,7 @@
 	<property name="web.arg" value="gameplay" />
 	<property name="requests.arg" value="ug" />
     <property name="save_num.arg" value="10" />
+    <property name="wipe" value="false" />
 
 	<!-- Base output folder -->
 	<property name="dest.dir" value="docs" />
@@ -126,6 +127,7 @@
           <arg value="${port.arg}" />
           <arg value="${web.arg}" />
           <arg value="${save_num.arg}" />
+          <arg value="${wipe}" />
 	      <assertions>
 	        <enable/>
 	      </assertions>

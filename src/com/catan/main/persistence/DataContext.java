@@ -62,6 +62,11 @@ public abstract class DataContext<T extends PersistenceModel, PreparedStatement>
      */
     public abstract int execute(PreparedStatement statement, MethodType methodType);
 
+    /**
+     * Resets the current DataContext
+     */
+    public abstract void reset();
+
     //endregion
 
     public enum MethodType { SELECT, INSERT, UPDATE, DELETE }

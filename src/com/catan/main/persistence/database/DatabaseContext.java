@@ -202,6 +202,40 @@ public class DatabaseContext<T extends PersistenceModel> extends DataContext<T, 
             return rowsAffected;
         }
     }
+    /**
+     * Resets the current DataContext
+     */
+    @Override
+    public void reset(){
+        Statement stat = null;
+        Scanner scanner = null;
+        try {
+            startTransaction();
+            scanner = new Scanner(new File("droptables.txt"));
+            while (scanner.hasNextLine()) {
+                stat = connection.createStatement();
+                String sql = scanner.nextLine();
+                if (!sql.trim().isEmpty())
+                    stat.executeUpdate(sql);
+            }
+        } catch (SQLException | FileNotFoundException e) {
+            endTransaction(false);
+            DataUtils.crashOnException(e);
+        } finally {
+            try {
+                if (scanner != null) {
+                    scanner.close();
+                }
+                if (stat != null) {
+                    stat.close();
+                }
+            } catch (Exception e) {
+                DataUtils.crashOnException(e);
+            }
+        }
+        endTransaction(true);
+        initializeDataStore();
+    }
     //endregion
 
     //region Helper Methods

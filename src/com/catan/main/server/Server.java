@@ -838,24 +838,39 @@ public class Server {
     }
 
     public static void main(String[] args) {
-
+        System.out.println(args[2]);
+        System.out.println(args[3]);
+        Server server;
         if (args.length < 1 || args[0].isEmpty())
             new Server(SERVER_PORT_NUMBER, OPERATIONS_TILL_SAVE).run();
         else {
             try {
                 int port = Integer.parseInt(args[0]);
-                int saveNum = Integer.parseInt(args[1]);
-                Server server = new Server(port, saveNum);
+                int saveNum = Integer.parseInt(args[2]);
+                server = new Server(port, saveNum);
                 System.out.println("Running server on port: " + port);
+                if(Boolean.parseBoolean(args[3])){
+                    server.resetDataContext();
+                    System.out.println("Reset Server");
+                }
                 server.run();
             } catch (NumberFormatException e) {
                 System.out
                         .println("Could not parse command line argument as port number. "
                                 + "Running server as default port: 8081 "
                                 + e.getMessage());
-                new Server(SERVER_PORT_NUMBER, OPERATIONS_TILL_SAVE).run();
+                server = new Server(SERVER_PORT_NUMBER, OPERATIONS_TILL_SAVE);
+                if(Boolean.parseBoolean(args[3])){
+                    server.resetDataContext();
+                    System.out.println("Reset Server");
+                }
+                server.run();
             }
         }
+    }
+
+    private void resetDataContext() {
+        dataContext.reset();
     }
 
     private void run() {

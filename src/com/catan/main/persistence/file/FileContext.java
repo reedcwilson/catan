@@ -78,5 +78,13 @@ public class FileContext<T extends PersistenceModel> extends DataContext<T, File
     public int execute(FileOperationStatement fileOperationStatement, MethodType methodType) {
         return 0;
     }
+
+    /**
+     * Resets the current DataContext
+     */
+    @Override
+    public void reset(){
+
+    }
     //endregion
 }
