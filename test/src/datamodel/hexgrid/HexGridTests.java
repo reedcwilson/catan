@@ -11,6 +11,8 @@ import com.catan.main.datamodel.hexgrid.vertex.Vertex;
 import com.catan.main.datamodel.hexgrid.vertex.VertexDirection;
 import com.catan.main.datamodel.hexgrid.vertex.VertexLocation;
 import com.catan.main.datamodel.hexgrid.vertex.VertexValue;
+import com.catan.main.persistence.ContextCreator;
+import com.catan.main.persistence.DataContext;
 import com.catan.main.server.Client;
 import com.catan.main.server.ServerUtils;
 import org.junit.*;
@@ -21,19 +23,24 @@ import static org.junit.Assert.*;
 
 public class HexGridTests {
     private static Game _game;
+    private static DataContext _dataContext;
+
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
-        _game = ServerUtils.createGame(new CreateGameRequest(true, true, true, "test1"));
     }
 
     @Before
     public void setUp() throws Exception {
+        _dataContext = ContextCreator.getDataContext(ContextCreator.ContextType.DATABASE);
+        _dataContext.startTransaction();
+        _game = ServerUtils.createGame(new CreateGameRequest(true, true, true, "test1"));
         Client client = new Client("time", 0L, 0L);
         ServerUtils.resetGame(client);
     }
 
     @After
     public void tearDown() throws Exception {
+        _dataContext.endTransaction(false);
     }
 
     @Test

@@ -11,6 +11,8 @@ import com.catan.main.datamodel.player.Bank;
 import com.catan.main.datamodel.player.MockTurnTracker;
 import com.catan.main.datamodel.player.Player;
 import com.catan.main.datamodel.player.TurnTrackerInterface;
+import com.catan.main.persistence.ContextCreator;
+import com.catan.main.persistence.DataContext;
 import com.catan.main.server.Client;
 import com.catan.main.server.ServerUtils;
 import com.google.inject.AbstractModule;
@@ -22,11 +24,11 @@ import static org.junit.Assert.* ;
 public class DataModelTests {
     private static Game _game;
     private static Injector injector;
+    private static DataContext _dataContext;
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
         // all things you want to do only once (i.e. initialize database driver)
-        _game = ServerUtils.createGame(new CreateGameRequest(true, true, true, "test1"));
         injector = Guice.createInjector(new AbstractModule() {
 
             @Override
@@ -46,7 +48,9 @@ public class DataModelTests {
     @Before
     public void setUp() throws Exception {
         // tasks you want to do before every task
-        // i.e. start transaction
+        _dataContext = ContextCreator.getDataContext(ContextCreator.ContextType.DATABASE);
+        _dataContext.startTransaction();
+        _game = ServerUtils.createGame(new CreateGameRequest(true, true, true, "test1"));
         Client client = new Client("time", 0L, 0L);
         ServerUtils.resetGame(client);
 
@@ -55,7 +59,7 @@ public class DataModelTests {
     @After
     public void tearDown() throws Exception {
         // clean up after every test
-        // i.e. end transaction
+        _dataContext.endTransaction(false);
 
     }
 
