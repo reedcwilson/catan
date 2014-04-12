@@ -119,7 +119,7 @@
 		 <javac srcdir="${test}" classpathref="all-classpath" destdir="${build-dir}" debug="true" includeantruntime="true" />
 	</target>
 
-	<target name="our-server" depends="build" description="run server on specified port">
+	<target name="our-server" depends="coverage" description="run server on specified port">
 	    <java classname="com.catan.main.server.Server" fork="yes">
 	      <classpath>
 	        <path refid="all-classpath"/>
