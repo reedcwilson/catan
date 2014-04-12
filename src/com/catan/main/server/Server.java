@@ -838,18 +838,16 @@ public class Server {
     }
 
     public static void main(String[] args) {
-        System.out.println(args[2]);
-        System.out.println(args[3]);
         Server server;
         if (args.length < 1 || args[0].isEmpty())
             new Server(SERVER_PORT_NUMBER, OPERATIONS_TILL_SAVE).run();
         else {
             try {
                 int port = Integer.parseInt(args[0]);
-                int saveNum = Integer.parseInt(args[2]);
+                int saveNum = Integer.parseInt(args[1]);
                 server = new Server(port, saveNum);
                 System.out.println("Running server on port: " + port);
-                if(Boolean.parseBoolean(args[3])){
+                if(Boolean.parseBoolean(args[2])){
                     server.resetDataContext();
                     System.out.println("Reset Server");
                 }
@@ -861,7 +859,7 @@ public class Server {
                                 + "Running server as default port: 8081 "
                                 + e.getMessage());
                 server = new Server(SERVER_PORT_NUMBER, OPERATIONS_TILL_SAVE);
-                if(Boolean.parseBoolean(args[3])){
+                if(Boolean.parseBoolean(args[2])){
                     server.resetDataContext();
                     System.out.println("Reset Server");
                 }
