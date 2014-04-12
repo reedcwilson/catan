@@ -853,6 +853,7 @@ public class Server {
                     server.resetDataContext();
                     System.out.println("Reset Server");
                 }
+                System.out.println(saveNum + " commands per saved game");
                 server.run();
             } catch (NumberFormatException e) {
                 System.out

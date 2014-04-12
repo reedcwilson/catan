@@ -4,11 +4,12 @@
 	<!-- ********** -->
 
 	<!-- Directory paths for the java server, javascript, and dest dir for the student copy -->
-	<property name="port.arg" value="8081" />
+	<property name="port" value="8081" />
 	<property name="web.arg" value="gameplay" />
 	<property name="requests.arg" value="ug" />
-    <property name="save_num.arg" value="10" />
     <property name="wipe" value="false" />
+    <property name="saves" value="10" />
+
 
 	<!-- Base output folder -->
 	<property name="dest.dir" value="docs" />
@@ -88,7 +89,7 @@
 
 	<target name="server" description="Runs the demo server">
 		<java jar="${jar.file}" fork="true">
-			<arg value="${port.arg}" />
+			<arg value="${Dport}" />
 			<arg value="${requests.arg}" />
 			<assertions>
 				<enable />
@@ -118,15 +119,14 @@
 		 <javac srcdir="${test}" classpathref="all-classpath" destdir="${build-dir}" debug="true" includeantruntime="true" />
 	</target>
 
-	<target name="our-server" depends="coverage" description="run server on specified port">
+	<target name="our-server" depends="build" description="run server on specified port">
 	    <java classname="com.catan.main.server.Server" fork="yes">
 	      <classpath>
 	        <path refid="all-classpath"/>
 
 	      </classpath>
-          <arg value="${port.arg}" />
-          <arg value="${web.arg}" />
-          <arg value="${save_num.arg}" />
+          <arg value="${port}" />
+          <arg value="${saves}" />
           <arg value="${wipe}" />
 	      <assertions>
 	        <enable/>
