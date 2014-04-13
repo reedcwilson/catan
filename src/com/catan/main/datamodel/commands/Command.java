@@ -66,7 +66,8 @@ public abstract class Command implements PersistenceModel, Serializable {
     public void execute(DataModel model) throws DataAccessException {
         action(model);
         log(model);
-        dataContext.getCommandAccess().insert(this);
+        if(dataContext != null)
+            dataContext.getCommandAccess().insert(this);
     }
 
     public void log(DataModel model) {

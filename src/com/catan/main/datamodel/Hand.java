@@ -39,6 +39,11 @@ public abstract class Hand<T extends Enum<T>> implements Serializable {
     }
     public T removeRandomItem() {
         int random = (int) Math.floor(Math.random() * total());
+        return removeItem(random);
+    }
+
+    public T removeItem(int random)
+    {
         int sum = 0;
         for (T t : getValues()) {
             sum += get(t);

@@ -23,6 +23,7 @@ public class Game implements PersistenceModel, Serializable {
 
     //region Fields
     private Long id;
+    private int commandIndex;
     private String title;
     private DataModel model;
     private DataModel start;
@@ -76,6 +77,10 @@ public class Game implements PersistenceModel, Serializable {
     public void setId(Long id) {
         this.id = id;
     }
+
+    public int getCommandIndex() {return commandIndex;}
+
+    public void setCommandIndex(int commandIndex) {this.commandIndex = commandIndex;}
 
     @Override
     public byte[] getBytes() {
