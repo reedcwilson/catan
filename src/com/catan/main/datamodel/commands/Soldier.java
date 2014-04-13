@@ -12,6 +12,7 @@ public class Soldier extends DevCard {
     //region Fields
     private HexLocation location;
     private Integer victimIndex;
+    private int rand = -1;
     //endregion
 
     public Soldier() {
@@ -59,7 +60,10 @@ public class Soldier extends DevCard {
         if ((model.getWinner().longValue() == -1L) && (currentPlayer.wonGame())) {
             model.setWinner(currentPlayer.getPlayerID());
         }
-        new RobPlayer(this.victimIndex.intValue(), this.location).execute(model);
+        Player victim = model.getPlayers()[this.victimIndex];
+        if(rand == -1)
+            rand = (int) Math.floor(Math.random() * victim.getResources().total());
+        new RobPlayer(this.victimIndex.intValue(), this.location, rand).execute(model);
     }
     @Override
     protected MessageLine getLog(DataModel model) {
