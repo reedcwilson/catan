@@ -3,7 +3,6 @@ package src.datamodel.hexgrid;
 import com.catan.main.datamodel.game.CreateGameRequest;
 import com.catan.main.datamodel.game.Game;
 import com.catan.main.datamodel.hexgrid.HexGrid;
-import com.catan.main.datamodel.hexgrid.base.Location;
 import com.catan.main.datamodel.hexgrid.edge.Edge;
 import com.catan.main.datamodel.hexgrid.edge.EdgeDirection;
 import com.catan.main.datamodel.hexgrid.edge.EdgeLocation;
@@ -17,8 +16,6 @@ import com.catan.main.server.Client;
 import com.catan.main.server.ServerUtils;
 import org.junit.*;
 
-import java.util.Collection;
-
 import static org.junit.Assert.*;
 
 public class HexGridTests {
@@ -31,8 +28,9 @@ public class HexGridTests {
 
     @Before
     public void setUp() throws Exception {
-        _dataContext = ContextCreator.getDataContext(ContextCreator.ContextType.DATABASE);
+        _dataContext = ContextCreator.getDataContext(ContextCreator.ContextType.MONGO);
         _dataContext.startTransaction();
+        ServerUtils.initialize(_dataContext);
         _game = ServerUtils.createGame(new CreateGameRequest(true, true, true, "test1"));
         Client client = new Client("time", 0L, 0L);
         ServerUtils.resetGame(client);

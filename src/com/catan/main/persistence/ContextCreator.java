@@ -1,11 +1,13 @@
 package com.catan.main.persistence;
 
+import com.catan.main.persistence.mongodb.MongoContext;
 import com.catan.main.persistence.sqlite.DatabaseContext;
 import com.catan.main.persistence.file.FileContext;
 
 public class ContextCreator {
     private static FileContext fileContext;
     private static DatabaseContext databaseContext;
+    private static MongoContext mongoContext;
 
     /**
      * returns a DataContext that can be used to persist data using the given ContextType
@@ -16,8 +18,10 @@ public class ContextCreator {
         switch (type) {
             case FILE:
                 return getFileContext();
-            case DATABASE:
+            case SQLITE:
                 return getDatabaseContext();
+            case MONGO:
+                return getMongoContext();
             default:
                 throw new IllegalArgumentException(String.format("Illegal context type: %s", type.toString()));
         }
@@ -41,5 +45,14 @@ public class ContextCreator {
         return fileContext;
     }
 
-    public enum ContextType { FILE, DATABASE }
+    private static DataContext getMongoContext() {
+        if (mongoContext == null) {
+            mongoContext = new MongoContext();
+            mongoContext.initialize();
+            mongoContext.initializeDataStore();
+        }
+        return mongoContext;
+    }
+
+    public enum ContextType { FILE, SQLITE, MONGO }
 }

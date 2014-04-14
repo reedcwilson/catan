@@ -830,36 +830,46 @@ public class Server {
     //endregion
 
     //region Server Methods
-    private Server(int p, int s, ContextCreator.ContextType storageType) {
+    private Server(int p, int s, ContextCreator.ContextType storageType, boolean wipe) {
         dataContext = ContextCreator.getDataContext(storageType);
         this._port = p;
         this.executesBetweenSaves = s;
         _gson = new Gson();
+        if(wipe){
+            resetDataContext();
+            System.out.println("Reset Server");
+        }
+        dataContext.startTransaction();
+        ServerUtils.initialize(this.dataContext);
+        dataContext.endTransaction(true);
     }
 
     public static ContextCreator.ContextType parseStorage(String type) {
-        if(type.equals("file"))
-        {
+        String t = type.toLowerCase();
+        if(t.equals("file")) {
             return ContextCreator.ContextType.FILE;
+        } else if (t.equals("sqlite")){
+            return ContextCreator.ContextType.SQLITE;
+        } else if (t.equals("mongo")){
+            return ContextCreator.ContextType.MONGO;
+        } else {
+            System.out.println("Could not parse database type");
+            return ContextCreator.ContextType.SQLITE;
         }
-        return ContextCreator.ContextType.DATABASE;
     }
 
     public static void main(String[] args) {
-        ContextCreator.ContextType storageType = parseStorage(args[3].toString());
         Server server;
+        ContextCreator.ContextType storageType = ContextCreator.ContextType.SQLITE;
         if (args.length < 1 || args[0].isEmpty())
-            new Server(SERVER_PORT_NUMBER, OPERATIONS_TILL_SAVE, storageType).run();
+            new Server(SERVER_PORT_NUMBER, OPERATIONS_TILL_SAVE, storageType, false).run();
         else {
             try {
                 int port = Integer.parseInt(args[0]);
                 int saveNum = Integer.parseInt(args[1]);
-                server = new Server(port, saveNum, storageType);
+                storageType = parseStorage(args[3].toString());
+                server = new Server(port, saveNum, storageType, Boolean.parseBoolean(args[2]));
                 System.out.println("Running server on port: " + port + " as " + storageType);
-                if(Boolean.parseBoolean(args[2])){
-                    server.resetDataContext();
-                    System.out.println("Reset Server");
-                }
                 System.out.println(saveNum + " commands per saved game");
                 server.run();
             } catch (NumberFormatException e) {
@@ -867,7 +877,7 @@ public class Server {
                         .println("Could not parse command line argument as port number. "
                                 + "Running server as default port: 8081 as " + storageType
                                 + e.getMessage());
-                server = new Server(SERVER_PORT_NUMBER, OPERATIONS_TILL_SAVE, storageType);
+                server = new Server(SERVER_PORT_NUMBER, OPERATIONS_TILL_SAVE, storageType, false);
                 if(Boolean.parseBoolean(args[2])){
                     server.resetDataContext();
                     System.out.println("Reset Server");
