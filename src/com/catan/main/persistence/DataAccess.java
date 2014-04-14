@@ -97,7 +97,7 @@ public abstract class DataAccess<T extends PersistenceModel, PreparedStatement> 
      */
     public int insert(T input) throws DataAccessException {
         int id = getDataContext().execute(getInsertStatement(input), DataContext.MethodType.INSERT);
-        PersistenceModel model = (PersistenceModel) input;
+        PersistenceModel model = input;
         model.setId((long) id);
         isDirty = true;
         return id;
