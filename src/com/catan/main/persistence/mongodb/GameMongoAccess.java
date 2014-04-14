@@ -45,8 +45,12 @@ public class GameMongoAccess extends GameAccess<MongoOperation> {
     protected MongoOperation getInsertStatement(Game input) throws DataAccessException {
         DBCollection table = dataContext.getDb().getCollection("game");
         BasicDBObject document = new BasicDBObject();
+        Command command = getLatestCommand();
         document.put("_id", dataContext.getNextSequence("game"));
-        document.put("commandIndex", getLatestCommand());
+        if (command == null)
+            document.put("commandIndex", -1);
+        else
+            document.put("commandIndex", command.getId());
         document.put("currentBlob", JSON.parse(dataContext.getGson().toJson(input)));
         document.put("originalBlob", JSON.parse(dataContext.getGson().toJson(input)));
         return new MongoOperation(document, null, table);

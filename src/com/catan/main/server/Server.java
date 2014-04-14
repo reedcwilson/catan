@@ -839,7 +839,9 @@ public class Server {
             resetDataContext();
             System.out.println("Reset Server");
         }
+        dataContext.startTransaction();
         ServerUtils.initialize(this.dataContext);
+        dataContext.endTransaction(true);
     }
 
     public static ContextCreator.ContextType parseStorage(String type) {
