@@ -1,8 +1,10 @@
 package com.catan.main.persistence.file;
 
-public class FileOperation {
+import com.catan.main.datamodel.PersistenceModel;
+
+public class FileOperation<T extends PersistenceModel> {
     private String fileName;
-    private Object object;
+    private T object;
 
     public String getFileName() {
         return fileName;
@@ -12,20 +14,20 @@ public class FileOperation {
         this.fileName = fileName;
     }
 
-    public Object getObject() {
+    public T getObject() {
         return object;
     }
 
-    public void setObject(Object object) {
-        this.object = object;
+    public void setObject(T t) {
+        this.object = t;
     }
 
     public FileOperation(String fileName) {
         this.fileName = fileName;
     }
 
-    public FileOperation(String fileName, Object object) {
+    public FileOperation(String fileName, T t) {
         this.fileName = fileName;
-        this.object = object;
+        this.object = t;
     }
 }

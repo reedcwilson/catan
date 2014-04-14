@@ -3,7 +3,7 @@ package com.catan.main.persistence.file;
 import com.catan.main.datamodel.User;
 import com.catan.main.persistence.*;
 
-public class UserFileAccess extends UserAccess<FileOperation> {
+public class UserFileAccess extends UserAccess<FileOperation<User>> {
 
     private FileContext dataContext;
     private UserFileCreator creator;
@@ -12,7 +12,7 @@ public class UserFileAccess extends UserAccess<FileOperation> {
     public UserFileAccess(FileContext dataContext) {
         this.dataContext = dataContext;
         this.creator = new UserFileCreator();
-        this.path = "./data/file/user/";
+        this.path = "data/file/user/";
     }
 
     @Override
@@ -26,28 +26,28 @@ public class UserFileAccess extends UserAccess<FileOperation> {
     }
 
     @Override
-    protected FileOperation getSelectStatement() {
-        return new FileOperation(path);
+    protected FileOperation<User> getSelectStatement() {
+        return new FileOperation<>(path);
     }
 
     @Override
-    protected FileOperation getSingleSelectStatement(int id) throws DataAccessException {
-        return new FileOperation(path + id);
+    protected FileOperation<User> getSingleSelectStatement(int id) throws DataAccessException {
+        return new FileOperation<>(path + id);
     }
 
     @Override
-    protected FileOperation getInsertStatement(User input) throws DataAccessException {
-        return new FileOperation(path + dataContext.getNextSequence("user"), input);
+    protected FileOperation<User> getInsertStatement(User input) throws DataAccessException {
+        return new FileOperation<>(path + dataContext.getNextSequence("user"), input);
     }
 
     @Override
-    protected FileOperation getUpdateStatement(User input) throws DataAccessException {
-        return new FileOperation(path + input.getId(), input);
+    protected FileOperation<User> getUpdateStatement(User input) throws DataAccessException {
+        return new FileOperation<>(path + input.getId(), input);
     }
 
     @Override
-    protected FileOperation getDeleteStatement(User input) throws DataAccessException {
-        return new FileOperation(path + input.getId());
+    protected FileOperation<User> getDeleteStatement(User input) throws DataAccessException {
+        return new FileOperation<>(path + input.getId());
     }
 
     /**

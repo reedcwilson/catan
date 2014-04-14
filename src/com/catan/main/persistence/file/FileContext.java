@@ -3,9 +3,7 @@ package com.catan.main.persistence.file;
 import com.catan.main.datamodel.PersistenceModel;
 import com.catan.main.persistence.*;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
+import java.io.*;
 import java.util.List;
 
 public class FileContext<T extends PersistenceModel> extends DataContext<T, FileOperation> {
@@ -54,36 +52,44 @@ public class FileContext<T extends PersistenceModel> extends DataContext<T, File
      */
     @Override
     public void initializeDataStore() {
+        String dir = "./data/file/";
         try {
 
-            File users = new File("./data/file/user");
+            File users = new File(dir + "user");
             if (!users.exists()) {
                 users.mkdirs();
             }
-            File games = new File("./data/file/game");
+            File games = new File(dir + "game");
             if (!games.exists()) {
                 games.mkdirs();
             }
-            File commands = new File("./data/file/command");
+            File commands = new File(dir + "command");
             if (!commands.exists()) {
                 commands.mkdirs();
             }
 
-            File counters = new File("./data/file/counter");
+            String countersDir = dir + "counter/";
+            File counters = new File(countersDir);
             if (!counters.exists()) {
                 counters.mkdirs();
             }
-            File userCounters = new File("./data/file/counters/user");
+            File userCounters = new File(countersDir + "user");
             if (!userCounters.exists()) {
-                userCounters.createNewFile();
+                try (BufferedWriter writer = new BufferedWriter(new FileWriter(userCounters))) {
+                    writer.write("1");
+                }
             }
-            File gameCounters = new File("./data/file/counters/game");
+            File gameCounters = new File(countersDir + "game");
             if (!gameCounters.exists()) {
-                gameCounters.createNewFile();
+                try (BufferedWriter writer = new BufferedWriter(new FileWriter(gameCounters))) {
+                    writer.write("1");
+                }
             }
-            File commandCounters = new File("./data/file/counters/command");
+            File commandCounters = new File(countersDir + "command");
             if (!commandCounters.exists()) {
-                commandCounters.createNewFile();
+                try (BufferedWriter writer = new BufferedWriter(new FileWriter(commandCounters))) {
+                    writer.write("1");
+                }
             }
         } catch (IOException e) {
             DataUtils.crashOnException(e);
@@ -146,11 +152,13 @@ public class FileContext<T extends PersistenceModel> extends DataContext<T, File
     public int execute(FileOperation operation, MethodType methodType) throws DataAccessException {
         switch (methodType) {
             case INSERT:
-                serializeFile(operation);
-                return 1;
+                serializeToFile(operation);
+                String str = operation.getFileName().substring(operation.getFileName().lastIndexOf('/') + 1);
+                int id = Integer.parseInt(str);
+                return id;
             case UPDATE:
                 DataUtils.delete(new File(operation.getFileName()));
-                serializeFile(operation);
+                serializeToFile(operation);
                 return 1;
             case DELETE:
                 DataUtils.delete(new File(operation.getFileName()));
@@ -163,15 +171,30 @@ public class FileContext<T extends PersistenceModel> extends DataContext<T, File
     }
 
     public int getNextSequence(String collection) {
-        // TODO: I will do this. We just need a file that has the current index
+        File file = new File("./data/file/counter/" + collection);
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            String line = reader.readLine();
+            Integer counter = Integer.parseInt(line);
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
+                writer.write(new Integer(counter+1).toString());
+            }
+            return counter;
+        } catch (Exception e) {
+            DataUtils.crashOnException(e);
+        }
         return -1;
     }
 
     //endregion
 
     //region Helper Methods
-    private void serializeFile(FileOperation operation) {
-        // TODO: serialize file
+    private void serializeToFile(FileOperation operation) {
+        byte[] bytes = operation.getObject().getBytes();
+        try (FileOutputStream writer = new FileOutputStream(operation.getFileName())) {
+            writer.write(bytes);
+        } catch (IOException e) {
+            DataUtils.crashOnException(e);
+        }
     }
     //endregion
 }

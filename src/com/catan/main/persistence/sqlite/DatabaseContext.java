@@ -13,7 +13,7 @@ public class DatabaseContext<T extends PersistenceModel> extends DataContext<T, 
 
     //region Fields
     private final String tablesExist = "SELECT name FROM sqlite_master WHERE type='table' AND name != 'sqlite_sequence'";
-    private String dbName = "catan.sqlite";
+    private String dbName = "data/file/catan.sqlite";
     private String connectionUrl = "jdbc:sqlite:" + dbName;
     private Connection connection;
     private CommandDatabaseAccess commandAccess;

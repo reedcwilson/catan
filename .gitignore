@@ -42,3 +42,8 @@ __*
 
 # ignore intellij files
 .idea/
+
+#ignore data
+/data/file
+/data/mongo
+/data/sqlite

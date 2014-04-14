@@ -3,7 +3,7 @@ package com.catan.main.persistence.file;
 import com.catan.main.datamodel.commands.Command;
 import com.catan.main.persistence.*;
 
-public class CommandFileAccess extends CommandAccess<FileOperation> {
+public class CommandFileAccess extends CommandAccess<FileOperation<Command>> {
 
     private FileContext dataContext;
     private CommandFileCreator creator;
@@ -12,7 +12,7 @@ public class CommandFileAccess extends CommandAccess<FileOperation> {
     public CommandFileAccess(FileContext dataContext) {
         this.dataContext = dataContext;
         this.creator = new CommandFileCreator();
-        path = "./data/file/command/";
+        path = "data/file/command/";
     }
 
     @Override
@@ -26,28 +26,28 @@ public class CommandFileAccess extends CommandAccess<FileOperation> {
     }
 
     @Override
-    protected FileOperation getSelectStatement() {
-        return new FileOperation(path);
+    protected FileOperation<Command> getSelectStatement() {
+        return new FileOperation<>(path);
     }
 
     @Override
-    protected FileOperation getSingleSelectStatement(int id) throws DataAccessException {
-        return new FileOperation(path + id);
+    protected FileOperation<Command> getSingleSelectStatement(int id) throws DataAccessException {
+        return new FileOperation<>(path + id);
     }
 
     @Override
-    protected FileOperation getInsertStatement(Command input) throws DataAccessException {
-        return new FileOperation(path + dataContext.getNextSequence("command"), input);
+    protected FileOperation<Command> getInsertStatement(Command input) throws DataAccessException {
+        return new FileOperation<>(path + dataContext.getNextSequence("command"), input);
     }
 
     @Override
-    protected FileOperation getUpdateStatement(Command input) throws DataAccessException {
-        return new FileOperation(path + input.getId(), input);
+    protected FileOperation<Command> getUpdateStatement(Command input) throws DataAccessException {
+        return new FileOperation<>(path + input.getId(), input);
     }
 
     @Override
-    protected FileOperation getDeleteStatement(Command input) throws DataAccessException {
-        return new FileOperation(path + input.getId());
+    protected FileOperation<Command> getDeleteStatement(Command input) throws DataAccessException {
+        return new FileOperation<>(path + input.getId());
     }
 
     /**

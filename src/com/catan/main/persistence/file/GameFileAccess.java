@@ -4,7 +4,7 @@ import com.catan.main.datamodel.commands.Command;
 import com.catan.main.datamodel.game.Game;
 import com.catan.main.persistence.*;
 
-public class GameFileAccess extends GameAccess<FileOperation> {
+public class GameFileAccess extends GameAccess<FileOperation<Game>> {
 
     private FileContext dataContext;
     private GameFileCreator creator;
@@ -13,7 +13,7 @@ public class GameFileAccess extends GameAccess<FileOperation> {
     public GameFileAccess(FileContext dataContext) {
         this.dataContext = dataContext;
         this.creator = new GameFileCreator();
-        this.path = "./data/file/game/";
+        this.path = "data/file/game/";
     }
 
     @Override
@@ -27,28 +27,28 @@ public class GameFileAccess extends GameAccess<FileOperation> {
     }
 
     @Override
-    protected FileOperation getSelectStatement() {
-        return new FileOperation(path);
+    protected FileOperation<Game> getSelectStatement() {
+        return new FileOperation<>(path);
     }
 
     @Override
-    protected FileOperation getSingleSelectStatement(int id) throws DataAccessException {
-        return new FileOperation(path + id);
+    protected FileOperation<Game> getSingleSelectStatement(int id) throws DataAccessException {
+        return new FileOperation<>(path + id);
     }
 
     @Override
-    protected FileOperation getInsertStatement(Game input) throws DataAccessException {
-        return new FileOperation(path + dataContext.getNextSequence("game"), input);
+    protected FileOperation<Game> getInsertStatement(Game input) throws DataAccessException {
+        return new FileOperation<>(path + dataContext.getNextSequence("game"), input);
     }
 
     @Override
-    protected FileOperation getUpdateStatement(Game input) throws DataAccessException {
-        return new FileOperation(path + input.getId(), input);
+    protected FileOperation<Game> getUpdateStatement(Game input) throws DataAccessException {
+        return new FileOperation<>(path + input.getId(), input);
     }
 
     @Override
-    protected FileOperation getDeleteStatement(Game input) throws DataAccessException {
-        return new FileOperation(path + input.getId());
+    protected FileOperation<Game> getDeleteStatement(Game input) throws DataAccessException {
+        return new FileOperation<>(path + input.getId());
     }
 
     /**
