@@ -60,7 +60,7 @@ public abstract class DataContext<T extends PersistenceModel, PreparedStatement>
      * @param methodType MethodType (update, insert, delete)
      * @return rows affected or id of inserted object
      */
-    public abstract int execute(PreparedStatement statement, MethodType methodType);
+    public abstract int execute(PreparedStatement statement, MethodType methodType) throws DataAccessException;
 
     /**
      * Resets the current DataContext

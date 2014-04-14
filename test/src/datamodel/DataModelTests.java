@@ -1,12 +1,8 @@
 package src.datamodel;
 
 import com.catan.main.datamodel.DataModel;
-import com.catan.main.datamodel.commands.SendChat;
-import com.catan.main.datamodel.devcard.DevCardDeck;
 import com.catan.main.datamodel.game.CreateGameRequest;
 import com.catan.main.datamodel.game.Game;
-import com.catan.main.datamodel.map.Map;
-import com.catan.main.datamodel.message.MessageBox;
 import com.catan.main.datamodel.player.Bank;
 import com.catan.main.datamodel.player.MockTurnTracker;
 import com.catan.main.datamodel.player.Player;
@@ -48,7 +44,7 @@ public class DataModelTests {
     @Before
     public void setUp() throws Exception {
         // tasks you want to do before every task
-        _dataContext = ContextCreator.getDataContext(ContextCreator.ContextType.DATABASE);
+        _dataContext = ContextCreator.getDataContext(ContextCreator.ContextType.SQLITE);
         _dataContext.startTransaction();
         _game = ServerUtils.createGame(new CreateGameRequest(true, true, true, "test1"));
         Client client = new Client("time", 0L, 0L);

@@ -29,11 +29,11 @@ enum ServerLogLevel {OFF, SEVERE, WARNING, INFO, CONFIG, FINE, FINER, FINEST, AL
 
 public class ServerUtils {
 
-    public static DataContext dataContext = ContextCreator.getDataContext(ContextCreator.ContextType.DATABASE);
+    private static DataContext dataContext;
 
-    // static initializer
-    static {
-
+    // initializer
+    public static void initialize(DataContext context) {
+        dataContext = context;
         try {
             if (dataContext.getUserAccess().getAll().size() < 1) {
 
