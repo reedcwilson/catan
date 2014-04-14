@@ -14,6 +14,7 @@ public class CommandDatabaseAccess extends CommandAccess<PreparedStatement> {
     private static final String updateSql = "UPDATE Command SET command=?, game_id=? where id=?";
     private static final String insertSql = "INSERT INTO Command ('command', 'game_id') VALUES (?, ?)";
     private static final String deleteSql = "DELETE FROM Command WHERE id=?";
+    private static final String commandsForGameSelectSql = "SELECT * FROM Command WHERE game_id=?";
 
 
     private DatabaseContext dataContext;
@@ -65,6 +66,27 @@ public class CommandDatabaseAccess extends CommandAccess<PreparedStatement> {
             try {
                 stat = dataContext.getConnection().prepareStatement(singleSelectSql);
                 stat.setInt(1, id);
+            } catch (SQLException e) {
+                DataUtils.crashOnException(e);
+            }
+            return stat;
+        } else {
+            throw new DataAccessException("Invalid id given.");
+        }
+    }
+
+    /**
+     * prepares the sql statement with the appropriate select parameters
+     *
+     * @return PreparedStatement
+     */
+    @Override
+    protected PreparedStatement getCommandsForGameStatement(Long gameId) throws DataAccessException {
+        if (DataUtils.checkArgument(gameId)) {
+            PreparedStatement stat = null;
+            try {
+                stat = dataContext.getConnection().prepareStatement(commandsForGameSelectSql);
+                stat.setInt(1, gameId.intValue());
             } catch (SQLException e) {
                 DataUtils.crashOnException(e);
             }
