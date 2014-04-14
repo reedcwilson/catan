@@ -12,15 +12,17 @@ import com.catan.main.datamodel.player.TurnTrackerInterface;
 public class RobPlayer extends Command {
 
     //region Fields
+    private int rand = -1;
     private int victimIndex;
     private HexLocation location;
     //endregion
 
     public RobPlayer() {
     }
-    public RobPlayer(int victimIndex, HexLocation robberSpot) {
+    public RobPlayer(int victimIndex, HexLocation robberSpot, int rand) {
         this.victimIndex = victimIndex;
         this.location = robberSpot;
+        this.rand = rand;
     }
 
     //region Properties
@@ -51,7 +53,9 @@ public class RobPlayer extends Command {
             Player attacker = players[this.getPlayerIndex()];
             Player victim = players[this.victimIndex];
 
-            attacker.rob(victim);
+            if(rand == -1)
+                rand = (int) Math.floor(Math.random() * victim.getResources().total());
+            attacker.rob(victim, rand);
         }
         m.setRobber(this.location);
         t.setStatus(Status.Playing);

@@ -194,8 +194,8 @@ public class Player implements Serializable {
         return this.victoryPoints >= 10;
     }
 
-    public void rob(Player victim) {
-        getResources().add((Resource) victim.resources.removeRandomItem(), 1);
+    public void rob(Player victim, int rand) {
+        getResources().add((Resource) victim.resources.removeItem(rand), 1);
     }
 
     public void update(Color c) {

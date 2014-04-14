@@ -259,6 +259,8 @@ public class ServerUtils {
     }
 
     public static Game getGame(long gameId) throws DataAccessException {
-        return (Game) dataContext.getGameAccess().get((int) gameId);
+        Game game = (Game) dataContext.getGameAccess().get((int) gameId);
+        dataContext.getCommandAccess().fastForward(game);
+        return game;
     }
 }

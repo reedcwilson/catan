@@ -9,6 +9,8 @@ import com.catan.main.datamodel.player.Player;
 
 public class BuyDevCard extends Command {
 
+    private int rand = -1;
+
     public BuyDevCard() {
     }
 
@@ -21,7 +23,9 @@ public class BuyDevCard extends Command {
     }
     @Override
     public void action(DataModel model) {
-        DevCardType boughtCard = model.getDeck().removeRandomItem();
+        if(rand == -1)
+            rand = (int) Math.floor(Math.random() * model.getDeck().total());
+        DevCardType boughtCard = model.getDeck().removeItem(rand);
         Player player = model.getPlayers()[this.getPlayerIndex()];
         if (boughtCard == DevCardType.Monument) {
             player.getOldDevCards().add(boughtCard, 1);
