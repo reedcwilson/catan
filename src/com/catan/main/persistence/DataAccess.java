@@ -96,10 +96,10 @@ public abstract class DataAccess<T extends PersistenceModel, PreparedStatement> 
      * @throws DataAccessException
      */
     public int insert(T input) throws DataAccessException {
+        isDirty = true;
         int id = getDataContext().execute(getInsertStatement(input), DataContext.MethodType.INSERT);
         PersistenceModel model = input;
         model.setId((long) id);
-        isDirty = true;
         return id;
     }
 
