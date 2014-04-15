@@ -13,8 +13,9 @@ public abstract class CommandAccess<PreparedStatement> extends DataAccess<Comman
      */
     public void fastForward(Game game) throws DataAccessException {
         if (game.getCommandIndex() != -1) {
-            for (Command command : getCommandsForGame(game.getId())) {
-                command.execute(game.getModel());
+            List<Command> commands = getCommandsForGame(game.getId());
+            for (int i = game.getCommandIndex(); i < commands.size(); i++) {
+                commands.get(i).execute(game.getModel());
             }
             game.setCommandIndex(-1);
         }
