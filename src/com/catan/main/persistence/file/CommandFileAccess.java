@@ -1,7 +1,10 @@
 package com.catan.main.persistence.file;
 
 import com.catan.main.datamodel.commands.Command;
+import com.catan.main.datamodel.game.Game;
 import com.catan.main.persistence.*;
+
+import java.io.File;
 
 public class CommandFileAccess extends CommandAccess<FileOperation<Command>> {
 
@@ -37,7 +40,7 @@ public class CommandFileAccess extends CommandAccess<FileOperation<Command>> {
 
     @Override
     protected FileOperation<Command> getInsertStatement(Command input) throws DataAccessException {
-        return new FileOperation<>(path + dataContext.getNextSequence("command"), input);
+        return new FileOperation<>(path + input.getGameId() + "/" + dataContext.getNextSequence("command"), input);
     }
 
     @Override
@@ -48,6 +51,11 @@ public class CommandFileAccess extends CommandAccess<FileOperation<Command>> {
     @Override
     protected FileOperation<Command> getDeleteStatement(Command input) throws DataAccessException {
         return new FileOperation<>(path + input.getId());
+    }
+
+    @Override
+    protected FileOperation<Command> getCommandsForGameStatement(Long gameId) {
+        return new FileOperation<>(path + gameId + "/");
     }
 
     /**

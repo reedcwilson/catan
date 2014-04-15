@@ -85,4 +85,12 @@ public class CommandMongoAccess extends CommandAccess<MongoOperation> {
     protected boolean checkParameters(Command input) {
         return DataUtils.checkArgument(input);
     }
+
+    @Override
+    protected MongoOperation getCommandsForGameStatement(Long gameId) throws DataAccessException {
+        DBCollection table = dataContext.getDb().getCollection("command");
+        BasicDBObject query = new BasicDBObject();
+        query.put("game_id", gameId);
+        return new MongoOperation(query, table);
+    }
 }

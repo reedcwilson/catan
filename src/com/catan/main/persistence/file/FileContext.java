@@ -152,6 +152,7 @@ public class FileContext<T extends PersistenceModel> extends DataContext<T, File
     public int execute(FileOperation operation, MethodType methodType) throws DataAccessException {
         switch (methodType) {
             case INSERT:
+                new File(operation.getFileName()).getParentFile().mkdirs();
                 serializeToFile(operation);
                 String str = operation.getFileName().substring(operation.getFileName().lastIndexOf('/') + 1);
                 int id = Integer.parseInt(str);

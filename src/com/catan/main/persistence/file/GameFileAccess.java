@@ -4,6 +4,8 @@ import com.catan.main.datamodel.commands.Command;
 import com.catan.main.datamodel.game.Game;
 import com.catan.main.persistence.*;
 
+import java.io.File;
+
 public class GameFileAccess extends GameAccess<FileOperation<Game>> {
 
     private FileContext dataContext;
@@ -38,7 +40,9 @@ public class GameFileAccess extends GameAccess<FileOperation<Game>> {
 
     @Override
     protected FileOperation<Game> getInsertStatement(Game input) throws DataAccessException {
-        return new FileOperation<>(path + dataContext.getNextSequence("game"), input);
+        int seq = dataContext.getNextSequence("game");
+        new File("./data/file/command/" + seq).mkdirs();
+        return new FileOperation<>(path + seq, input);
     }
 
     @Override
