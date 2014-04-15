@@ -21,6 +21,7 @@ public abstract class CommandAccess<PreparedStatement> extends DataAccess<Comman
     }
 
     public List<Command> getCommandsForGame(Long gameId) throws DataAccessException {
+        setIsDirty(true);
         return getDataContext().get(getCommandsForGameStatement(gameId), getObjectCreator());
     }
 

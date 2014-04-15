@@ -189,5 +189,8 @@ public abstract class DataAccess<T extends PersistenceModel, PreparedStatement> 
     public boolean isDirty() {
         return isDirty;
     }
+    public void setIsDirty(boolean dirty) {
+        this.isDirty = dirty;
+    }
     //endregion
 }
