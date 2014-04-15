@@ -44,7 +44,7 @@ public class DataModelTests {
     @Before
     public void setUp() throws Exception {
         // tasks you want to do before every task
-        _dataContext = ContextCreator.getDataContext(ContextCreator.ContextType.MONGO);
+        _dataContext = ContextCreator.getDataContext(ContextCreator.ContextType.SQLITE);
         _dataContext.startTransaction();
         ServerUtils.initialize(_dataContext);
         _game = ServerUtils.createGame(new CreateGameRequest(true, true, true, "test1"));
