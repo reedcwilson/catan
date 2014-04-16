@@ -2,10 +2,10 @@ package com.catan.main.persistence;
 
 import org.apache.commons.lang3.SerializationUtils;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.InputStream;
-import java.io.Serializable;
+import java.io.*;
+import java.util.Enumeration;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 
 public class DataUtils {
     public static void crashOnException(Exception ex) {
@@ -72,6 +72,44 @@ public class DataUtils {
             }
             return out.toByteArray();
         }
+    }
+    public static void unzipJar(String destinationDir, String jarPath) throws IOException {
+        File file = new File(jarPath);
+        JarFile jar = new JarFile(file);
 
+        // fist get all directories,
+        // then make those directory on the destination Path
+        for (Enumeration<JarEntry> enums = jar.entries(); enums.hasMoreElements();) {
+            JarEntry entry = enums.nextElement();
+
+            String fileName = destinationDir + File.separator + entry.getName();
+            File f = new File(fileName);
+
+            if (fileName.endsWith("/")) {
+                f.mkdirs();
+            }
+
+        }
+
+        //now create all files
+        for (Enumeration<JarEntry> enums = jar.entries(); enums.hasMoreElements();) {
+            JarEntry entry = enums.nextElement();
+
+            String fileName = destinationDir + File.separator + entry.getName();
+            File f = new File(fileName);
+
+            if (!fileName.endsWith("/")) {
+                InputStream is = jar.getInputStream(entry);
+                FileOutputStream fos = new FileOutputStream(f);
+
+                // write contents of 'is' to 'fos'
+                while (is.available() > 0) {
+                    fos.write(is.read());
+                }
+
+                fos.close();
+                is.close();
+            }
+        }
     }
 }

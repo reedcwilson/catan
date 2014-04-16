@@ -1,8 +1,13 @@
 package com.catan.main.persistence;
 
+import com.catan.main.persistence.file.FileContext;
 import com.catan.main.persistence.mongodb.MongoContext;
 import com.catan.main.persistence.sqlite.DatabaseContext;
-import com.catan.main.persistence.file.FileContext;
+
+import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
 
 public class ContextCreator {
     private static FileContext fileContext;
@@ -11,6 +16,7 @@ public class ContextCreator {
 
     /**
      * returns a DataContext that can be used to persist data using the given ContextType
+     *
      * @param type ContextType
      * @return DataContext
      */
@@ -25,6 +31,19 @@ public class ContextCreator {
             default:
                 throw new IllegalArgumentException(String.format("Illegal context type: %s", type.toString()));
         }
+    }
+
+    public static DataContext getDataContext(String directory, String className) {
+        try {
+            File file = new File(directory);
+            URL urls[] = {new URL("jar:" + file.toURI().toURL() + "!/")};
+            URLClassLoader ucl = new URLClassLoader(urls);
+            ucl.loadClass(className);
+            return (DataContext) Class.forName(className, true, ucl).newInstance();
+        } catch (Exception e) {
+            DataUtils.crashOnException(e);
+        }
+        return null;
     }
 
     private static DataContext getDatabaseContext() {
@@ -54,5 +73,5 @@ public class ContextCreator {
         return mongoContext;
     }
 
-    public enum ContextType { FILE, SQLITE, MONGO }
+    public enum ContextType {FILE, SQLITE, MONGO}
 }

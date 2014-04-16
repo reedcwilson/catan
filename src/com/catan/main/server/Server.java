@@ -11,6 +11,7 @@ import com.catan.main.datamodel.player.Color;
 import com.catan.main.persistence.ContextCreator;
 import com.catan.main.persistence.DataAccessException;
 import com.catan.main.persistence.DataContext;
+import com.catan.main.persistence.DataUtils;
 import com.google.gson.reflect.TypeToken;
 import com.sun.net.httpserver.Headers;
 import com.google.gson.Gson;
@@ -40,9 +41,16 @@ public class Server {
     private int _port;
     private HttpServer _server;
     private Gson _gson;
-    DataContext dataContext;
+    private DataContext dataContext;
     private int executesBetweenSaves;
     private int currentExecuteIndex = 0;
+
+    private DataContext getDataContext() {
+        return this.dataContext;
+    }
+    private void setDataContext(DataContext dataContext) {
+        this.dataContext = dataContext;
+    }
     //endregion
 
     //region Helper Methods
@@ -825,6 +833,34 @@ public class Server {
             }
         }
     };
+    private HttpHandler changePersistenceHandler = new HttpHandler() {
+
+        @Override
+        public void handle(HttpExchange exchange) throws IOException {
+
+            try {
+                Map<String, String> values = ServerUtils.getValuesFromForm(exchange);
+                String directory = values.get("directory");
+                String className = values.get("className");
+                DataContext dataContext = ContextCreator.getDataContext(directory, className);
+                DataUtils.unzipJar("plugins/" + className + "/", directory);
+                dataContext.initialize();
+                dataContext.reset();
+                dataContext.initializeDataStore();
+                dataContext.startTransaction();
+                ServerUtils.initialize(dataContext);
+                dataContext.endTransaction(true);
+                String responseStr = "changed persistence type. Using " + className;
+                System.out.println(responseStr);
+                setDataContext(dataContext);
+                respondWithString(exchange, responseStr, 200, _jsonStr);
+            } catch (Exception e) {
+                handleServerException(exchange, e);
+                dataContext.endTransaction(false);
+            }
+            exchange.close();
+        }
+    };
     //endregion
 
     //endregion
@@ -936,6 +972,7 @@ public class Server {
         this._server.createContext("/moves/Monopoly", monopolyHandler);
         this._server.createContext("/moves/Monument", monumentHandler);
         this._server.createContext("/docs/api/data", getSwaggerFilesHandler);
+        this._server.createContext("/persistence", changePersistenceHandler);
         this._server.createContext("/", downloadFileHandler);
 
         this._server.start();
